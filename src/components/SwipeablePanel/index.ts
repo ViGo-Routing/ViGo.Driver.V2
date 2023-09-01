@@ -1,0 +1,1 @@
+export { SwipeablePanel } from './Panel';
