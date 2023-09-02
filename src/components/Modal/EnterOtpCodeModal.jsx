@@ -30,7 +30,7 @@ const EnterOtpCodeModal = ({
 
   return (
     <Modal
-      style={vigoStyles.modal}
+      style={[vigoStyles.modal, { height: "30%" }]}
       animationType="slide"
       transparent={true}
       visible={modalVisible}
@@ -43,7 +43,7 @@ const EnterOtpCodeModal = ({
       onShow={() => otpInputRef && otpInputRef.focus()}
     >
       <View style={{ ...vigoStyles.modal, ...{ height: "70%" } }}>
-        <View
+        {/* <View
           style={{
             ...vigoStyles.row,
             ...{ marginTop: 0, flexDirection: "row-reverse" },
@@ -52,11 +52,11 @@ const EnterOtpCodeModal = ({
           <TouchableOpacity onPress={() => onModalClose()}>
             <XMarkIcon size={30} color="black" />
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <View style={{ marginTop: 20 }}>
           <Text style={{ marginBottom: 10 }}>
-            Nhập mã OTP vừa được gửi đến SĐT {phoneNumber}
+            Nhập mã OTP vừa được gửi đến số điện thoại {phoneNumber}
           </Text>
 
           <TextInput

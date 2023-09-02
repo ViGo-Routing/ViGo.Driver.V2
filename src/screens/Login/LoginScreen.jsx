@@ -55,18 +55,19 @@ import { NativeModules } from "react-native";
 
 export default function LoginScreen() {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
   const { user, setUser } = useContext(UserContext);
-  // const [enterOtpModalVisible, setEnterOtpModalVisible] = useState(false);
+  const [enterOtpModalVisible, setEnterOtpModalVisible] = useState(false);
 
   // const recaptchaVerifier = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  // const [confirm, setConfirm] = useState(null);
+  const [confirm, setConfirm] = useState(null);
   const [firebaseToken, setFirebaseToken] = useState(null);
   // const recaptchaVerifier = useRef(null);
   const [show, setShow] = useState(false);
   const eventEmitter = new NativeEventEmitter();
+  const [code, setCode] = useState("");
 
   // console.log("Login screen");
 
@@ -90,8 +91,8 @@ export default function LoginScreen() {
     // getString("token").then((result) => console.log(result));
     // console.log(firebaseToken);
     // auth().settings.appVerificationDisabledForTesting = true;
-    // auth().settings.forceRecaptchaFlowForTesting = true;
-    // const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    auth().settings.forceRecaptchaFlowForTesting = true;
+    // const authUnsubscriber = auth().onAuthStateChanged(onAuthStateChanged);
     // return subscriber;
     // if (user) {
     //   navigation.navigate(determineDefaultScreen(user));
@@ -101,118 +102,123 @@ export default function LoginScreen() {
       if (user && isValidToken()) {
         navigation.reset({
           index: 0,
-          routes: [{ name: "Home" }],
+          routes: [{ name: determineDefaultScreen(user) }],
         });
       }
     });
 
-    return unsubscribe;
+    return () => {
+      // authUnsubscriber();
+      unsubscribe();
+    };
   }, []);
 
   const handleLogin = async () => {
     // console.log(firebaseToken);
     // const phoneRegex = /^0\d{9}$/;
-    const isValid = isPhoneNumber(phoneNumber);
-    if (!isValid || (phoneNumber == "" && password == "")) {
-      if (password == "") {
-        setIsInputPasswordInvalid(true);
-      }
-      setIsInputPhoneInvalid(true);
-    } else {
-      setIsLoading(true);
-      const phone = `+84${phoneNumber.substring(1, 10)}`;
+    // const isValid = isPhoneNumber(phoneNumber);
+    // if (!isValid || (phoneNumber == "" && password == "")) {
+    //   if (password == "") {
+    //     setIsInputPasswordInvalid(true);
+    //   }
+    //   setIsInputPhoneInvalid(true);
+    // } else {
+    setIsLoading(true);
+    const phone = `+84${phoneNumber.substring(1, 10)}`;
 
-      try {
-        const response = await login(phone, password);
-        // .then(async (response) => {
-        setUser(response.user);
-        SignalRService.updateToken(response.token);
-        // console.log("Token " + (await getString("token")));
-        // try {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        ];
+    try {
+      const response = await login(phone, firebaseToken);
+      // .then(async (response) => {
+      setUser(response.user);
+      SignalRService.updateToken(response.token);
+      // console.log("Token " + (await getString("token")));
+      // try {
+      const permissions = [
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      ];
 
-        const results = await PermissionsAndroid.requestMultiple(permissions, {
+      const results = await PermissionsAndroid.requestMultiple(
+        permissions /*, {
           title: "Cho phép ViGo gửi thông báo đến bạn",
           message: `Nhận thông báo về trạng thái giao dịch, nhắc nhở chuyến đi 
             trong ngày và hơn thế nữa`,
           buttonNeutral: "Hỏi lại sau",
           buttonNegative: "Từ chối",
           buttonPositive: "Đồng ý",
-        });
-        // setIsLoading(false);
-        // console.log(Platform.constants["Version"]);
-        // console.log(results[PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS]);
-        if (
-          (Platform.constants["Version"] < 33 ||
-            results[PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS] ===
-              PermissionsAndroid.RESULTS.GRANTED) &&
-          results[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] ===
-            PermissionsAndroid.RESULTS.GRANTED
-        ) {
-          await messaging().registerDeviceForRemoteMessages();
-          const fcmToken = await messaging().getToken();
-          console.log("FCM: " + fcmToken);
-          await updateUserFcmToken(response.user.id, fcmToken);
-        } else {
-          console.log("Some permissions denied");
-          // Handle the case where one or both permissions are denied
-        }
-        eventEmitter.emit(eventNames.SHOW_TOAST, {
-          title: "Đăng nhập thành công",
-          description: "",
-          status: "success",
-          placement: "top",
-          duration: 3000,
-          isSlide: true,
-        });
-        if (response.user.status == "PENDING") {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "NewDriverUpdateProfile" }],
-          });
-          // navigation.replace("NewDriverUpdateProfile");
-        } else {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Home" }],
-          });
-          // navigation.navigate("Home");
-        }
-        // } catch (error) {
-        //   // Alert.alert("Có lỗi xảy ra", "Chi tiết: " + err.message);
-        //   handleError("Có lỗi xảy ra", error);
-        //   // console.warn(err);
-        //   setIsLoading(false);
-        // }
-        // }
-      } catch (err) {
-        setIsLoading(false);
-        // console.error(err.response.status);
-        // const eventEmitter = new NativeEventEmitter();
-        if (err.response && err.response.status != 401) {
-          eventEmitter.emit(eventNames.SHOW_TOAST, {
-            // title: "Đăng nhập không thành công",
-            description: err.response.data,
-            status: "error",
-            // placement: "top-right",
-            isDialog: true,
-          });
-        } else {
-          // console.log(err);
-          eventEmitter.emit(eventNames.SHOW_TOAST, {
-            title: "Đăng nhập không thành công",
-            description: "Vui lòng kiểm tra lại thông tin đăng nhập",
-            status: "error",
-            // placement: "top-right",
-          });
-        }
-      } finally {
-        setIsLoading(false);
+        }*/
+      );
+      // setIsLoading(false);
+      // console.log(Platform.constants["Version"]);
+      // console.log(results[PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS]);
+      if (
+        (Platform.constants["Version"] < 33 ||
+          results[PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS] ===
+            PermissionsAndroid.RESULTS.GRANTED) &&
+        results[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] ===
+          PermissionsAndroid.RESULTS.GRANTED
+      ) {
+        await messaging().registerDeviceForRemoteMessages();
+        const fcmToken = await messaging().getToken();
+        // console.log("FCM: " + fcmToken);
+        await updateUserFcmToken(response.user.id, fcmToken);
+      } else {
+        console.log("Some permissions denied");
+        // Handle the case where one or both permissions are denied
       }
+      eventEmitter.emit(eventNames.SHOW_TOAST, {
+        title: "Đăng nhập thành công",
+        description: "",
+        status: "success",
+        placement: "top",
+        duration: 3000,
+        isSlide: true,
+      });
+      if (response.user.status == "PENDING") {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "NewDriverUpdateProfile" }],
+        });
+        // navigation.replace("NewDriverUpdateProfile");
+      } else {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        });
+        // navigation.navigate("Home");
+      }
+      // } catch (error) {
+      //   // Alert.alert("Có lỗi xảy ra", "Chi tiết: " + err.message);
+      //   handleError("Có lỗi xảy ra", error);
+      //   // console.warn(err);
+      //   setIsLoading(false);
+      // }
+      // }
+    } catch (err) {
+      setIsLoading(false);
+      // console.error(err.response.status);
+      // const eventEmitter = new NativeEventEmitter();
+      if (err.response && err.response.status != 401) {
+        eventEmitter.emit(eventNames.SHOW_TOAST, {
+          // title: "Đăng nhập không thành công",
+          description: err.response.data,
+          status: "error",
+          // placement: "top-right",
+          isDialog: true,
+        });
+      } else {
+        // console.log(err);
+        eventEmitter.emit(eventNames.SHOW_TOAST, {
+          title: "Đăng nhập không thành công",
+          description: "Vui lòng kiểm tra lại thông tin đăng nhập",
+          status: "error",
+          // placement: "top-right",
+        });
+      }
+    } finally {
+      setIsLoading(false);
     }
+    // }
   };
 
   useEffect(() => {
@@ -221,50 +227,72 @@ export default function LoginScreen() {
     }
   }, [firebaseToken]);
 
-  const [inputValue, setInputValue] = useState("");
+  // const [inputValue, setInputValue] = useState("");
   const [isInputPhoneInvalid, setIsInputPhoneInvalid] = useState(false);
-  const [isInputPasswordInvalid, setIsInputPasswordInvalid] = useState(false);
+  // const [isInputPasswordInvalid, setIsInputPasswordInvalid] = useState(false);
   const handlePhoneChange = (text) => {
     setPhoneNumber(text);
     setIsInputPhoneInvalid(false); // Reset the input validation when the user starts typing again
   };
-  const handlePasswordChange = (text) => {
-    setPassword(text);
-    setIsInputPasswordInvalid(false); // Reset the input validation when the user starts typing again
-  };
+  // const handlePasswordChange = (text) => {
+  //   setPassword(text);
+  //   setIsInputPasswordInvalid(false); // Reset the input validation when the user starts typing again
+  // };
 
   const navigation = useNavigation();
 
   const handleSendOtp = async () => {
-    // rnfbProvider = appCheck().newReactNativeFirebaseAppCheckProvider();
-    // rnfbProvider.configure({
-    //   android: {
-    //     provider: __DEV__ ? "debug" : "playIntegrity",
-    //     debugToken: "F8B8C6E9-F9BB-4E18-B898-E051B2E20D11",
-    //   },
-    //   apple: {
-    //     provider: __DEV__ ? "debug" : "appAttestWithDeviceCheckFallback",
-    //     debugToken: "F8B8C6E9-F9BB-4E18-B898-E051B2E20D11",
-    //   },
-    //   web: {
-    //     provider: "reCaptchaV3",
-    //     siteKey: "unknown",
-    //   },
-    // });
-    // appCheck().initializeAppCheck({
-    //   provider: rnfbProvider,
-    //   isTokenAutoRefreshEnabled: true,
-    // });
+    const isValid = isPhoneNumber(phoneNumber);
+    if (!isValid) {
+      setIsInputPhoneInvalid(true);
+    } else {
+      setIsLoading(true);
 
-    // auth().settings.forceRecaptchaFlowForTesting = true;
+      try {
+        // const phone = `+84${phoneNumber.substring(1, 10)}`;
+        const confirmation = await auth().signInWithPhoneNumber(
+          `+84${phoneNumber.substring(1, 10)}`
+        );
+        setConfirm(confirmation);
+        setEnterOtpModalVisible(true);
+      } catch (err) {
+        setIsLoading(false);
+        // console.log(err);
+        eventEmitter.emit(eventNames.SHOW_TOAST, {
+          title: "Gửi mã OTP không thành công",
+          description: "Vui lòng kiểm tra lại số điện thoại",
+          status: "error",
+          // placement: "top-right",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
-    // if (Platform.OS === "android") {
-    //   const token = PlayIntegrityModule.getToken();
-    //   console.log(token);
-    // }
-    // const { token } = await appCheck().getToken(true);
-    // console.log(token);
-    await auth().signInWithPhoneNumber(`+84${phoneNumber.substring(1, 10)}`);
+  const confirmCode = async () => {
+    setIsLoading(true);
+    try {
+      const result = await confirm.confirm(code);
+      const credential = auth.PhoneAuthProvider.credential(
+        confirm.verificationId,
+        code
+      );
+      const loginInfo = await auth().signInWithCredential(credential);
+
+      if (loginInfo.user) {
+        auth().onAuthStateChanged(onAuthStateChanged);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      if (err.code == "auth/invalid-verification-code") {
+        handleError("Mã OTP không chính xác", "Vui lòng kiểm tra lại mã OTP!");
+      } else {
+        handleError("Có lỗi xảy ra", err);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -328,7 +356,7 @@ export default function LoginScreen() {
                 )}
               </FormControl>
             </Box>
-            <Box alignItems="center" pt="1">
+            {/* <Box alignItems="center" pt="1">
               <FormControl
                 style={styles.input}
                 isInvalid={isInputPasswordInvalid}
@@ -361,7 +389,7 @@ export default function LoginScreen() {
                   </FormControl.ErrorMessage>
                 )}
               </FormControl>
-            </Box>
+            </Box> */}
 
             <TouchableOpacity
               style={styles.button}
@@ -370,7 +398,8 @@ export default function LoginScreen() {
                 handleSendOtp
               }
             >
-              <Text style={styles.buttonText}>Đăng nhập</Text>
+              {/* <Text style={styles.buttonText}>Đăng nhập</Text> */}
+              <Text style={styles.buttonText}>Tiếp tục</Text>
             </TouchableOpacity>
             <Text style={styles.link}>Quên mật khẩu?</Text>
 
@@ -388,6 +417,15 @@ export default function LoginScreen() {
           </Box>
         </Box>
       </Box>
+
+      <EnterOtpCodeModal
+        phoneNumber={`+84${phoneNumber.substring(1, 10)}`}
+        setModalVisible={setEnterOtpModalVisible}
+        modalVisible={enterOtpModalVisible}
+        onModalConfirm={() => confirmCode()}
+        onModalRequestClose={() => {}}
+        setCode={setCode}
+      />
     </View>
   );
 }
