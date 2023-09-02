@@ -11,6 +11,7 @@ import {
   PermissionsAndroid,
   NativeAppEventEmitter,
   NativeEventEmitter,
+  Platform,
 } from "react-native";
 import { useState, useEffect, useContext } from "react";
 import { themeColors, vigoStyles } from "../../../assets/theme";
@@ -30,22 +31,23 @@ import { eventNames, handleError } from "../../utils/alertUtils";
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
-  // const [enterOtpModalVisible, setEnterOtpModalVisible] = useState(false);
+  const [enterOtpModalVisible, setEnterOtpModalVisible] = useState(false);
 
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // const [password, setPassword] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
+  // const [showPassword, setShowPassword] = useState(false);
+  // const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // const [confirm, setConfirm] = useState(null);
-  // const [code, setCode] = useState("");
+  const [confirm, setConfirm] = useState(null);
+  const [code, setCode] = useState("");
 
   const [firebaseToken, setFirebaseToken] = useState(null);
   const [firebaseUid, setFirebaseUid] = useState(null);
 
+  const eventEmitter = new NativeEventEmitter();
   // const [name, setName] = useState("");
   const { setUser } = useContext(UserContext);
   const [isInputPhoneInvalid, setIsInputPhoneInvalid] = useState(false);
@@ -59,36 +61,36 @@ const RegisterScreen = () => {
     // setIsInputPhoneInvalid(false); // Reset the input validation when the user starts typing again
   };
 
-  const [isInputPasswordInvalid, setIsInputPasswordInvalid] = useState(false);
-  const [passwordInvalidMessage, setPasswordInvalidMessage] = useState("");
+  // const [isInputPasswordInvalid, setIsInputPasswordInvalid] = useState(false);
+  // const [passwordInvalidMessage, setPasswordInvalidMessage] = useState("");
 
-  const handlePasswordChange = (text) => {
-    if (text.length == 0) {
-      setIsInputPasswordInvalid(true);
-      setPasswordInvalidMessage("Mật khẩu không được bỏ trống!");
-    } else if (text.length > 20) {
-      setIsInputPasswordInvalid(true);
-      setPasswordInvalidMessage("Mật khẩu không được vượt quá 20 kí tự!");
-    } else if (text != confirmPassword) {
-      setIsInputPasswordConfirmInvalid(true);
-    } else {
-      setIsInputPasswordConfirmInvalid(false);
-    }
-    setPassword(text);
-    // setIsInputPasswordInvalid(false); // Reset the input validation when the user starts typing again
-  };
+  // const handlePasswordChange = (text) => {
+  //   if (text.length == 0) {
+  //     setIsInputPasswordInvalid(true);
+  //     setPasswordInvalidMessage("Mật khẩu không được bỏ trống!");
+  //   } else if (text.length > 20) {
+  //     setIsInputPasswordInvalid(true);
+  //     setPasswordInvalidMessage("Mật khẩu không được vượt quá 20 kí tự!");
+  //   } else if (text != confirmPassword) {
+  //     setIsInputPasswordConfirmInvalid(true);
+  //   } else {
+  //     setIsInputPasswordConfirmInvalid(false);
+  //   }
+  //   setPassword(text);
+  //   // setIsInputPasswordInvalid(false); // Reset the input validation when the user starts typing again
+  // };
 
-  const [isInputPasswordConfirmInvalid, setIsInputPasswordConfirmInvalid] =
-    useState(false);
-  const handlePasswordConfirmChange = (text) => {
-    if (text != password) {
-      setIsInputPasswordConfirmInvalid(true);
-    } else {
-      setIsInputPasswordConfirmInvalid(false);
-      // setconfirm
-    }
-    setConfirmPassword(text);
-  };
+  // const [isInputPasswordConfirmInvalid, setIsInputPasswordConfirmInvalid] =
+  //   useState(false);
+  // const handlePasswordConfirmChange = (text) => {
+  //   if (text != password) {
+  //     setIsInputPasswordConfirmInvalid(true);
+  //   } else {
+  //     setIsInputPasswordConfirmInvalid(false);
+  //     // setconfirm
+  //   }
+  //   setConfirmPassword(text);
+  // };
   // Handle Login by Firebase
   const onAuthStateChanged = (user) => {
     if (user) {
@@ -107,8 +109,8 @@ const RegisterScreen = () => {
 
   useEffect(() => {
     // console.log(firebaseToken);
-    auth().settings.appVerificationDisabledForTesting = true;
-    // auth().settings.forceRecaptchaFlowForTesting = true;
+    // auth().settings.appVerificationDisabledForTesting = true;
+    auth().settings.forceRecaptchaFlowForTesting = true;
     // const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     // return subscriber;
   }, []);
@@ -121,50 +123,53 @@ const RegisterScreen = () => {
 
   // Handle Send OTP
   const sendOtp = async () => {
-    if (phoneNumber) {
+    const isValid = isPhoneNumber(phoneNumber);
+    if (!isValid) {
+      setIsInputPhoneInvalid(true);
+    } else {
       setIsLoading(true);
+
       try {
-        // const phoneProvider = new auth.PhoneAuthProvider();
-        // phoneProvider.
+        // const phone = `+84${phoneNumber.substring(1, 10)}`;
         const confirmation = await auth().signInWithPhoneNumber(
-          `+84${phoneNumber}`
+          `+84${phoneNumber.substring(1, 10)}`
         );
         setConfirm(confirmation);
-
         setEnterOtpModalVisible(true);
       } catch (err) {
-        console.error(err);
-        Alert.alert("Có lỗi xảy ra khi gửi mã OTP", "Chi tiết: " + err.message);
+        setIsLoading(false);
+        // console.log(err);
+        eventEmitter.emit(eventNames.SHOW_TOAST, {
+          title: "Gửi mã OTP không thành công",
+          description: "Vui lòng kiểm tra lại số điện thoại",
+          status: "error",
+          // placement: "top-right",
+        });
       } finally {
         setIsLoading(false);
       }
     }
   };
 
-  const otpConfirm = async () => {
+  const confirmCode = async () => {
     setIsLoading(true);
     try {
       const result = await confirm.confirm(code);
-      console.log(result);
       const credential = auth.PhoneAuthProvider.credential(
         confirm.verificationId,
         code
       );
+      const loginInfo = await auth().signInWithCredential(credential);
 
-      auth()
-        .signInWithCredential(credential)
-        .then(() => {
-          // console.log(user);
-          auth().onAuthStateChanged(onAuthStateChanged);
-        });
-
-      // let userData = await auth().currentUser.linkWithCredential(credential);
-      // console.log(userData);
+      if (loginInfo.user) {
+        auth().onAuthStateChanged(onAuthStateChanged);
+      }
     } catch (err) {
+      setIsLoading(false);
       if (err.code == "auth/invalid-verification-code") {
-        Alert.alert("Mã OTP không chính xác", "Vui lòng kiểm tra lại mã OTP!");
+        handleError("Mã OTP không chính xác", "Vui lòng kiểm tra lại mã OTP!");
       } else {
-        Alert.alert("Có lỗi xảy ra", "Chi tiết: " + err.message);
+        handleError("Có lỗi xảy ra", err);
       }
     } finally {
       setIsLoading(false);
@@ -203,83 +208,86 @@ const RegisterScreen = () => {
 
   const onRegister = async () => {
     // console.log(isPhoneNumber(phoneNumber));
-    if (!isPhoneNumber(phoneNumber)) {
-      setIsInputPhoneInvalid(true);
-      // console.log(isInputPhoneInvalid);
-    } else if (password.length == 0) {
-      setIsInputPasswordInvalid(true);
-      setPasswordInvalidMessage("Mật khẩu không được bỏ trống!");
-    } else if (password.length > 20) {
-      setIsInputPasswordInvalid(true);
-      setPasswordInvalidMessage("Mật khẩu không được vượt quá 20 kí tự!");
-    } else if (password != confirmPassword) {
-      setIsInputPasswordConfirmInvalid(true);
-    } else {
-      // console.log(isInputPhoneInvalid);
-      setIsLoading(true);
-      try {
-        const newUserData = await register(
-          /*name, */ `+84${phoneNumber.substring(1, 10)}`,
-          password
+    // if (!isPhoneNumber(phoneNumber)) {
+    //   setIsInputPhoneInvalid(true);
+    //   // console.log(isInputPhoneInvalid);
+    // } else if (password.length == 0) {
+    //   setIsInputPasswordInvalid(true);
+    //   setPasswordInvalidMessage("Mật khẩu không được bỏ trống!");
+    // } else if (password.length > 20) {
+    //   setIsInputPasswordInvalid(true);
+    //   setPasswordInvalidMessage("Mật khẩu không được vượt quá 20 kí tự!");
+    // } else if (password != confirmPassword) {
+    //   setIsInputPasswordConfirmInvalid(true);
+    // } else {
+    // console.log(isInputPhoneInvalid);
+    setIsLoading(true);
+    try {
+      const newUserData = await register(
+        /*name, */ `+84${phoneNumber.substring(1, 10)}`,
+        firebaseUid
+      );
+      if (newUserData) {
+        // Alert.alert(
+        //   "Đăng ký tài khoản thành công!",
+        //   "Hãy tiến hành cập nhật hồ sơ để có thể sử dụng ViGo bạn nhé"
+        // );
+        const eventEmitter = new NativeEventEmitter();
+        eventEmitter.emit(eventNames.SHOW_TOAST, {
+          title: "Đăng ký tài khoản thành công!",
+          description:
+            "Hãy tiến hành cập nhật hồ sơ để có thể sử dụng ViGo bạn nhé",
+          status: "success",
+          // placement: "top-right",
+          isDialog: true,
+        });
+
+        const response = await login(
+          `+84${phoneNumber.substring(1, 10)}`,
+          firebaseToken
         );
-        if (newUserData) {
-          // Alert.alert(
-          //   "Đăng ký tài khoản thành công!",
-          //   "Hãy tiến hành cập nhật hồ sơ để có thể sử dụng ViGo bạn nhé"
-          // );
-          const eventEmitter = new NativeEventEmitter();
-          eventEmitter.emit(eventNames.SHOW_TOAST, {
-            title: "Đăng ký tài khoản thành công!",
-            description:
-              "Hãy tiến hành cập nhật hồ sơ để có thể sử dụng ViGo bạn nhé",
-            status: "success",
-            // placement: "top-right",
-            isDialog: true,
-          });
-
-          login(`+84${phoneNumber.substring(1, 10)}`, password).then(
-            async (response) => {
-              setUser(response.user);
-              try {
-                const granted = await PermissionsAndroid.request(
-                  PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-                  {
-                    title: "Cho phép ViGo gửi thông báo đến bạn",
-                    message: `Nhận thông báo về trạng thái giao dịch, nhắc nhở chuyến đi
+        setUser(response.user);
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+            {
+              title: "Cho phép ViGo gửi thông báo đến bạn",
+              message: `Nhận thông báo về trạng thái giao dịch, nhắc nhở chuyến đi
                     trong ngày và hơn thế nữa`,
-                    buttonNeutral: "Hỏi lại sau",
-                    buttonNegative: "Từ chối",
-                    buttonPositive: "Đồng ý",
-                  }
-                );
-
-                console.log(granted);
-
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                  await messaging().registerDeviceForRemoteMessages();
-                  const fcmToken = await messaging().getToken();
-                  await updateUserFcmToken(response.user.id, fcmToken);
-                }
-              } catch (err) {
-                handleError("Có lỗi xảy ra khi đăng ký", err);
-              }
-
-              if (response.user.status == "PENDING") {
-                navigation.navigate("NewDriverUpdateProfile");
-              } else {
-                navigation.navigate("Home");
-              }
+              buttonNeutral: "Hỏi lại sau",
+              buttonNegative: "Từ chối",
+              buttonPositive: "Đồng ý",
             }
           );
+
+          // console.log(granted);
+
+          if (
+            Platform.constants["Version"] < 33 ||
+            granted === PermissionsAndroid.RESULTS.GRANTED
+          ) {
+            await messaging().registerDeviceForRemoteMessages();
+            const fcmToken = await messaging().getToken();
+            await updateUserFcmToken(response.user.id, fcmToken);
+          }
+        } catch (err) {
+          handleError("Có lỗi xảy ra khi đăng ký", err);
         }
-        // console.log(newUserData);
-      } catch (err) {
-        // Alert.alert("Có lỗi xảy ra khi đăng ký", "Chi tiết: " + err.message);
-        handleError("Có lỗi xảy ra khi đăng ký", err);
-      } finally {
-        setIsLoading(false);
+
+        if (response.user.status == "PENDING") {
+          navigation.navigate("NewDriverUpdateProfile");
+        } else {
+          navigation.navigate("Home");
+        }
       }
+      // console.log(newUserData);
+    } catch (err) {
+      // Alert.alert("Có lỗi xảy ra khi đăng ký", "Chi tiết: " + err.message);
+      handleError("Có lỗi xảy ra khi đăng ký", err);
+    } finally {
+      setIsLoading(false);
     }
+    // }
   };
 
   return (
@@ -377,7 +385,7 @@ const RegisterScreen = () => {
           // onChangeText={setCode}
           keyboardType="phone-pad"
         /> */}
-            <Box alignItems="center" pt="1">
+            {/* <Box alignItems="center" pt="1">
               <FormControl
                 style={styles.input}
                 isInvalid={isInputPasswordInvalid}
@@ -450,18 +458,18 @@ const RegisterScreen = () => {
                   Mật khẩu không trùng khớp!
                 </FormControl.ErrorMessage>
               </FormControl>
-            </Box>
+            </Box> */}
             <Box pt="1" mt="1">
               <TouchableOpacity
                 style={vigoStyles.buttonPrimary}
-                onPress={() => onRegister()}
+                onPress={() => sendOtp()}
                 disabled={
-                  isInputPhoneInvalid ||
+                  isInputPhoneInvalid /*||
                   isInputPasswordInvalid ||
-                  isInputPasswordConfirmInvalid
+                  isInputPasswordConfirmInvalid*/
                 }
               >
-                <Text style={vigoStyles.buttonPrimaryText}>Đăng ký</Text>
+                <Text style={vigoStyles.buttonPrimaryText}>Tiếp tục</Text>
               </TouchableOpacity>
             </Box>
 
@@ -480,14 +488,14 @@ const RegisterScreen = () => {
       {/* </View> */}
 
       {/* Modal */}
-      {/* <EnterOtpCodeModal
+      <EnterOtpCodeModal
         modalVisible={enterOtpModalVisible}
         setModalVisible={setEnterOtpModalVisible}
         onModalRequestClose={() => {}}
-        onModalConfirm={() => otpConfirm()}
+        onModalConfirm={() => confirmCode()}
         phoneNumber={`+84${phoneNumber}`}
         setCode={setCode}
-      /> */}
+      />
     </View>
   );
 };

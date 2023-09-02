@@ -16,10 +16,11 @@ const updateToken = async (newToken) => {
   await setString("token", newToken);
 };
 
-export const login = async (phone, password) => {
+export const login = async (phone, firebaseToken) => {
   // try {
   const requestData = {
-    password: password,
+    // password: password,
+    firebaseToken: firebaseToken,
     phone: phone,
     role: "DRIVER",
   };
@@ -33,51 +34,34 @@ export const login = async (phone, password) => {
   }
 
   const newToken = response.data.token;
-  updateToken(newToken); // Update the token value
-  // console.log("Login successful!");
+  updateToken(newToken);
   return response.data;
-  // } catch (error) {
-  //   // console.error("Login failed:", error.response.data);
-  //   // handleError(null, error);
-  //   const eventEmitter = new NativeEventEmitter();
-  //   eventEmitter.emit(eventNames.SHOW_TOAST, {
-  //     title: "Đăng nhập không thành công",
-  //     description: "Vui lòng kiểm tra lại thông tin đăng nhập",
-  //     status: "error",
-  //     placement: "top-right",
-  //   });
-  //   // Alert.alert(
-  //   //   "Đăng nhập không thành công!",
-  //   //   "Chi tiết: " + (error.response ? error.response.data : error.message)
-  //   // );
+};
+
+export const register = async (/*name, */ phone, firebaseUid) => {
+  // try {
+  const requestData = {
+    // name: name,
+    phone: phone,
+    // password: password,
+    firebaseUid: firebaseUid,
+    role: "DRIVER",
+  };
+
+  const response = await axios.post(
+    `${baseURL}/api/Authenticate/Register`,
+    requestData
+  );
+
+  return response.data;
+  // } catch (err) {
+  //   // console.error(err.response.data);
+  //   Alert.alert(
+  //     "Có lỗi xảy ra khi đăng ký",
+  //     "Chi tiết: " + (err.response ? err.response.data : err.message)
+  //   );
   // }
 };
-
-export const register = async (/*name, */ phone, password) => {
-  try {
-    const requestData = {
-      // name: name,
-      phone: phone,
-      password: password,
-      role: "DRIVER",
-    };
-
-    const response = await axios.post(
-      `${baseURL}/api/Authenticate/Register`,
-      requestData
-    );
-
-    return response.data;
-  } catch (err) {
-    // console.error(err.response.data);
-    Alert.alert(
-      "Có lỗi xảy ra khi đăng ký",
-      "Chi tiết: " + (err.response ? err.response.data : err.message)
-    );
-  }
-};
-
-
 
 apiManager.interceptors.request.use(
   async (config) => {

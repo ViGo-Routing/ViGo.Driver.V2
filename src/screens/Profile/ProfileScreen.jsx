@@ -27,23 +27,38 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { removeItem } from "../../utils/storageUtils";
 import { UserContext } from "../../context/UserContext";
+import auth from "@react-native-firebase/auth";
+import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
+import { useErrorHandlingHook } from "../../hooks/useErrorHandlingHook";
+import { getErrorMessage, handleError } from "../../utils/alertUtils";
+import ErrorAlert from "../../components/Alert/ErrorAlert";
 
 const ProfileSreen = () => {
   const navigation = useNavigation();
   const [response, setResponse] = useState(null);
 
-  const { setUser } = useContext(UserContext);
+  const { setUser, user } = useContext(UserContext);
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { isError, setIsError, errorMessage, setErrorMessage } =
+    useErrorHandlingHook();
+
+  const getProfileData = async () => {
+    setIsLoading(true);
+    try {
+      const profileId = user.id;
+      const response = await getProfile(profileId);
+      setResponse(response);
+    } catch (err) {
+      setErrorMessage(getErrorMessage(err));
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
-    (async () => {
-      try {
-        const profileId = "5f94dd86-37b2-43a3-962b-036a3c03d3c9";
-        const response = await getProfile(profileId);
-        setResponse(response);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
+    getProfileData();
   }, []);
 
   handleSendData = (item, responseData) => {
@@ -110,13 +125,22 @@ const ProfileSreen = () => {
   ];
 
   const logout = async () => {
-    setUser(null);
-    await removeItem("token");
+    setIsLoading(true);
+    try {
+      setUser(null);
+      await removeItem("token");
+      await auth().signOut();
 
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Login" }],
-    });
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setIsLoading(false);
+    }
+
     // navigation.navigate("Login");
   };
 
@@ -126,51 +150,56 @@ const ProfileSreen = () => {
         <Header title="Thông tin tài khoản" />
       </View>
       <ScrollView style={styles.body}>
-        <ProfileCard
-          onPress={() => navigation.navigate("EditProfile", { data: response })}
-          name={response && response.name ? response.name : ""}
-          phoneNumber={response && response.phone ? response.phone : ""}
-          imageSource={{
-            uri:
-              response && response.avatarUrl
-                ? response.avatarUrl
-                : "https://avatars.githubusercontent.com/u/66261053?v=4",
-          }}
-        />
+        <ViGoSpinner isLoading={isLoading} />
+        <ErrorAlert isError={isError} errorMessage={errorMessage}>
+          <ProfileCard
+            onPress={() =>
+              navigation.navigate("EditProfile", { data: response })
+            }
+            name={response && response.name ? response.name : ""}
+            phoneNumber={response && response.phone ? response.phone : ""}
+            imageSource={{
+              uri:
+                response && response.avatarUrl
+                  ? response.avatarUrl
+                  : "https://avatars.githubusercontent.com/u/66261053?v=4",
+            }}
+          />
 
-        <Text style={styles.title}>Tài Khoản</Text>
-        {listAccountUtilities.map((item, index) => (
+          <Text style={styles.title}>Tài Khoản</Text>
+          {listAccountUtilities.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.list}
+              onPress={() => handleSendData(item, response)}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {item.icon}
+                <Text style={{ marginLeft: 10 }}>{item.label}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
           <TouchableOpacity
-            key={index}
+            key="logout"
             style={styles.list}
-            onPress={() => handleSendData(item, response)}
+            onPress={() => logout()}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {item.icon}
-              <Text style={{ marginLeft: 10 }}>{item.label}</Text>
+              <ArrowLeftOnRectangleIcon size={24} color={themeColors.primary} />
+              <Text style={{ marginLeft: 10 }}>Đăng xuất</Text>
             </View>
           </TouchableOpacity>
-        ))}
-        <TouchableOpacity
-          key="logout"
-          style={styles.list}
-          onPress={() => logout()}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <ArrowLeftOnRectangleIcon size={24} color={themeColors.primary} />
-            <Text style={{ marginLeft: 10 }}>Đăng xuất</Text>
-          </View>
-        </TouchableOpacity>
 
-        <Text style={styles.title}>Thông tin chung</Text>
-        {listGeneralUtilities.map((item, index) => (
-          <TouchableOpacity key={index} style={styles.list}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {item.icon}
-              <Text style={{ marginLeft: 10 }}>{item.label}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+          <Text style={styles.title}>Thông tin chung</Text>
+          {listGeneralUtilities.map((item, index) => (
+            <TouchableOpacity key={index} style={styles.list}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {item.icon}
+                <Text style={{ marginLeft: 10 }}>{item.label}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ErrorAlert>
       </ScrollView>
       <View style={styles.footer}>{/* <BottomNavigationBar /> */}</View>
     </View>
