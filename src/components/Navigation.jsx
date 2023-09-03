@@ -31,6 +31,7 @@ import MapInformationScreen from "../screens/Booking/MapInformationScreen";
 import HistoryScreen from "../screens/History/HistoryScreen";
 import CompletedBookingDetailScreen from "../screens/BookingDetail/CompletedBookingDetailScreen";
 import CanceledBookingDetailScreen from "../screens/BookingDetail/CanceledBookingDetailScreen";
+import DriverUpdateProfileScreen from "../screens/Profile/DriverUpdateProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -130,6 +131,11 @@ const Navigation = () => {
         name="NewDriverUpdateProfile"
         options={{ headerShown: false }}
         component={NewDriverUpdateProfileScreen}
+      />
+      <Stack.Screen
+        name="DriverUpdateProfile"
+        options={{ headerShown: false }}
+        component={DriverUpdateProfileScreen}
       />
       <Stack.Screen
         name="CustomerDetail"

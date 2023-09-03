@@ -275,7 +275,7 @@ const RegisterScreen = () => {
         }
 
         if (response.user.status == "PENDING") {
-          navigation.navigate("NewDriverUpdateProfile");
+          navigation.navigate("DriverUpdateProfile");
         } else {
           navigation.navigate("Home");
         }

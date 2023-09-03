@@ -46,10 +46,14 @@ const Header = ({
     // </View>
     <Box
       backgroundColor={themeColors.primary}
-      height={"60"}
+      style={{ height: 55 }}
       justifyContent={"center"}
     >
-      <HStack alignItems={"center"} paddingLeft={3}>
+      <HStack
+        alignItems={"center"}
+        paddingLeft={isBackButtonShown ? 3 : 0}
+        justifyContent={isBackButtonShown ? "flex-end" : "center"}
+      >
         {isBackButtonShown && (
           <TouchableOpacity
             style={styles.backButton}
@@ -58,7 +62,12 @@ const Header = ({
             {renderBackButton()}
           </TouchableOpacity>
         )}
-        <Text marginLeft={3} bold fontSize={"2xl"} color={"white"}>
+        <Text
+          marginLeft={isBackButtonShown ? 3 : 0}
+          bold
+          fontSize={"2xl"}
+          color={"white"}
+        >
           {title}
         </Text>
       </HStack>

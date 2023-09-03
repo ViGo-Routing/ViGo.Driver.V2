@@ -177,7 +177,7 @@ export default function LoginScreen() {
       if (response.user.status == "PENDING") {
         navigation.reset({
           index: 0,
-          routes: [{ name: "NewDriverUpdateProfile" }],
+          routes: [{ name: "DriverUpdateProfile" }],
         });
         // navigation.replace("NewDriverUpdateProfile");
       } else {

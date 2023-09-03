@@ -91,7 +91,7 @@ const ViGoAlertProvider = (/*{
   );
 
   // const defaultOkButtonPress = () => {setIsDialogOpen(false);};
-  // const [okButtonPress, setOkButtonPress] = useState(defaultOkButtonPress);
+  const [okButtonPress, setOkButtonPress] = useState(() => () => {});
 
   const cancelRef = useRef(null);
   // const okButtonRef = useRef(null);
@@ -112,6 +112,7 @@ const ViGoAlertProvider = (/*{
     primaryButtonText = "Đã hiểu",
     displayCloseButton = true,
     size = "md",
+    onOkPress = () => {},
   }: // onOkPress = () => {},
   //   isCancelDisplayed = true,
   // cancelButtonText = "Hủy",
@@ -186,9 +187,11 @@ const ViGoAlertProvider = (/*{
 
       if (isDialog) {
         setIsDialogOpen(true);
+        setOkButtonPress(onOkPress);
       } else if (isSlide) {
-        console.log("Slide open");
+        // console.log("Slide open");
         setIsSlideOpen(true);
+        setPlacement(placement);
 
         timeoutRef = setTimeout(() => {
           setIsSlideOpen(false);
