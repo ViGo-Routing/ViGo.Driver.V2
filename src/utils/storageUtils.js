@@ -43,3 +43,20 @@ export const removeItem = async (key) => {
     throw error;
   }
 };
+
+// export const getUserData = async () => {
+//   try {
+//     const user = await getData("user");
+//     return user;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+// export const setUserData = async (user) => {
+//   try {
+//     setData("user", user);
+//   } catch (error) {
+//     throw error;
+//   }
+// };

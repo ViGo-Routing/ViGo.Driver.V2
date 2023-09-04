@@ -11,7 +11,7 @@ import Header from "../../components/Header/Header";
 import ProfileCard from "../../components/Card/ProfileCard";
 // import { Ionicons } from '@expo/vector-icons'
 import { themeColors } from "../../../assets/theme/index";
-import { getProfile } from "../../services/userService";
+import { getProfile, logUserOut } from "../../services/userService";
 import {
   ArrowLeftOnRectangleIcon,
   BellAlertIcon,
@@ -27,7 +27,6 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { removeItem } from "../../utils/storageUtils";
 import { UserContext } from "../../context/UserContext";
-import auth from "@react-native-firebase/auth";
 import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
 import { useErrorHandlingHook } from "../../hooks/useErrorHandlingHook";
 import { getErrorMessage, handleError } from "../../utils/alertUtils";
@@ -127,14 +126,7 @@ const ProfileSreen = () => {
   const logout = async () => {
     setIsLoading(true);
     try {
-      setUser(null);
-      await removeItem("token");
-      await auth().signOut();
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      });
+      await logUserOut(setUser, navigation);
     } catch (err) {
       handleError(err);
     } finally {

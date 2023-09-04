@@ -1,5 +1,5 @@
 import { TabView, SceneMap } from "react-native-tab-view";
-import { UserContext } from "../../context/UserContext";
+// import { UserContext } from "../../context/UserContext";
 import { useContext, useState, useMemo, useEffect } from "react";
 import OnGoingTab from "./components/OnGoingTab";
 import CompletedTab from "./components/CompletedTab";
@@ -40,7 +40,7 @@ const initialLayout = {
 };
 
 const HistoryScreen = ({}: HistoryScreenProps) => {
-  const { user } = useContext(UserContext);
+  // const { user } = useContext(UserContext);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   // const [routes] = useState([

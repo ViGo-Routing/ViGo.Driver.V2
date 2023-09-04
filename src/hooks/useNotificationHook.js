@@ -2,12 +2,12 @@ import { useEffect, useContext } from "react";
 import messaging from "@react-native-firebase/messaging";
 import { paymentNotificationHandlers } from "../utils/notificationUtils/paymentNotificationHandlers";
 import { useNavigation } from "@react-navigation/native";
-import { UserContext } from "../context/UserContext";
+// import { UserContext } from "../context/UserContext";
 import PushNotification from "react-native-push-notification";
 
 export const useNotificationHook = () => {
   const navigation = useNavigation();
-  const { setUser } = useContext(UserContext);
+  // const { setUser } = useContext(UserContext);
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {

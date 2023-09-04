@@ -21,13 +21,14 @@ import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
 import auth from "@react-native-firebase/auth";
 
 import { login, register } from "../../utils/apiManager";
-import { UserContext } from "../../context/UserContext";
+// import { UserContext } from "../../context/UserContext";
 import { updateUserFcmToken } from "../../services/userService";
 import messaging from "@react-native-firebase/messaging";
 import { Box, FormControl, Input, WarningOutlineIcon, Text } from "native-base";
 import { EyeIcon, EyeSlashIcon } from "react-native-heroicons/solid";
 import { isPhoneNumber } from "../../utils/stringUtils";
 import { eventNames, handleError } from "../../utils/alertUtils";
+// import { setUserData } from "../../utils/storageUtils";
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -246,7 +247,10 @@ const RegisterScreen = () => {
           `+84${phoneNumber.substring(1, 10)}`,
           firebaseToken
         );
+
         setUser(response.user);
+        // await setUserData(response.user);
+
         try {
           const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
