@@ -11,7 +11,7 @@ import EditProfileScreen from "../screens/Profile/EditProfileScreen";
 import RoutineScreen from "../screens/Routine/RoutineScreen";
 import RoutineGenerator from "../screens/Routine/RoutineScreen";
 import Mapbox from "../screens/Mapbox";
-import { UserContext, UserProvider } from "../context/UserContext";
+// import { UserContext, UserProvider } from "../context/UserContext";
 import BookingDetailScreen from "../screens/BookingDetail/BookingDetailScreen";
 import { useNotificationHook } from "../hooks/useNotificationHook";
 import { useOnNotificationClickHook } from "../hooks/useOnNotificationClickHook";
@@ -31,13 +31,18 @@ import MapInformationScreen from "../screens/Booking/MapInformationScreen";
 import HistoryScreen from "../screens/History/HistoryScreen";
 import CompletedBookingDetailScreen from "../screens/BookingDetail/CompletedBookingDetailScreen";
 import CanceledBookingDetailScreen from "../screens/BookingDetail/CanceledBookingDetailScreen";
+import DriverUpdateProfileScreen from "../screens/Profile/DriverUpdateProfileScreen";
+import ViGoSpinner from "./Spinner/ViGoSpinner";
 
 const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
+  const [isLoading, setIsLoading] = React.useState(false);
+
   useNotificationHook();
 
-  const { initialScreen, initialParams } = useOnNotificationClickHook();
+  const { initialScreen, initialParams } =
+    useOnNotificationClickHook(setIsLoading);
 
   // useEffect(() => {
   //   if (user) {
@@ -50,136 +55,146 @@ const Navigation = () => {
   // console.log(initialScreen);
 
   return (
-    // <UserProvider>
-    //     <NavigationContainer>
-    <Stack.Navigator
-      initialRouteName={initialScreen}
-      screenOptions={{
-        animation: "slide_from_right",
-      }}
-    >
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Register"
-        component={RegisterScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Schedule"
-        options={{ headerShown: false }}
-        component={SchedulerScreen}
-      />
-      <Stack.Screen
-        name="Profile"
-        component={ProfileSreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="EditProfile"
-        component={EditProfileScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="PickCus"
-        component={PickCusScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="StartRoute"
-        component={StartRouteScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="BookingDetail"
-        component={BookingDetailScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Wallet"
-        options={{ headerShown: false }}
-        component={WalletScreen}
-      />
-      <Stack.Screen
-        name="WalletTransactionDetail"
-        options={{ headerShown: false }}
-        component={WalletTransactionDetailScreen}
-        initialParams={
-          initialScreen == "WalletTransactionDetail" ? initialParams : undefined
-        }
-      />
-      <Stack.Screen
-        name="WalletTransactions"
-        options={{ headerShown: false }}
-        component={WalletTransactionsScreen}
-      />
-      <Stack.Screen
-        name="Topup"
-        options={{ headerShown: false }}
-        component={TopupScreen}
-      />
-      <Stack.Screen
-        name="NewDriverUpdateProfile"
-        options={{ headerShown: false }}
-        component={NewDriverUpdateProfileScreen}
-      />
-      <Stack.Screen
-        name="CustomerDetail"
-        options={{ headerShown: false }}
-        component={CustomerDetailScreen}
-      />
+    <>
+      <ViGoSpinner isLoading={isLoading} key="spinner-navigation" />
+      {/* // <UserProvider>
+    //     <NavigationContainer> */}
+      <Stack.Navigator
+        initialRouteName={initialScreen}
+        screenOptions={{
+          animation: "slide_from_right",
+        }}
+      >
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Schedule"
+          options={{ headerShown: false }}
+          component={SchedulerScreen}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileSreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfileScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="PickCus"
+          component={PickCusScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="StartRoute"
+          component={StartRouteScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="BookingDetail"
+          component={BookingDetailScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Wallet"
+          options={{ headerShown: false }}
+          component={WalletScreen}
+        />
+        <Stack.Screen
+          name="WalletTransactionDetail"
+          options={{ headerShown: false }}
+          component={WalletTransactionDetailScreen}
+          initialParams={
+            initialScreen == "WalletTransactionDetail"
+              ? initialParams
+              : undefined
+          }
+        />
+        <Stack.Screen
+          name="WalletTransactions"
+          options={{ headerShown: false }}
+          component={WalletTransactionsScreen}
+        />
+        <Stack.Screen
+          name="Topup"
+          options={{ headerShown: false }}
+          component={TopupScreen}
+        />
+        <Stack.Screen
+          name="NewDriverUpdateProfile"
+          options={{ headerShown: false }}
+          component={NewDriverUpdateProfileScreen}
+        />
+        <Stack.Screen
+          name="DriverUpdateProfile"
+          options={{ headerShown: false }}
+          component={DriverUpdateProfileScreen}
+        />
+        <Stack.Screen
+          name="CustomerDetail"
+          options={{ headerShown: false }}
+          component={CustomerDetailScreen}
+        />
 
-      <Stack.Screen
-        name="MyNotification"
-        options={{ headerShown: false }}
-        component={MyNotifcationScreen}
-      />
-      <Stack.Screen
-        name="ScheduleInDate"
-        options={{ headerShown: false }}
-        component={ScheduleInDateScreen}
-      />
-      <Stack.Screen
-        name="CurrentStartingTrip"
-        options={{ headerShown: false }}
-        component={CurrentStartingTripScreen}
-      />
-      <Stack.Screen
-        name="DetailBooking"
-        options={{ headerShown: false }}
-        component={DetailBookingScreen}
-      />
-      <Stack.Screen
-        name="MapInformation"
-        options={{ headerShown: false, animation: "slide_from_bottom" }}
-        component={MapInformationScreen}
-      />
-      <Stack.Screen
-        name="History"
-        options={{ headerShown: false }}
-        component={HistoryScreen}
-      />
-      <Stack.Screen
-        name="CompletedBookingDetail"
-        options={{ headerShown: false, animation: "slide_from_bottom" }}
-        component={CompletedBookingDetailScreen}
-      />
-      <Stack.Screen
-        name="CanceledBookingDetail"
-        options={{ headerShown: false, animation: "slide_from_bottom" }}
-        component={CanceledBookingDetailScreen}
-      />
-    </Stack.Navigator>
-    //     </NavigationContainer>
-    // </UserProvider>
+        <Stack.Screen
+          name="MyNotification"
+          options={{ headerShown: false }}
+          component={MyNotifcationScreen}
+        />
+        <Stack.Screen
+          name="ScheduleInDate"
+          options={{ headerShown: false }}
+          component={ScheduleInDateScreen}
+        />
+        <Stack.Screen
+          name="CurrentStartingTrip"
+          options={{ headerShown: false }}
+          component={CurrentStartingTripScreen}
+        />
+        <Stack.Screen
+          name="DetailBooking"
+          options={{ headerShown: false }}
+          component={DetailBookingScreen}
+        />
+        <Stack.Screen
+          name="MapInformation"
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+          component={MapInformationScreen}
+        />
+        <Stack.Screen
+          name="History"
+          options={{ headerShown: false }}
+          component={HistoryScreen}
+        />
+        <Stack.Screen
+          name="CompletedBookingDetail"
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+          component={CompletedBookingDetailScreen}
+        />
+        <Stack.Screen
+          name="CanceledBookingDetail"
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+          component={CanceledBookingDetailScreen}
+        />
+      </Stack.Navigator>
+      {/* //     </NavigationContainer>
+    // </UserProvider> */}
+    </>
   );
 };
 export default Navigation;

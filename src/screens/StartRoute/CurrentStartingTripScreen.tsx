@@ -61,7 +61,7 @@ const CurrentStartingTripScreen = () => {
     longitude: 0,
   });
 
-  let driverLocationTimer: NodeJS.Timer = {} as NodeJS.Timer;
+  let driverLocationTimer: NodeJS.Timeout = {} as NodeJS.Timeout;
 
   const getBookingDetailData = async () => {
     setIsLoading(true);

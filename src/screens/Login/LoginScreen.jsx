@@ -26,7 +26,7 @@ import auth from "@react-native-firebase/auth";
 import appCheck from "@react-native-firebase/app-check";
 
 import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
-import { getString } from "../../utils/storageUtils";
+// import { getString, setUserData } from "../../utils/storageUtils";
 import { determineDefaultScreen } from "../../utils/navigationUtils";
 import EnterOtpCodeModal from "../../components/Modal/EnterOtpCodeModal";
 import {
@@ -88,6 +88,7 @@ export default function LoginScreen() {
   };
 
   useEffect(() => {
+    console.log("Login");
     // getString("token").then((result) => console.log(result));
     // console.log(firebaseToken);
     // auth().settings.appVerificationDisabledForTesting = true;
@@ -98,19 +99,19 @@ export default function LoginScreen() {
     //   navigation.navigate(determineDefaultScreen(user));
     // }
     // console.log("Use Effect in login run");
-    const unsubscribe = navigation.addListener("focus", () => {
-      if (user && isValidToken()) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: determineDefaultScreen(user) }],
-        });
-      }
-    });
+    // const unsubscribe = navigation.addListener("focus", () => {
+    //   // if (user && isValidToken()) {
+    //   //   navigation.reset({
+    //   //     index: 0,
+    //   //     routes: [{ name: determineDefaultScreen(user) }],
+    //   //   });
+    //   // }
+    // });
 
-    return () => {
-      // authUnsubscriber();
-      unsubscribe();
-    };
+    // return () => {
+    //   // authUnsubscriber();
+    //   unsubscribe();
+    // };
   }, []);
 
   const handleLogin = async () => {
@@ -129,6 +130,7 @@ export default function LoginScreen() {
     try {
       const response = await login(phone, firebaseToken);
       // .then(async (response) => {
+      // setUserData(response.user);
       setUser(response.user);
       SignalRService.updateToken(response.token);
       // console.log("Token " + (await getString("token")));
@@ -177,7 +179,7 @@ export default function LoginScreen() {
       if (response.user.status == "PENDING") {
         navigation.reset({
           index: 0,
-          routes: [{ name: "NewDriverUpdateProfile" }],
+          routes: [{ name: "DriverUpdateProfile" }],
         });
         // navigation.replace("NewDriverUpdateProfile");
       } else {

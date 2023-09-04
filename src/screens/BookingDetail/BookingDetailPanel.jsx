@@ -33,7 +33,7 @@ import {
 } from "../../utils/datetimeUtils";
 import { pickBookingDetailById } from "../../services/bookingDetailService";
 import { toPercent, vndFormat } from "../../utils/numberUtils";
-import { UserContext } from "../../context/UserContext";
+// import { UserContext } from "../../context/UserContext";
 import ConfirmAlert from "../../components/Alert/ConfirmAlert";
 import {
   TripBasicInformation,
@@ -178,7 +178,7 @@ const BookingDetailPanel = ({
   distance,
   displayButtons = true,
 }) => {
-  const { user } = useContext(UserContext);
+  // const { user } = useContext(UserContext);
   // console.log(item.status);
   return (
     <Box>
@@ -247,7 +247,7 @@ const BookingDetailPanel = ({
 };
 
 const BookingDetailSmallPanel = ({ item, actionButton, navigation }) => {
-  const { user } = useContext(UserContext);
+  // const { user } = useContext(UserContext);
   // console.log(item);
   return (
     <Box>
