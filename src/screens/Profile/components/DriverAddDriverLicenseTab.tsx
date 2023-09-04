@@ -10,7 +10,11 @@ import {
 import { Dispatch, memo } from "react";
 import { TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
-import { vigoStyles } from "../../../../assets/theme";
+import { themeColors, vigoStyles } from "../../../../assets/theme";
+import {
+  ArrowLeftIcon,
+  ArrowLeftOnRectangleIcon,
+} from "react-native-heroicons/solid";
 
 interface DriverAddDriverLicenseTabProps {
   handlePickLicense_FrontSide: () => void;
@@ -118,7 +122,12 @@ const DriverAddDriverLicenseTab = ({
           }}
           // disabled={isAmountInvalid}
         >
-          <Text style={vigoStyles.buttonWhiteText}>Quay lại</Text>
+          <HStack>
+            <ArrowLeftIcon size={24} color={themeColors.primary} />
+            <Text ml="1" style={vigoStyles.buttonWhiteText}>
+              Quay lại
+            </Text>
+          </HStack>
         </TouchableOpacity>
         {drivingFrontSide && drivingBackSide && (
           <TouchableOpacity

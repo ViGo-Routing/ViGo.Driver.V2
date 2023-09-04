@@ -20,9 +20,10 @@ import {
 } from "react";
 import { TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
-import { vigoStyles } from "../../../../assets/theme";
+import { themeColors, vigoStyles } from "../../../../assets/theme";
 import { getVehicleTypes } from "../../../services/vehicleService";
 import { handleError } from "../../../utils/alertUtils";
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
 
 interface DriverAddVehicleTabProps {
   handlePickVehicle_FrontSide: () => void;
@@ -154,7 +155,12 @@ const DriverAddVehicleTab = ({
           }}
           // disabled={isAmountInvalid}
         >
-          <Text style={vigoStyles.buttonWhiteText}>Quay lại</Text>
+          <HStack>
+            <ArrowLeftIcon size={24} color={themeColors.primary} />
+            <Text ml="1" style={vigoStyles.buttonWhiteText}>
+              Quay lại
+            </Text>
+          </HStack>
         </TouchableOpacity>
         {vehicleFrontSide && vehicleBackSide && (
           <TouchableOpacity
@@ -234,7 +240,12 @@ const DriverAddVehicleTab = ({
           }}
           // disabled={isAmountInvalid}
         >
-          <Text style={vigoStyles.buttonWhiteText}>Quay lại</Text>
+          <HStack>
+            <ArrowLeftIcon size={24} color={themeColors.primary} />
+            <Text ml="1" style={vigoStyles.buttonWhiteText}>
+              Quay lại
+            </Text>
+          </HStack>
         </TouchableOpacity>
         {vehicleType && vehiclePlate && (
           <TouchableOpacity

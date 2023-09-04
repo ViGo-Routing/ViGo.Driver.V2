@@ -14,8 +14,13 @@ import {
 } from "native-base";
 import { memo, useContext } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { vigoStyles } from "../../../../assets/theme";
+import { themeColors, vigoStyles } from "../../../../assets/theme";
 import { UserContext } from "../../../context/UserContext";
+import {
+  ArrowLeftIcon,
+  ArrowLeftOnRectangleIcon,
+} from "react-native-heroicons/solid";
+import { logUserOut } from "../../../services/userService";
 
 interface DriverReviewInformationTabProps {
   name: string;
@@ -28,6 +33,8 @@ interface DriverReviewInformationTabProps {
   setPreviousStep: () => void;
   scrollToTop: () => void;
   handleOpenConfirm: () => void;
+  isSubmitted: boolean;
+  navigation: any;
 }
 
 const DriverReviewInformationTab = ({
@@ -41,8 +48,10 @@ const DriverReviewInformationTab = ({
   setPreviousStep,
   scrollToTop,
   handleOpenConfirm,
+  isSubmitted,
+  navigation,
 }: DriverReviewInformationTabProps) => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const formatDate = (rawDate: any) => {
     let date = new Date(rawDate);
@@ -55,8 +64,8 @@ const DriverReviewInformationTab = ({
   };
 
   return (
-    <VStack>
-      <VStack pt={4} pb="4">
+    <VStack pt={4} pb="4">
+      <VStack pb="4">
         <View style={{ alignItems: "center" }}>
           {/* <Pressable onPress={() => handlePickAvatar()} isDisabled={isSubmitted}> */}
           <Image
@@ -78,7 +87,7 @@ const DriverReviewInformationTab = ({
             <FormControl>
               <FormControl.Label>Số điện thoại</FormControl.Label>
               <Input
-                value={user.phone}
+                value={user?.phone}
                 // editable={false}
                 isReadOnly={true}
                 variant={"filled"}
@@ -263,7 +272,12 @@ const DriverReviewInformationTab = ({
           }}
           // disabled={isAmountInvalid}
         >
-          <Text style={vigoStyles.buttonWhiteText}>Quay lại</Text>
+          <HStack>
+            <ArrowLeftIcon size={24} color={themeColors.primary} />
+            <Text ml="1" style={vigoStyles.buttonWhiteText}>
+              Quay lại
+            </Text>
+          </HStack>
         </TouchableOpacity>
         {!isSubmitted && (
           <TouchableOpacity
@@ -277,6 +291,24 @@ const DriverReviewInformationTab = ({
             // disabled={isAmountInvalid}
           >
             <Text style={vigoStyles.buttonPrimaryText}>Tiếp tục</Text>
+          </TouchableOpacity>
+        )}
+        {isSubmitted && (
+          <TouchableOpacity
+            style={{ ...vigoStyles.buttonWhite }}
+            onPress={() => {
+              // setCurrentStep(0);
+              // scrollToTop();
+              logUserOut(setUser, navigation);
+            }}
+            // disabled={isAmountInvalid}
+          >
+            <HStack>
+              <ArrowLeftOnRectangleIcon size={24} color={"red"} />
+              <Text ml="1" style={{ color: "red" }}>
+                Đăng xuất
+              </Text>
+            </HStack>
           </TouchableOpacity>
         )}
       </HStack>

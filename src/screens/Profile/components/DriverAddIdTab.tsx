@@ -13,10 +13,15 @@ import {
 } from "native-base";
 import { Dispatch, memo, useContext, useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { vigoStyles } from "../../../../assets/theme";
+import { themeColors, vigoStyles } from "../../../../assets/theme";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { getMaximumDob } from "../../../utils/datetimeUtils";
 import { UserContext } from "../../../context/UserContext";
+import {
+  ArrowLeftIcon,
+  ArrowLeftOnRectangleIcon,
+} from "react-native-heroicons/solid";
+import { logUserOut } from "../../../services/userService";
 
 interface DriverAddIdTabProps {
   handlePickId_FrontSide: () => void;
@@ -49,6 +54,8 @@ interface DriverAddIdTabProps {
     idFrontSideUrl: string,
     callback: () => void
   ) => void;
+
+  navigation: any;
 }
 
 const availableGender = [
@@ -80,8 +87,9 @@ const DriverAddIdTab = ({
   scrollToTop,
   isIdFrontSideChange,
   handleReadIdFrontSideText,
+  navigation,
 }: DriverAddIdTabProps) => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -160,7 +168,23 @@ const DriverAddIdTab = ({
           </Pressable>
         </HStack>
       </VStack>
-      <HStack justifyContent="flex-end" mt="5">
+      <HStack justifyContent="space-between" mt="5">
+        <TouchableOpacity
+          style={{ ...vigoStyles.buttonWhite }}
+          onPress={() => {
+            // setCurrentStep(0);
+            // scrollToTop();
+            logUserOut(setUser, navigation);
+          }}
+          // disabled={isAmountInvalid}
+        >
+          <HStack>
+            <ArrowLeftOnRectangleIcon size={24} color={"red"} />
+            <Text ml="1" style={{ color: "red" }}>
+              Đăng xuất
+            </Text>
+          </HStack>
+        </TouchableOpacity>
         {idFrontSide && idBackSide && (
           <TouchableOpacity
             style={{ ...vigoStyles.buttonPrimary }}
@@ -206,7 +230,7 @@ const DriverAddIdTab = ({
           <FormControl>
             <FormControl.Label>Số điện thoại</FormControl.Label>
             <Input
-              value={user.phone}
+              value={user?.phone}
               // editable={false}
               isReadOnly={true}
               variant={"filled"}
@@ -318,7 +342,12 @@ const DriverAddIdTab = ({
           }}
           // disabled={isAmountInvalid}
         >
-          <Text style={vigoStyles.buttonWhiteText}>Quay lại</Text>
+          <HStack>
+            <ArrowLeftIcon size={24} color={themeColors.primary} />
+            <Text ml="1" style={vigoStyles.buttonWhiteText}>
+              Quay lại
+            </Text>
+          </HStack>
         </TouchableOpacity>
         {avatarSource && name && gender && dob && email && (
           <TouchableOpacity

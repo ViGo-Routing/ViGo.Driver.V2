@@ -39,7 +39,11 @@ import {
   handleError,
   handleWarning,
 } from "../../utils/alertUtils";
-import { editProfile, getProfile } from "../../services/userService";
+import {
+  editProfile,
+  getProfile,
+  logUserOut,
+} from "../../services/userService";
 import {
   createUserLicense,
   getUserLicenses,
@@ -78,13 +82,15 @@ const DriverUpdateProfileScreen = () => {
   const [isDrivingFrontSideChange, setIsDrivingFrontSideChange] =
     useState(false);
 
-  const [avatarSource, setAvatarSource] = useState(user.avatarUrl as string);
-  const [name, setName] = useState(user.name as string);
-  const [email, setEmail] = useState(user.email as string);
+  const [avatarSource, setAvatarSource] = useState(
+    user?.avatarUrl as string | null
+  );
+  const [name, setName] = useState(user?.name as string);
+  const [email, setEmail] = useState(user?.email as string);
 
-  const [gender, setGender] = useState(user.gender as boolean);
+  const [gender, setGender] = useState(user?.gender as boolean);
   const defaultDob =
-    user.dateOfBirth != null ? new Date(user.dateOfBirth) : getMaximumDob();
+    user?.dateOfBirth != null ? new Date(user?.dateOfBirth) : getMaximumDob();
   // console.log(defaultDob);
 
   const [dob, setDob] = useState(defaultDob as Date | undefined);
@@ -146,6 +152,7 @@ const DriverUpdateProfileScreen = () => {
             scrollToTop={scrollToTop}
             isIdFrontSideChange={isIdFrontSideChange}
             handleReadIdFrontSideText={handleReadIdFrontSideText}
+            navigation={navigation}
           />
         );
       case 1:
@@ -215,6 +222,8 @@ const DriverUpdateProfileScreen = () => {
             scrollToTop={scrollToTop}
             setPreviousStep={() => setActiveStep(2)}
             handleOpenConfirm={handleOpenConfirm}
+            isSubmitted={isSubmitted}
+            navigation={navigation}
           />
         );
       default:
@@ -247,7 +256,7 @@ const DriverUpdateProfileScreen = () => {
   }, []);
 
   const loadInitialData = async () => {
-    // setIsLoading(true);
+    setIsLoading(true);
     try {
       const profile = await getProfile(user.id);
       if (profile) {
@@ -271,9 +280,7 @@ const DriverUpdateProfileScreen = () => {
       if (vehicles && vehicles.length > 0) {
         const vehicle = vehicles[0];
         setVehicleType(vehicle.vehicleTypeId);
-        setVehicleTypeText(
-          vehicleTypes.find((v: any) => v.id == vehicle.vehicleTypeId)?.name
-        );
+        setVehicleTypeText(vehicle.vehicleType.name);
         setVehiclePlate(vehicle.licensePlate);
       } else {
         // console.log("False Vehicle");
@@ -318,12 +325,18 @@ const DriverUpdateProfileScreen = () => {
     } catch (err) {
       throw err;
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    setIsLoading(true);
+    if (isSubmitted == true) {
+      setActiveStep(3);
+    }
+  }, [isSubmitted]);
+
+  useEffect(() => {
+    // setIsLoading(true);
     try {
       loadVehicleTypesMemo();
       loadInitialData();
@@ -331,7 +344,7 @@ const DriverUpdateProfileScreen = () => {
       setErrorMessage(getErrorMessage(err));
       setIsError(true);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   }, []);
 
@@ -609,15 +622,17 @@ const DriverUpdateProfileScreen = () => {
         // placement: "top",
         isDialog: true,
         onOkPress: async () => {
-          await removeItem("token");
-          await auth().signOut();
+          // await removeItem("token");
+          // await auth().signOut();
 
-          setUser(null);
+          // // await setUserData(null);
+          // setUser(null);
 
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Login" }],
-          });
+          // navigation.reset({
+          //   index: 0,
+          //   routes: [{ name: "Login" }],
+          // });
+          await logUserOut(setUser, navigation);
         },
       });
     } catch (err) {
