@@ -315,7 +315,10 @@ const DetailBookingScreen = () => {
           (trip: any) => trip.id === selectedDetails[0]
         )[0];
 
-        navigation.navigate("Schedule", { date: firstTrip.date });
+        navigation.navigate("ScheduleTab", {
+          screen: "Home",
+          date: firstTrip.date,
+        });
       }
     } catch (error) {
       handleError("Có lỗi xảy ra", error);
@@ -339,7 +342,8 @@ const DetailBookingScreen = () => {
               <VStack>
                 <Box
                   rounded="full"
-                  bgColor={"white"}
+                  bgColor={themeColors.cardColor}
+                  // style={{ backgroundColor: themeColors.cardColor }}
                   borderColor="coolGray.200"
                   borderWidth="1"
                   px={5}
@@ -474,7 +478,7 @@ const DetailBookingScreen = () => {
                   </Heading>
                   <Box
                     rounded="full"
-                    bgColor={"white"}
+                    bgColor={themeColors.cardColor}
                     borderColor="coolGray.200"
                     borderWidth="1"
                     // p={5}
@@ -483,7 +487,7 @@ const DetailBookingScreen = () => {
                     mt={2}
                     borderRadius={20}
                     mx={0.5}
-                    shadow={3}
+                    shadow={2}
                   >
                     <CustomerInformationCard
                       displayCustomerText={false}
@@ -565,9 +569,16 @@ const DetailBookingScreen = () => {
                       </HStack>
                       <VStack mx={0.5}>
                         {displayDetails.map((item) => (
-                          <React.Fragment key={item.id}>
-                            {renderDetailCard(item)}
-                          </React.Fragment>
+                          // <React.Fragment key={item.id}>
+                          //   {renderDetailCard(item)}
+                          // </React.Fragment>
+                          <BookingDetailSmallCard
+                            item={item}
+                            navigation={navigation}
+                            selectedDetails={selectedDetails}
+                            handleClickOnTrip={handleClickOnTrip}
+                            key={`card-${item.id}`}
+                          />
                         ))}
                       </VStack>
                     </>

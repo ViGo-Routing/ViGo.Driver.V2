@@ -52,7 +52,7 @@ const Header = ({
       <HStack
         alignItems={"center"}
         paddingLeft={isBackButtonShown ? 3 : 0}
-        justifyContent={isBackButtonShown ? "flex-end" : "center"}
+        justifyContent={isBackButtonShown ? "flex-start" : "center"}
       >
         {isBackButtonShown && (
           <TouchableOpacity

@@ -261,6 +261,7 @@ const CompletedBookingDetailScreen =
           style={[
             vigoStyles.body,
             // { paddingTop: 5, paddingLeft: 0, paddingRight: 0 },
+            { paddingHorizontal: 0 },
           ]}
         >
           <ViGoSpinner isLoading={isLoading} />
@@ -468,8 +469,9 @@ const styles = StyleSheet.create({
     // flexDirection: "row",
     // alignItems: "center",
     padding: 10,
+    marginHorizontal: 10,
     // backgroundColor: themeColors.linear,
-    backgroundColor: "white",
+    backgroundColor: themeColors.cardColor,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 2, height: 1 },

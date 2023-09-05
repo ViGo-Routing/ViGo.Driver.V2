@@ -1,15 +1,6 @@
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  TextInput,
-} from "react-native";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import { vigoStyles } from "../../../../assets/theme";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { vndFormat } from "../../../utils/numberUtils";
 import {
   Box,
@@ -20,6 +11,7 @@ import {
   Modal,
   WarningOutlineIcon,
 } from "native-base";
+import { useKeyboard } from "../../../hooks/useKeyboard";
 
 const TopupAmountModal = ({
   modalVisible,
@@ -31,6 +23,7 @@ const TopupAmountModal = ({
 
   const [isAmountInvalid, setIsAmountInvalid] = useState(false);
 
+  const { isKeyboardVisible } = useKeyboard();
   const initialRef = useRef(null);
 
   const handleAmountChange = (newAmount) => {
@@ -41,6 +34,11 @@ const TopupAmountModal = ({
       setAmount(newAmount);
     }
   };
+
+  useEffect(() => {
+    setIsAmountInvalid(false);
+    setAmount(null);
+  }, [modalVisible]);
 
   return (
     <Modal
@@ -56,7 +54,8 @@ const TopupAmountModal = ({
         setModalVisible(!modalVisible);
       }}
       size={"xl"}
-      avoidKeyboard={true}
+      // avoidKeyboard={true}
+      pb={isKeyboardVisible ? "50%" : "0"}
       // justifyContent="flex-end"
       // onRequestClose={() => {
       //   // onModalClose(amount);
@@ -67,7 +66,7 @@ const TopupAmountModal = ({
       // onDismiss={() => {
       //   // onModalClose(amount);
       // }}
-      initialFocusRef={initialRef}
+      // initialFocusRef={initialRef}
     >
       <Modal.Content>
         <Modal.CloseButton />
@@ -96,7 +95,7 @@ const TopupAmountModal = ({
                   onChangeText={handleAmountChange}
                   defaultValue={amount ? amount : null}
                   placeholder="Nhập số tiền muốn nạp"
-                  ref={initialRef}
+                  // ref={initialRef}
                 />
                 <InputRightAddon width="20%" children={"đồng"} />
               </InputGroup>
@@ -114,8 +113,12 @@ const TopupAmountModal = ({
           <TouchableOpacity
             style={{ ...vigoStyles.buttonPrimary }}
             onPress={() => {
-              onModalConfirm(amount);
-              setModalVisible(!modalVisible);
+              if (!amount || amount < 1000) {
+                setIsAmountInvalid(true);
+              } else {
+                onModalConfirm(amount);
+                setModalVisible(!modalVisible);
+              }
             }}
             disabled={isAmountInvalid}
             // activeOpacity={amount <= 1000 ? 1 : 0.7}

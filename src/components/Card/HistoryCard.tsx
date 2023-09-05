@@ -47,14 +47,7 @@ const HistoryCard = ({ trip, navigation }: HistoryCardProps) => {
 
   return (
     <TouchableOpacity onPress={() => handelClickOnItem(trip)}>
-      <Box
-        alignItems="center"
-        p="2"
-        _web={{
-          shadow: 10,
-          borderWidth: 0,
-        }}
-      >
+      <Box alignItems="center" p="2">
         <Box
           maxW="sm"
           rounded="xl"
@@ -63,25 +56,10 @@ const HistoryCard = ({ trip, navigation }: HistoryCardProps) => {
           // overflow="hidden"
           borderColor="coolGray.200"
           borderWidth="1"
-          _dark={{
-            borderColor: "coolGray.600",
-            backgroundColor: "gray.700",
-          }}
-          _web={{
-            shadow: 6,
-            borderWidth: 0,
-          }}
-          _light={{
-            backgroundColor: "gray.50",
-          }}
+          backgroundColor={themeColors.cardColor}
+          shadow={1}
         >
-          <HStack
-            // alignItems="center"
-            // space={4}
-            // justifyContent="space-between"
-            // flex={1}
-            alignItems="flex-start"
-          >
+          <HStack alignItems="flex-start">
             <Box
               flex={1}
               backgroundColor={themeColors.linear}
@@ -144,6 +122,7 @@ const HistoryCard = ({ trip, navigation }: HistoryCardProps) => {
                     backgroundColor={themeColors.linear}
                     p="3"
                     rounded="xl"
+                    mt="2"
                   >
                     <Text style={styles.titlePrice}>
                       {vndFormat(trip.price)}

@@ -8,13 +8,17 @@ import {
   renderTransactionTypeOperator,
 } from "../../utils/enumUtils/walletEnumUtils";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { getWalletTransactionDetail } from "../../services/walletService";
 import { vndFormat } from "../../utils/numberUtils";
 import { renderPaymentMethod } from "../../utils/enumUtils/paymentMethodEnumUtils";
 import { toVnDateTimeString } from "../../utils/datetimeUtils";
 import Divider from "../../components/Divider/Divider";
 import { Box, HStack, Text, VStack } from "native-base";
+import { useErrorHandlingHook } from "../../hooks/useErrorHandlingHook";
+import { getErrorMessage } from "../../utils/alertUtils";
+import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
+import ErrorAlert from "../../components/Alert/ErrorAlert";
 const WalletTransactionDetailScreen = ({ route }) => {
   // console.log(route);
   const { walletTransactionId } = route.params;
@@ -22,12 +26,24 @@ const WalletTransactionDetailScreen = ({ route }) => {
 
   const [details, setDetails] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const { isError, setIsError, errorMessage, setErrorMessage } =
+    useErrorHandlingHook();
+
   const getDetails = async () => {
-    const transactionDetails = await getWalletTransactionDetail(
-      walletTransactionId
-    );
-    // console.log(transactionDetails);
-    setDetails(transactionDetails);
+    setIsLoading(true);
+    try {
+      const transactionDetails = await getWalletTransactionDetail(
+        walletTransactionId
+      );
+      // console.log(transactionDetails);
+      setDetails(transactionDetails);
+    } catch (err) {
+      setErrorMessage(getErrorMessage(err));
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getTransactionColor = (transaction) => {
@@ -114,7 +130,12 @@ const WalletTransactionDetailScreen = ({ route }) => {
       <View>
         <Header title="Chi tiết giao dịch" />
       </View>
-      <View style={vigoStyles.body}>{renderTransactionDetail(details)}</View>
+      <View style={vigoStyles.body}>
+        <ViGoSpinner isLoading={isLoading} />
+        <ErrorAlert isError={isError} errorMessage={errorMessage}>
+          {renderTransactionDetail(details)}
+        </ErrorAlert>
+      </View>
     </SafeAreaView>
   );
 };

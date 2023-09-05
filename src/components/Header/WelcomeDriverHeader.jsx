@@ -1,7 +1,7 @@
 // import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { themeColors } from "../../../assets/theme/index";
+import { themeColors, vigoStyles } from "../../../assets/theme/index";
 
 const WelcomeDriverHeader = ({ title, subtitle, onBack }) => {
   return (

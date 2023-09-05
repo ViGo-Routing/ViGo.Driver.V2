@@ -1,7 +1,11 @@
 import CheckBox from "@react-native-community/checkbox";
 import { Box, HStack, VStack, Text } from "native-base";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { CalendarIcon, ClockIcon } from "react-native-heroicons/solid";
+import {
+  ArchiveBoxArrowDownIcon,
+  CalendarIcon,
+  ClockIcon,
+} from "react-native-heroicons/solid";
 import { toVnDateString, toVnTimeString } from "../../utils/datetimeUtils";
 import { themeColors } from "../../../assets/theme";
 import { vndFormat } from "../../utils/numberUtils";
@@ -21,7 +25,13 @@ const BookingDetailSmallCard = ({
   navigation,
 }: BookingDetailSmallCardProps) => {
   return (
-    <HStack alignItems="center" key={item.id} justifyContent={"stretch"}>
+    <HStack
+      // flexDirection={"row"}
+      // flexWrap={"wrap"}
+      // flex={1}
+      alignItems="center"
+      key={item.id}
+    >
       <CheckBox
         style={{ marginRight: 5 }}
         aria-label="Chọn chuyến đi"
@@ -31,23 +41,19 @@ const BookingDetailSmallCard = ({
           handleClickOnTrip(value, item.id);
         }}
       />
-      <Box style={[styles.cardInsideDateTime]} alignSelf="stretch">
+      <Box style={[styles.cardInsideDateTime]} shadow={1} flex={1}>
         <TouchableOpacity
           onPress={() => navigation.navigate("BookingDetail", { item })}
         >
-          <HStack justifyContent="space-between" py={2} alignItems="center">
+          <HStack justifyContent="space-between" py={2}>
             <VStack>
               <HStack alignItems="center">
                 <ClockIcon size={20} color="#00A1A1" />
-                <Text marginLeft={2} bold color="gray.500">
-                  Giờ đón
-                </Text>
+                <Text marginLeft={2}>Giờ đón</Text>
               </HStack>
               <HStack alignItems="center">
                 <CalendarIcon size={20} color="#00A1A1" />
-                <Text marginLeft={2} bold color="gray.500">
-                  Ngày đón
-                </Text>
+                <Text marginLeft={2}>Ngày đón</Text>
               </HStack>
             </VStack>
             <VStack marginRight={2} marginLeft={2}>
@@ -81,21 +87,21 @@ const BookingDetailSmallCard = ({
 const styles = StyleSheet.create({
   cardInsideDateTime: {
     // flexGrow: 1,
-    backgroundColor: "white",
+    backgroundColor: "#f8f8f8",
     borderRadius: 8,
 
     paddingHorizontal: 15,
     // width: "100%",
     marginVertical: 10,
     // marginHorizontal: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 2,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 3.84,
+    // elevation: 2,
     // flexDirection: "row",
     // margin: 5,
   },

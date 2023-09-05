@@ -1,7 +1,7 @@
 import { SafeAreaView, View } from "react-native";
 import { themeColors, vigoStyles } from "../../../assets/theme";
 import Header from "../../components/Header/Header";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, memo } from "react";
 import { UserContext } from "../../context/UserContext";
 import { getNotifications } from "../../services/notificationService";
 import { getErrorMessage, handleError } from "../../utils/alertUtils";
@@ -20,6 +20,7 @@ import Divider from "../../components/Divider/Divider";
 import { BellAlertIcon, BellIcon } from "react-native-heroicons/solid";
 import { toVnDateTimeString } from "../../utils/datetimeUtils";
 import InfoAlert from "../../components/Alert/InfoAlert";
+import NotificationListItem from "./NotificationListItem";
 
 const MyNotifcationScreen = () => {
   const [notifications, setNotifications] = useState([]);
@@ -90,26 +91,9 @@ const MyNotifcationScreen = () => {
     }
   };
 
-  const renderNotificationListItem = (notification) => {
-    return (
-      <VStack>
-        <HStack>
-          <Box width={"15%"} alignItems={"center"}>
-            <BellAlertIcon size={30} color={themeColors.primary} />
-          </Box>
-          <Box width={"80%"}>
-            <Heading size="sm">{notification.title}</Heading>
-            <Text>{notification.description}</Text>
-          </Box>
-        </HStack>
-        <Box alignItems="flex-end">
-          <Text color={"#999"}>
-            {toVnDateTimeString(notification.createdTime)}
-          </Text>
-        </Box>
-      </VStack>
-    );
-  };
+  // const renderNotificationListItem = memo(({ notification }) => {
+
+  // });
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -164,7 +148,8 @@ const MyNotifcationScreen = () => {
             data={notifications}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
-              return <>{renderNotificationListItem(item)}</>;
+              // return <>{renderNotificationListItem(item)}</>;
+              return <NotificationListItem notification={item} />;
             }}
             ItemSeparatorComponent={<Divider style={vigoStyles.listDivider} />}
             ListEmptyComponent={<InfoAlert message="Chưa có thông báo" />}

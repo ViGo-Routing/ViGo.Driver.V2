@@ -5,6 +5,7 @@ import { getBookingDetailByDriverId } from "../../../services/bookingDetailServi
 import { vigoStyles } from "../../../../assets/theme";
 import HistoryCard from "../../../components/Card/HistoryCard";
 import { useNavigation } from "@react-navigation/native";
+import InfoAlert from "../../../components/Alert/InfoAlert";
 
 interface CanceledTabProps {}
 
@@ -37,6 +38,13 @@ const CanceledTab = ({}: CanceledTabProps) => {
     );
     const items = detailsResponse.data.data;
     setList(items);
+
+    if (detailsResponse.data.hasNextPage == true) {
+      setNextPageNumber(2);
+    } else {
+      setNextPageNumber(null);
+    }
+
     setIsLoading(false);
   };
 
@@ -60,7 +68,8 @@ const CanceledTab = ({}: CanceledTabProps) => {
         null,
         status,
         pageSize,
-        nextPageNumber
+        nextPageNumber,
+        "date desc, customerDesiredPickupTime desc"
       );
 
       const moreTrips = [...list, ...trips.data.data];
@@ -86,6 +95,9 @@ const CanceledTab = ({}: CanceledTabProps) => {
             <HistoryCard navigation={navigation} key={item.id} trip={item} />
           );
         }}
+        ListEmptyComponent={
+          <InfoAlert message="Chưa có chuyến đi nào bị hủy" />
+        }
         refreshing={isLoading}
         onRefresh={() => fetchData()}
         onEndReached={loadMoreTrips}

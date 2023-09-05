@@ -196,7 +196,11 @@ const BookingDetailScreen = () => {
           isSlide: true,
           duration: 5000,
         });
-        navigation.navigate("Schedule", { date: bookingDetail.date });
+        // navigation.navigate("Schedule", { date: bookingDetail.date });
+        navigation.navigate("ScheduleTab", {
+          screen: "Home",
+          date: bookingDetail.date,
+        });
       }
     } catch (error) {
       handleError("Có lỗi xảy ra", error);
