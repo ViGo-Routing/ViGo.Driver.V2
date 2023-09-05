@@ -16,25 +16,6 @@ const Tab = createMaterialTopTabNavigator();
 
 interface HistoryScreenProps {}
 
-const FirstRoute = () => (
-  <View style={{ flex: 1, backgroundColor: "#ff4081" }} />
-);
-
-const SecondRoute = () => (
-  <View style={{ flex: 1, backgroundColor: "#673ab7" }} />
-);
-
-const renderScene = SceneMap({
-  first: FirstRoute,
-  second: SecondRoute,
-});
-
-// const renderScene = SceneMap({
-//   first: OnGoingTab,
-//   second: CompletedTab,
-//   third: CanceledTab,
-// });
-
 const initialLayout = {
   width: Dimensions.get("window").width,
 };
@@ -135,7 +116,7 @@ const HistoryScreen = ({}: HistoryScreenProps) => {
 
   return (
     <SafeAreaView style={vigoStyles.container}>
-      <Header title="Các chuyến đi của tôi" />
+      {/* <Header title="Các chuyến đi của tôi" /> */}
       <View style={vigoStyles.body}>
         {/* <TabView
           navigationState={{ selectedIndex, routes }}
@@ -154,7 +135,7 @@ const HistoryScreen = ({}: HistoryScreenProps) => {
         /> */}
         <Tab.Navigator
           tabBar={(props) => renderTabBar(props)}
-          sceneContainerStyle={{ backgroundColor: "transparent" }}
+          sceneContainerStyle={{ backgroundColor: "transparent", flex: 1 }}
           screenOptions={{
             lazy: true,
           }}
@@ -163,7 +144,9 @@ const HistoryScreen = ({}: HistoryScreenProps) => {
             name="OnGoing"
             key={"OnGoing"}
             component={OnGoingTab}
-            options={{ tabBarLabel: "Sắp tới" }}
+            options={{
+              tabBarLabel: "Sắp tới",
+            }}
           />
           <Tab.Screen
             name="Completed"

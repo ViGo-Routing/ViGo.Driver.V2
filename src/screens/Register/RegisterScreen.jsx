@@ -21,7 +21,7 @@ import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
 import auth from "@react-native-firebase/auth";
 
 import { login, register } from "../../utils/apiManager";
-// import { UserContext } from "../../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 import { updateUserFcmToken } from "../../services/userService";
 import messaging from "@react-native-firebase/messaging";
 import { Box, FormControl, Input, WarningOutlineIcon, Text } from "native-base";

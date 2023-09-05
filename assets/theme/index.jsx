@@ -4,7 +4,9 @@ import { StyleSheet } from "react-native";
 export const themeColors = {
   primary: "#00A1A1",
   linear: "#E3F6F5",
+  cardColor: "#f8f8f8",
 };
+
 export const vigoStyles = StyleSheet.create({
   container: {
     flexDirection: "column", // inner items will be added vertically
@@ -21,7 +23,8 @@ export const vigoStyles = StyleSheet.create({
     paddingBottom: 15,
   },
   body: {
-    backgroundColor: themeColors.linear,
+    // backgroundColor: themeColors.linear,
+    backgroundColor: "white",
     padding: 20,
     flex: 1,
   },
@@ -146,12 +149,12 @@ export const vigoStyles = StyleSheet.create({
   },
   buttonPrimaryText: {
     textAlign: "center",
-    color: "#fff",
+    color: "#f8f8f8",
     fontWeight: "bold",
   },
 
   buttonWhite: {
-    backgroundColor: "white",
+    backgroundColor: "#f3f3f3",
     // marginTop: 10,
     borderRadius: 10,
     // marginBottom: 10,

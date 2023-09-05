@@ -254,12 +254,7 @@ const CanceledBookingDetailScreen = ({}: CanceledBookingDetailScreenProps) => {
     <SafeAreaView style={vigoStyles.container}>
       <Header title="Chi tiết chuyến đi" backButtonDirection="down" />
       {/* <Text>{trip.id}</Text> */}
-      <View
-        style={[
-          vigoStyles.body,
-          // { paddingTop: 5, paddingLeft: 0, paddingRight: 0 },
-        ]}
-      >
+      <View style={[vigoStyles.body, { paddingHorizontal: 0 }]}>
         <ViGoSpinner isLoading={isLoading} />
 
         <ErrorAlert isError={isError} errorMessage={errorMessage}>
@@ -458,9 +453,10 @@ const styles = StyleSheet.create({
   container: {
     // flexDirection: "row",
     // alignItems: "center",
+    marginHorizontal: 10,
     padding: 10,
     // backgroundColor: themeColors.linear,
-    backgroundColor: "white",
+    backgroundColor: themeColors.cardColor,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 2, height: 1 },

@@ -1,21 +1,6 @@
-import {
-  Box,
-  VStack,
-  HStack,
-  Image,
-  Text,
-  Pressable,
-  Skeleton,
-} from "native-base";
-import { vndFormat } from "../../utils/numberUtils";
+import { Box, VStack, HStack, Image, Text } from "native-base";
 import { themeColors } from "../../../assets/theme";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import {
-  getBookingDetailStatusString,
-  getBookingDetailStatusColor,
-} from "../../utils/enumUtils/bookingEnumUtils";
-import { ArrowRightIcon } from "react-native-heroicons/solid";
-import { toVnDateString, toVnTimeString } from "../../utils/datetimeUtils";
 import { memo } from "react";
 import { ColorType } from "native-base/lib/typescript/components/types";
 
@@ -40,14 +25,7 @@ const BookingCard = ({ element, handleBookingClick }: BookingCardProps) => {
 
   return (
     <TouchableOpacity onPress={() => handleBookingClick(element)}>
-      <Box
-        alignItems="center"
-        p="2"
-        _web={{
-          shadow: 10,
-          borderWidth: 0,
-        }}
-      >
+      <Box alignItems="center" p="2">
         <Box
           maxW="sm"
           rounded="xl"
@@ -56,17 +34,8 @@ const BookingCard = ({ element, handleBookingClick }: BookingCardProps) => {
           // overflow="hidden"
           borderColor="coolGray.200"
           borderWidth="1"
-          _dark={{
-            borderColor: "coolGray.600",
-            backgroundColor: "gray.700",
-          }}
-          _web={{
-            shadow: 6,
-            borderWidth: 0,
-          }}
-          _light={{
-            backgroundColor: "gray.50",
-          }}
+          backgroundColor={themeColors.cardColor}
+          shadow={1}
         >
           <VStack>
             <HStack
@@ -84,9 +53,6 @@ const BookingCard = ({ element, handleBookingClick }: BookingCardProps) => {
                 />
               </Box>
               <VStack>
-                {/* <Text style={styles.title}>
-                    {toVnDateString(element.date)}
-                  </Text> */}
                 <HStack w={"100%"}>
                   <Text w={20} bold>
                     Bắt đầu:
@@ -120,24 +86,5 @@ const BookingCard = ({ element, handleBookingClick }: BookingCardProps) => {
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  title: {
-    padding: 20,
-    fontSize: 20,
-    fontWeight: "bold",
-    paddingTop: 20,
-  },
-  titlePrice: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: themeColors.primary,
-    textAlign: "right",
-  },
-  titleButton: {
-    fontSize: 10,
-    color: themeColors.primary,
-  },
-});
 
 export default memo(BookingCard);

@@ -264,12 +264,12 @@ const SchedulerScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View>
+      {/* <View>
         <Header
           title="Lịch trình của tôi"
           onBackButtonPress={() => navigation.navigate("Home")}
         />
-      </View>
+      </View> */}
 
       <ErrorAlert isError={isError} errorMessage={errorMessage}>
         <Agenda

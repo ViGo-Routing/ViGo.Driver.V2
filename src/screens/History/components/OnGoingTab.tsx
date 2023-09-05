@@ -1,11 +1,12 @@
 import { memo, useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../context/UserContext";
 import { getBookingDetailByDriverId } from "../../../services/bookingDetailService";
-import { FlatList } from "native-base";
+import { Box, FlatList, View } from "native-base";
 import { vigoStyles } from "../../../../assets/theme";
 import HistoryCard from "../../../components/Card/HistoryCard";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
+import InfoAlert from "../../../components/Alert/InfoAlert";
 
 interface OnGoingTabProps {}
 
@@ -35,10 +36,19 @@ const OnGoingTab = ({}: OnGoingTabProps) => {
       null,
       status,
       pageSize,
-      1
+      1,
+      "date asc, customerDesiredPickupTime asc"
     );
     const items = detailsResponse.data.data;
+    // console.log(detailsResponse.data);
     setList(items);
+
+    if (detailsResponse.data.hasNextPage == true) {
+      setNextPageNumber(2);
+    } else {
+      setNextPageNumber(null);
+    }
+
     setIsLoading(false);
   };
 
@@ -57,17 +67,21 @@ const OnGoingTab = ({}: OnGoingTabProps) => {
     if (nextPageNumber > 1) {
       let trips = await getBookingDetailByDriverId(
         user.id,
-        null,
+        formattedCurrentDate,
         null,
         null,
         status,
         pageSize,
-        nextPageNumber
+        nextPageNumber,
+        "date asc, customerDesiredPickupTime asc"
       );
+
+      console.log(trips.data.data);
 
       const moreTrips = [...list, ...trips.data.data];
 
       setList(moreTrips);
+      // console.log("moreTrips");
 
       if (trips.data.hasNextPage == true) {
         setNextPageNumber(nextPageNumber + 1);
@@ -78,16 +92,19 @@ const OnGoingTab = ({}: OnGoingTabProps) => {
   };
 
   return (
-    <>
+    // <Box>
+    <View>
       <FlatList
         style={vigoStyles.list}
+        // flex={1}
         data={list}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          return (
-            <HistoryCard navigation={navigation} key={item.id} trip={item} />
-          );
+          return <HistoryCard navigation={navigation} trip={item} />;
         }}
+        ListEmptyComponent={
+          <InfoAlert message="Không có chuyến đi nào trong trương lai" />
+        }
         refreshing={isLoading}
         onRefresh={() => fetchData()}
         onEndReached={loadMoreTrips}
@@ -98,7 +115,8 @@ const OnGoingTab = ({}: OnGoingTabProps) => {
           paddingBottom: 15,
         }}
       />
-    </>
+    </View>
+    // </Box>
   );
 };
 
