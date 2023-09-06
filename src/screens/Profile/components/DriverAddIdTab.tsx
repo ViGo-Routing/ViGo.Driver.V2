@@ -170,7 +170,7 @@ const DriverAddIdTab = ({
       </VStack>
       <HStack justifyContent="space-between" mt="5">
         <TouchableOpacity
-          style={{ ...vigoStyles.buttonWhite }}
+          style={[vigoStyles.buttonWhite, { borderColor: "red" }]}
           onPress={() => {
             // setCurrentStep(0);
             // scrollToTop();

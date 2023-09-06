@@ -101,7 +101,7 @@ const MapInformationScreen = (/*{
 
   const renderSmallTripInformation = () => {
     return (
-      <Box>
+      <Box px="4">
         <TripBasicInformation
           firstPosition={firstPosition}
           secondPosition={secondPosition}
@@ -109,6 +109,7 @@ const MapInformationScreen = (/*{
 
         <Button
           style={vigoStyles.buttonWhite}
+          mt="3"
           onPress={() => {
             navigation.goBack();
           }}
@@ -122,7 +123,7 @@ const MapInformationScreen = (/*{
 
   const renderFullTripInformation = () => {
     return (
-      <Box>
+      <Box px="4">
         <TripFullInformation
           firstPosition={firstPosition}
           secondPosition={secondPosition}
@@ -243,14 +244,17 @@ const MapInformationScreen = (/*{
           noBackgroundOpacity
           // showCloseButton
           allowTouchOutside
-          smallPanelItem={<Box px="6">{renderSmallTripInformation()}</Box>}
-          smallPanelHeight={300}
+          smallPanelItem={renderSmallTripInformation()}
+          smallPanelHeight={320}
           // openLarge={openLargePanel}
           ref={panelRef}
-          largePanelHeight={510}
+          // largePanelHeight={510}
+          scrollViewProps={{
+            scrollEnabled: true,
+          }}
           // onlySmall
         >
-          {<Box px="6">{renderFullTripInformation()}</Box>}
+          {renderFullTripInformation()}
         </SwipeablePanel>
       </Box>
       {/* </VStack> */}

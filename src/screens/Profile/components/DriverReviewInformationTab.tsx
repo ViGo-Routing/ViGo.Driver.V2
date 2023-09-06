@@ -295,7 +295,7 @@ const DriverReviewInformationTab = ({
         )}
         {isSubmitted && (
           <TouchableOpacity
-            style={{ ...vigoStyles.buttonWhite }}
+            style={[vigoStyles.buttonWhite, { borderColor: "red" }]}
             onPress={() => {
               // setCurrentStep(0);
               // scrollToTop();

@@ -38,6 +38,7 @@ import {
   View,
 } from "native-base";
 import { getVehicles } from "../../services/vehicleService";
+import { getMaximumDob } from "../../utils/datetimeUtils";
 
 const ProfileSreen = () => {
   const navigation = useNavigation();
@@ -218,7 +219,7 @@ const ProfileSreen = () => {
             }
           />
 
-          <ScrollView>
+          <ScrollView mt="2">
             <HStack mt="4" justifyContent="space-between">
               <TouchableOpacity
                 key={"my-wallet"}
@@ -330,6 +331,28 @@ const ProfileSreen = () => {
                 </FormControl>
               </Box>
             </VStack>
+
+            <HStack mt="4">
+              <TouchableOpacity
+                style={[
+                  vigoStyles.buttonWhite,
+                  { borderColor: "red", flex: 1 },
+                ]}
+                onPress={() => {
+                  // setCurrentStep(0);
+                  // scrollToTop();
+                  logUserOut(setUser, navigation);
+                }}
+                // disabled={isAmountInvalid}
+              >
+                <HStack justifyContent="center">
+                  <ArrowLeftOnRectangleIcon size={24} color={"red"} />
+                  <Text ml="1" style={{ color: "red" }}>
+                    Đăng xuất
+                  </Text>
+                </HStack>
+              </TouchableOpacity>
+            </HStack>
           </ScrollView>
           {/* <ScrollView mt="3">
             {listAccountUtilities.map((item, index) => (

@@ -39,7 +39,12 @@ const OnGoingTab = ({}: OnGoingTabProps) => {
       1,
       "date asc, customerDesiredPickupTime asc"
     );
-    const items = detailsResponse.data.data;
+    const items = detailsResponse.data.data.filter((item) => {
+      return (
+        moment(item.date).format("YYYY-MM-DD") !== formattedCurrentDate ||
+        moment(item.customerDesiredPickupTime, "HH:mm:ss").isAfter(moment())
+      );
+    });
     // console.log(detailsResponse.data);
     setList(items);
 

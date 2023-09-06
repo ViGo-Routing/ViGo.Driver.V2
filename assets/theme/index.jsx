@@ -154,14 +154,16 @@ export const vigoStyles = StyleSheet.create({
   },
 
   buttonWhite: {
-    backgroundColor: "#f3f3f3",
+    backgroundColor: "white",
     // marginTop: 10,
     borderRadius: 10,
     // marginBottom: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingLeft: 12,
+    paddingRight: 12,
+    paddingTop: 7,
+    paddingBottom: 7,
+    borderWidth: 1,
+    borderColor: themeColors.primary,
   },
   buttonWhiteText: {
     textAlign: "center",

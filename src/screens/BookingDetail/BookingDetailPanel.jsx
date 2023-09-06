@@ -220,13 +220,14 @@ const BookingDetailPanel = ({
                 flex={1}
                 style={[
                   styles.cardInsideLocation,
+                  vigoStyles.buttonWhite,
                   {
-                    backgroundColor: "red",
+                    // backgroundColor: "red",
                     height: 40,
                     justifyContent: "center",
                     alignItems: "center",
+                    borderColor: "red",
                   },
-                  vigoStyles.buttonWhite,
                 ]}
               >
                 <TouchableOpacity onPress={() => {}}>
