@@ -124,7 +124,7 @@ const WalletScreen = () => {
                 </VStack>
               </View>
             </View>
-            <Box flexDirection={"row-reverse"} marginTop={5}>
+            <Box flexDirection={"row-reverse"} marginTop={3}>
               <Button
                 style={vigoStyles.buttonWhite}
                 onPress={() => navigation.navigate("Topup")}
@@ -224,6 +224,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
+    marginHorizontal: 5,
+    marginVertical: 5,
   },
   balance: {
     fontSize: 18,

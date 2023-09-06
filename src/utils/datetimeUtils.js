@@ -3,7 +3,7 @@ import Moment from "moment";
 
 export const toVnDateTimeString = (datetime) => {
   // console.log(datetime);
-  return Moment(datetime).format("HH:mm - DD-MM-YYYY");
+  return Moment(datetime).format("HH:mm, DD/MM/YYYY");
 };
 
 export const getMaximumDob = () => {
@@ -11,7 +11,7 @@ export const getMaximumDob = () => {
 };
 
 export const toVnDateString = (datetime) => {
-  return Moment(datetime).format("DD-MM-YYYY");
+  return Moment(datetime).format("DD/MM/YYYY");
 };
 
 export const toVnTimeString = (datetime) => {

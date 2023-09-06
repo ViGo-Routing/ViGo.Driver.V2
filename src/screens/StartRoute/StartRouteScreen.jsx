@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import {
   StyleSheet,
   View,
-  Text,
   TouchableOpacity,
   Alert,
   NativeEventEmitter,
@@ -37,7 +36,7 @@ import BookingDetailPanel, {
   BookingDetailSmallPanel,
 } from "../BookingDetail/BookingDetailPanel";
 import { eventNames, getErrorMessage } from "../../utils/alertUtils";
-import { Box, HStack } from "native-base";
+import { Box, HStack, Text } from "native-base";
 import { getBookingDetailCustomer } from "../../services/userService";
 import { PaperAirplaneIcon } from "react-native-heroicons/solid";
 import StartRouteConfirmAlert from "./StartRouteAlerts";
@@ -78,6 +77,77 @@ const StartRouteScreen = () => {
       const bookingDetailResponse = await getBookingDetail(bookingDetailId);
       // console.log(bookingDetailResponse);
       setBookingDetail(bookingDetailResponse);
+
+      console.log(bookingDetailResponse.status);
+      if (bookingDetailResponse.status != "ASSIGNED") {
+        if (bookingDetailResponse.status == "CANCELLED") {
+          // navigation.navigate("CanceledBookingDetail", {
+          //   bookingDetailId: bookingDetailResponse.id,
+          // });
+          navigation.reset({
+            index: 1,
+            routes: [
+              {
+                name: "Home",
+                // params: {
+                //   bookingDetailId: bookingDetail.id,
+                // },
+              },
+              {
+                name: "CanceledBookingDetail",
+                params: {
+                  bookingDetailId: bookingDetail.id,
+                },
+              },
+            ],
+          });
+        } else if (bookingDetailResponse.status == "COMPLETED") {
+          // navigation.navigate("CompletedBookingDetail", {
+          //   bookingDetailId: bookingDetailResponse.id,
+          // });
+          navigation.reset({
+            index: 1,
+            routes: [
+              {
+                name: "Home",
+                // params: {
+                //   bookingDetailId: bookingDetail.id,
+                // },
+              },
+              {
+                name: "CompletedBookingDetail",
+                params: {
+                  bookingDetailId: bookingDetail.id,
+                },
+              },
+            ],
+          });
+        } else {
+          // navigation.navigate("CurrentStartingTrip", {
+          //   bookingDetailId: bookingDetailResponse.id,
+          // });
+
+          navigation.reset({
+            index: 1,
+            routes: [
+              {
+                name: "Home",
+                // params: {
+                //   bookingDetailId: bookingDetail.id,
+                // },
+              },
+              {
+                name: "CurrentStartingTrip",
+                params: {
+                  bookingDetailId: bookingDetail.id,
+                },
+              },
+            ],
+          });
+        }
+
+        return;
+      }
 
       setPickupPosition(generateMapPoint(bookingDetailResponse.startStation));
 
@@ -191,12 +261,12 @@ const StartRouteScreen = () => {
         ]}
       >
         <TouchableOpacity
-          style={styles.assignButton}
+          // style={styles.assignButton}
           onPress={() => openConfirmStartTrip()}
         >
           <HStack alignItems="center">
             <PaperAirplaneIcon size={20} color={"white"} />
-            <Text marginLeft={2} style={{ color: "white", fontWeight: "bold" }}>
+            <Text ml={2} style={{ color: "white", fontWeight: "bold" }}>
               Bắt đầu chuyến đi
             </Text>
           </HStack>
@@ -330,7 +400,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 8,
 
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     width: "40%",
     marginVertical: 10,
     shadowColor: "#000",

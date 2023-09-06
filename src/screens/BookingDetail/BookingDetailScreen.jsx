@@ -82,6 +82,67 @@ const BookingDetailScreen = () => {
       // console.log(bookingDetailResponse);
       setBookingDetail(bookingDetailResponse);
 
+      if (bookingDetailResponse.status != "PENDING_ASSIGN") {
+        // console.log(bookingDetailResponse.status);
+        if (bookingDetailResponse.status == "ASSIGNED") {
+          if (bookingDetailResponse.driverId == user.id) {
+            // navigation.navigate("ScheduleTab", {
+            //   screen: "Home",
+            //   date: bookingDetail.date,
+            // });
+
+            navigation.reset({
+              index: 0,
+              routes: [
+                {
+                  name: "ScheduleTab",
+                  params: {
+                    screen: "Home",
+                    date: bookingDetail.date,
+                  },
+                },
+              ],
+            });
+          } else {
+            // navigation.navigate("HomeTab", {
+            //   screen: "Home",
+            //   // date: bookingDetail.date,
+            // });
+            navigation.reset({
+              index: 0,
+              routes: [
+                {
+                  name: "HomeTab",
+                  params: {
+                    screen: "Home",
+                    // date: bookingDetail.date,
+                  },
+                },
+              ],
+            });
+          }
+        } else {
+          // navigation.navigate("HomeTab", {
+          //   screen: "Home",
+          //   // date: bookingDetail.date,
+          // });
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: "HomeTab",
+                params: {
+                  screen: "Home",
+                  // date: bookingDetail.date,
+                },
+              },
+            ],
+          });
+        }
+
+        return;
+      }
+
       setPickupPosition(
         bookingDetailResponse?.startStation?.latitude &&
           bookingDetailResponse?.startStation?.longitude

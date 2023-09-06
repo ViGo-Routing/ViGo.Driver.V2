@@ -27,13 +27,24 @@ import { mapDirectionLine } from "../../components/Map/Map";
 import { vndFormat } from "../../utils/numberUtils";
 import { getBookingDetailTransactions } from "../../services/walletService";
 import {
+  ClockIcon,
   EllipsisHorizontalIcon,
   MapPinIcon,
   StarIcon,
 } from "react-native-heroicons/solid";
-import { StarIcon as StarOutlineIcon } from "react-native-heroicons/outline";
+import {
+  CalendarDaysIcon as CalendarDaysOutlineIcon,
+  ClockIcon as ClockOutlineIcon,
+  MapIcon as MapOutlineIcon,
+  StarIcon as StarOutlineIcon,
+} from "react-native-heroicons/outline";
 
-import { getDifference } from "../../utils/datetimeUtils";
+import {
+  getDifference,
+  toVnDateString,
+  toVnDateTimeString,
+  toVnTimeString,
+} from "../../utils/datetimeUtils";
 import moment from "moment";
 import { getBookingDetailCustomer } from "../../services/userService";
 import CustomerInformationCard from "../../components/Card/CustomerInformationCard";
@@ -280,7 +291,7 @@ const CompletedBookingDetailScreen =
                       </Badge>
                     </HStack> */}
 
-                    <View style={styles.container}>
+                    <View style={styles.container} mt="1">
                       {/* <View style={vigoStyles.textContainer}> */}
                       <Accordion
                         sections={[
@@ -401,16 +412,66 @@ const CompletedBookingDetailScreen =
                             </Text>
                           </VStack>
                         </HStack>
-                        <HStack alignSelf="flex-end">
-                          <Text>
-                            {distance.toFixed(1)} km -{" "}
-                            {getDifference(
-                              bookingDetail.pickupTime,
+                      </VStack>
+                    </View>
 
-                              bookingDetail.dropoffTime
-                            ).diffMinutes.toFixed(0)}{" "}
-                            phút
-                          </Text>
+                    <View style={[styles.container]} mt="5">
+                      <VStack>
+                        <HStack alignItems="center">
+                          <ClockOutlineIcon
+                            size={20}
+                            color={themeColors.primary}
+                          />
+                          <VStack ml="2">
+                            <Text color={themeColors.primary} bold>
+                              Đón khách lúc
+                            </Text>
+                            <Text fontSize="md">
+                              {toVnDateTimeString(bookingDetail.pickupTime)}
+                            </Text>
+                          </VStack>
+                        </HStack>
+                        <HStack alignItems="center" mt="3">
+                          <ClockOutlineIcon
+                            size={20}
+                            color={themeColors.primary}
+                          />
+                          <VStack ml="2">
+                            <Text color={themeColors.primary} bold>
+                              Đến nơi lúc
+                            </Text>
+                            <Text fontSize="md">
+                              {toVnDateTimeString(bookingDetail.dropoffTime)}
+                            </Text>
+                          </VStack>
+                        </HStack>
+                        <HStack alignItems="center" mt="3">
+                          <MapOutlineIcon
+                            size={20}
+                            color={themeColors.primary}
+                          />
+                          <VStack ml="2">
+                            <Text color={themeColors.primary} bold>
+                              Khoảng cách
+                            </Text>
+                            <Text fontSize="md">{distance.toFixed(1)} km</Text>
+                          </VStack>
+                        </HStack>
+                        <HStack alignItems="center" mt="3">
+                          <ClockIcon size={20} color={themeColors.primary} />
+                          <VStack ml="2">
+                            <Text color={themeColors.primary} bold>
+                              Thời gian di chuyến
+                            </Text>
+                            <Text fontSize="md">
+                              {getDifference(
+                                bookingDetail.pickupTime,
+
+                                bookingDetail.dropoffTime
+                              ).diffMinutes.toFixed(0)}{" "}
+                              phút
+                            </Text>
+                          </VStack>
                         </HStack>
                       </VStack>
                     </View>

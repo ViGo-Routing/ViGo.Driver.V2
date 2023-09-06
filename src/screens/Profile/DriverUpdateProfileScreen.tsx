@@ -322,6 +322,8 @@ const DriverUpdateProfileScreen = () => {
           setIsSubmitted(false);
         }
       }
+
+      setCount(1);
     } catch (err) {
       throw err;
     } finally {
@@ -329,11 +331,15 @@ const DriverUpdateProfileScreen = () => {
     }
   };
 
+  const [count, setCount] = useState(0);
+
   useEffect(() => {
-    if (isSubmitted == true) {
+    if (isSubmitted == true && count === 1) {
       setActiveStep(3);
+    } else {
+      setActiveStep(0);
     }
-  }, [isSubmitted]);
+  }, [isSubmitted, count]);
 
   useEffect(() => {
     // setIsLoading(true);
@@ -657,7 +663,7 @@ const DriverUpdateProfileScreen = () => {
             stepCount={stepIndicatorData.length}
             // onPress={setActiveStep}
           />
-          {isSubmitted && (
+          {isSubmitted && count == 1 && (
             <Center marginBottom={"2"} mt="2">
               {/* <Text>Hồ sơ của bạn đã được gửi đến ViGo!</Text> */}
               <Alert status="info" colorScheme={"info"}>

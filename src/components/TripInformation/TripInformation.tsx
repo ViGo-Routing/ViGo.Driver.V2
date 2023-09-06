@@ -241,7 +241,7 @@ const TripFullInformation = ({
                   paddingRight="0.5"
                   // isTruncated
                 >
-                  {`${distance.toFixed(2)} km`}
+                  {`${distance?.toFixed(2)} km`}
                 </Text>
               </VStack>
             </HStack>
