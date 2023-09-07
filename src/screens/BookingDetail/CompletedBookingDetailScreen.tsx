@@ -54,6 +54,7 @@ import {
   renderTransacionType,
   renderTransactionTypeOperator,
 } from "../../utils/enumUtils/walletEnumUtils";
+import StarRating from "../../components/Profile/StarRating";
 
 interface CompletedBookingDetailScreenProps {}
 
@@ -163,23 +164,24 @@ const CompletedBookingDetailScreen =
       setDuration(result.duration);
     };
 
-    const renderRateStar = (rate: number) => {
-      let stars = [];
-      for (let i = 0; i < 5; i++) {
-        const starElement = (
-          <Box>
-            {i > rate - 1 ? (
-              <StarOutlineIcon key={`star-${i}`} size={15} color="#FDCC0D" />
-            ) : (
-              <StarIcon key={`star-${i}`} size={15} color="#FDCC0D" />
-            )}
-          </Box>
-        );
-        stars.push(starElement);
-      }
+    // const renderRateStar = (rate: number) => {
+    //   console.log(rate);
+    //   let stars = [];
+    //   for (let i = 0; i < 5; i++) {
+    //     const starElement = (
+    //       <Box key={`box-star-${i}`}>
+    //         {i > rate - 1 ? (
+    //           <StarOutlineIcon key={`star-${i}`} size={15} color="#FDCC0D" />
+    //         ) : (
+    //           <StarIcon key={`star-${i}`} size={15} color="#FDCC0D" />
+    //         )}
+    //       </Box>
+    //     );
+    //     stars.push(starElement);
+    //   }
 
-      return stars;
-    };
+    //   return stars;
+    // };
 
     useEffect(() => {
       getBookingDetailData();
@@ -490,7 +492,7 @@ const CompletedBookingDetailScreen =
                               </Text>
                               /5
                             </Text>
-                            <HStack>{renderRateStar(4)}</HStack>
+                            <StarRating rate={bookingDetail.rate} />
                           </VStack>
                           {bookingDetail.feedback && (
                             <VStack ml="5">

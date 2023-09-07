@@ -17,7 +17,9 @@ import { themeColors } from "../../../assets/theme/index";
 import Map from "../../components/Map/Map";
 import { getRouteById } from "../../services/routeService";
 import {
+  cancelBookingDetail,
   getBookingDetail,
+  getCancelFee,
   pickBookingDetailById,
   updateStatusBookingDetail,
 } from "../../services/bookingDetailService";
@@ -34,6 +36,7 @@ import ErrorAlert from "../../components/Alert/ErrorAlert";
 import { SwipeablePanel } from "../../components/SwipeablePanel";
 import BookingDetailPanel, {
   BookingDetailSmallPanel,
+  CancelBookingDetailConfirmAlert,
 } from "../BookingDetail/BookingDetailPanel";
 import { eventNames, getErrorMessage } from "../../utils/alertUtils";
 import { Box, HStack, Text } from "native-base";
@@ -66,6 +69,8 @@ const StartRouteScreen = () => {
   const [destinationPosition, setDestinationPosition] = useState(null);
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
+  const [cancelFee, setCancelFee] = useState(0);
 
   const eventEmitter = new NativeEventEmitter();
 
@@ -247,6 +252,57 @@ const StartRouteScreen = () => {
     }
   };
 
+  const openConfirmCancelTrip = async () => {
+    try {
+      setIsLoading(true);
+      const bookingDetailId = bookingDetail.id;
+      const cancelFee = await getCancelFee(bookingDetailId);
+      setCancelFee(cancelFee);
+      setIsCancelConfirmOpen(true);
+    } catch (error) {
+      handleError("Có lỗi xảy ra", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConfirmCancelTrip = async () => {
+    // const bookingId = bookingDetail.bookingId;
+
+    try {
+      setIsLoading(true);
+      const response = await cancelBookingDetail(bookingDetail.id);
+      if (response) {
+        eventEmitter.emit(eventNames.SHOW_TOAST, {
+          // title: "Xác nhận chuyến đi",
+          title: "Hủy chuyến thành công!",
+          description: "",
+          status: "success",
+          // placement: "top",
+          // isDialog: true,
+          isSlide: true,
+          duration: 5000,
+        });
+        // navigation.navigate("Schedule", { date: bookingDetail.date });
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: "Home",
+              // params: {
+              //   bookingDetailId: bookingDetail.id,
+              // },
+            },
+          ],
+        });
+      }
+    } catch (error) {
+      handleError("Có lỗi xảy ra", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const renderActionButton = () => {
     return (
       <View
@@ -274,6 +330,8 @@ const StartRouteScreen = () => {
       </View>
     );
   };
+
+  console.log(bookingDetail?.id);
 
   return (
     <View style={styles.container}>
@@ -327,6 +385,7 @@ const StartRouteScreen = () => {
                   distance={distance}
                   // handlePickBooking={openConfirmPickBooking}
                   actionButton={renderActionButton()}
+                  onCancelClick={openConfirmCancelTrip}
                 />
               </Box>
             </SwipeablePanel>
@@ -334,19 +393,29 @@ const StartRouteScreen = () => {
         </ErrorAlert>
       </View>
       {bookingDetail && duration && (
-        <StartRouteConfirmAlert
-          key={"start-route-screen"}
-          confirmOpen={isConfirmOpen}
-          setConfirmOpen={setIsConfirmOpen}
-          // item={bookingDetail}
-          handleOkPress={() => {
-            handleStartRoute();
-          }}
-          // pickingFee={pickingFee}
-          pickupTime={bookingDetail.customerDesiredPickupTime}
-          duration={duration}
-          tripDate={bookingDetail.date}
-        />
+        <>
+          <StartRouteConfirmAlert
+            key={"start-route-alert"}
+            confirmOpen={isConfirmOpen}
+            setConfirmOpen={setIsConfirmOpen}
+            // item={bookingDetail}
+            handleOkPress={() => {
+              handleStartRoute();
+            }}
+            // pickingFee={pickingFee}
+            pickupTime={bookingDetail.customerDesiredPickupTime}
+            duration={duration}
+            tripDate={bookingDetail.date}
+          />
+
+          <CancelBookingDetailConfirmAlert
+            key={"cancel-trip-modal"}
+            confirmOpen={isCancelConfirmOpen}
+            setConfirmOpen={setIsCancelConfirmOpen}
+            handleOkPress={() => handleConfirmCancelTrip()}
+            cancelFee={cancelFee}
+          />
+        </>
       )}
     </View>
   );

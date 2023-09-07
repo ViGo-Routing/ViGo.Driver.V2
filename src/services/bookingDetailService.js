@@ -140,3 +140,18 @@ export const getCurrentTrip = async (driverId) => {
 
   return response.status == 204 ? null : response.data;
 };
+
+export const cancelBookingDetail = async (bookingDetailId) => {
+  const response = await apiManager.put(
+    `api/BookingDetail/Cancel/${bookingDetailId}`
+  );
+
+  return response.data;
+};
+
+export const getCancelFee = async (bookingDetailId) => {
+  const response = await apiManager.get(
+    `api/BookingDetail/Cancel/Fee/${bookingDetailId}`
+  );
+  return response.data;
+};

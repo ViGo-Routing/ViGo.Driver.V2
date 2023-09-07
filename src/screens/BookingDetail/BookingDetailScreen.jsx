@@ -219,6 +219,8 @@ const BookingDetailScreen = () => {
     navigation.navigate("CustomerDetail");
   };
 
+  const eventEmitter = new NativeEventEmitter();
+
   const openConfirmPickBooking = async () => {
     try {
       setIsLoading(true);
@@ -232,8 +234,6 @@ const BookingDetailScreen = () => {
       setIsLoading(false);
     }
   };
-
-  const eventEmitter = new NativeEventEmitter();
 
   // const
   const handleConfirmPickBooking = async () => {

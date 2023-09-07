@@ -2,8 +2,9 @@ import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { themeColors } from "../../../assets/theme";
 import { useNavigation } from "@react-navigation/native";
+import StarRating from "../Profile/StarRating";
 
-const ProfileCard = ({ name, phoneNumber, imageSource, onPress }) => {
+const ProfileCard = ({ name, phoneNumber, rate, imageSource, onPress }) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity onPress={onPress}>
@@ -12,6 +13,7 @@ const ProfileCard = ({ name, phoneNumber, imageSource, onPress }) => {
         <View style={styles.textContainer}>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.phoneNumber}>{phoneNumber}</Text>
+          <StarRating rate={rate} />
         </View>
       </View>
     </TouchableOpacity>

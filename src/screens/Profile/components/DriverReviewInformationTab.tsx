@@ -53,14 +53,15 @@ const DriverReviewInformationTab = ({
 }: DriverReviewInformationTabProps) => {
   const { user, setUser } = useContext(UserContext);
 
-  const formatDate = (rawDate: any) => {
+  const formatDate = (rawDate) => {
     let date = new Date(rawDate);
+    // console.log(dob);
 
-    let year = date.getFullYear();
-    let month = date.getMonth();
-    let day = date.getDate();
+    // let year = date.getFullYear();
+    // let month = date.getMonth();
+    // let day = date.getDate();
 
-    return `${day}-${month + 1}-${year}`;
+    return moment(date).format("DD/MM/YYYY").toString();
   };
 
   return (

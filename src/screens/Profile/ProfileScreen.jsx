@@ -5,7 +5,11 @@ import Header from "../../components/Header/Header";
 import ProfileCard from "../../components/Card/ProfileCard";
 // import { Ionicons } from '@expo/vector-icons'
 import { themeColors, vigoStyles } from "../../../assets/theme/index";
-import { getProfile, logUserOut } from "../../services/userService";
+import {
+  getProfile,
+  getUserAnalysis,
+  logUserOut,
+} from "../../services/userService";
 import {
   ArrowLeftOnRectangleIcon,
   BellAlertIcon,
@@ -18,6 +22,14 @@ import {
   UserIcon,
   WalletIcon,
 } from "react-native-heroicons/solid";
+import {
+  UsersIcon as UsersOutlineIcon,
+  GiftIcon as GiftOutlineIcon,
+  EnvelopeIcon as EnvelopeOutlineIcon,
+  FireIcon as FireOutlineIcon,
+  XCircleIcon as XCircleOutlineIcon,
+  TruckIcon as TruckOutlineIcon,
+} from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
 import { removeItem } from "../../utils/storageUtils";
 import { UserContext } from "../../context/UserContext";
@@ -39,6 +51,9 @@ import {
 } from "native-base";
 import { getVehicles } from "../../services/vehicleService";
 import { getMaximumDob } from "../../utils/datetimeUtils";
+import moment from "moment";
+import { toPercent } from "../../utils/numberUtils";
+import { getCancelRateTextColor } from "../../utils/userUtils";
 
 const ProfileSreen = () => {
   const navigation = useNavigation();
@@ -61,6 +76,11 @@ const ProfileSreen = () => {
 
   const [dob, setDob] = useState(defaultDob);
 
+  const [rating, setRating] = useState(0);
+  const [canceledTripRate, setCanceledTripRate] = useState(0);
+
+  const [completedTrips, setCompletedTrips] = useState(0);
+
   const [vehicleType, setVehicleType] = useState("");
   const [vehicleTypeText, setVehicleTypeText] = useState("");
   const [vehiclePlate, setVehiclePlate] = useState("");
@@ -69,11 +89,11 @@ const ProfileSreen = () => {
     let date = new Date(rawDate);
     // console.log(dob);
 
-    let year = date.getFullYear();
-    let month = date.getMonth();
-    let day = date.getDate();
+    // let year = date.getFullYear();
+    // let month = date.getMonth();
+    // let day = date.getDate();
 
-    return `${day}-${month + 1}-${year}`;
+    return moment(date).format("DD/MM/YYYY").toString();
   };
 
   const loadInitialData = async () => {
@@ -86,7 +106,13 @@ const ProfileSreen = () => {
         setGender(profile.gender);
         setDob(new Date(profile.dateOfBirth));
         setAvatarSource(profile.avatarUrl);
+        setRating(profile.rating);
+        setCanceledTripRate(profile.canceledTripRate);
       }
+
+      const analysis = await getUserAnalysis(user.id);
+      setCompletedTrips(analysis.totalCompletedTrips);
+
       const vehicles = await getVehicles(user.id);
       // console.log(vehicles);
       if (vehicles && vehicles.length > 0) {
@@ -203,24 +229,31 @@ const ProfileSreen = () => {
   return (
     <SafeAreaView style={vigoStyles.container}>
       {/* <Header title="Thông tin tài khoản" /> */}
-      <View style={vigoStyles.body}>
+      <View style={[vigoStyles.body, { paddingHorizontal: 0 }]}>
         <ViGoSpinner isLoading={isLoading} />
         <ErrorAlert isError={isError} errorMessage={errorMessage}>
-          <ProfileCard
-            // onPress={() =>
-            //   navigation.navigate("EditProfile", { data: response })
-            // }
-            name={name ?? ""}
-            phoneNumber={user.phone ?? ""}
-            imageSource={
-              avatarSource
-                ? { uri: avatarSource }
-                : require("../../../assets/images/no-image.jpg")
-            }
-          />
+          <Box style={{ paddingHorizontal: 20 }}>
+            <ProfileCard
+              // onPress={() =>
+              //   navigation.navigate("EditProfile", { data: response })
+              // }
+              name={name ?? ""}
+              phoneNumber={user?.phone ?? ""}
+              imageSource={
+                avatarSource
+                  ? { uri: avatarSource }
+                  : require("../../../assets/images/no-image.jpg")
+              }
+              rate={rating}
+            />
+          </Box>
 
           <ScrollView mt="2">
-            <HStack mt="4" justifyContent="space-between">
+            <HStack
+              mt="4"
+              justifyContent="space-between"
+              style={{ paddingHorizontal: 20 }}
+            >
               <TouchableOpacity
                 key={"my-wallet"}
                 // style={styles.list}
@@ -245,39 +278,57 @@ const ProfileSreen = () => {
                 </HStack>
               </TouchableOpacity>
             </HStack>
-            <VStack pb="4">
-              <Box>
-                <Box marginTop={3}>
-                  <FormControl>
-                    <FormControl.Label>Giới tính</FormControl.Label>
-                    <Input
-                      placeholder="Nam hoặc nữ"
-                      value={gender == true ? "Nam" : "Nữ"}
-                      isReadOnly
-                      // variant={"filled"}
-                      // style={{ backgroundColor: "white" }}
-                      style={styles.input}
-                    />
-                  </FormControl>
-                </Box>
+            <VStack mt={3} pb="4" backgroundColor={themeColors.cardColor}>
+              <Box style={{ paddingHorizontal: 20 }}>
+                <Heading mt={3} size={"sm"} marginBottom={4}>
+                  Thông tin cá nhân
+                </Heading>
+                <HStack alignItems="center">
+                  {/* <FormControl>
+                      <FormControl.Label>Giới tính</FormControl.Label>
+                      <Input
+                        placeholder="Nam hoặc nữ"
+                        value={gender == true ? "Nam" : "Nữ"}
+                        isReadOnly
+                        // variant={"filled"}
+                        // style={{ backgroundColor: "white" }}
+                        style={styles.input}
+                      />
+                      <Text bold>{gender == true ? "Nam" : "Nữ"}</Text>
+                    </FormControl> */}
+                  <UsersOutlineIcon size={17} color="black" />
+                  <Text ml="2">
+                    Giới tính <Text bold>{gender == true ? "Nam" : "Nữ"}</Text>
+                  </Text>
+                </HStack>
 
-                <Box marginTop={3}>
-                  <FormControl>
-                    <FormControl.Label>Ngày sinh</FormControl.Label>
+                <HStack marginTop={3} alignItems="center">
+                  {/* <FormControl>
+                      <FormControl.Label>Ngày sinh</FormControl.Label>
 
-                    <Input
-                      placeholder="Nhập ngày sinh"
-                      value={dob ? formatDate(dob) : ""}
-                      // onChangeText={setDob}
-                      // ref={dobRef}
-                      style={styles.input}
-                      isReadOnly={true}
-                    />
-                  </FormControl>
-                </Box>
+                      <Input
+                        placeholder="Nhập ngày sinh"
+                        value={dob ? formatDate(dob) : ""}
+                        // onChangeText={setDob}
+                        // ref={dobRef}
+                        style={styles.input}
+                        isReadOnly={true}
+                      />
+                      <Text bold>
+                        {dob ? formatDate(dob) : "Chưa có dữ liệu"}
+                      </Text>
+                    </FormControl> */}
+                  <GiftOutlineIcon size={17} color="black" />
+                  <Text ml="2">
+                    Ngày sinh{" "}
+                    <Text bold>
+                      {dob ? formatDate(dob) : "Chưa có dữ liệu"}
+                    </Text>
+                  </Text>
+                </HStack>
 
-                <Box marginTop={3}>
-                  <FormControl>
+                <HStack marginTop={3} alignItems="center">
+                  {/* <FormControl>
                     <FormControl.Label>Địa chỉ email</FormControl.Label>
                     <Input
                       placeholder="Nhập địa chỉ email"
@@ -292,47 +343,107 @@ const ProfileSreen = () => {
                       // style={{ backgroundColor: "white" }}
                       style={styles.input}
                     />
+                    <Text bold>{email}</Text>
+                  </FormControl> */}
+                  <EnvelopeOutlineIcon size={17} color="black" />
+                  <Text ml="2">
+                    Địa chỉ email: <Text bold>{email}</Text>
+                  </Text>
+                </HStack>
+              </Box>
+            </VStack>
+
+            <VStack mt={5} pb="2" backgroundColor={themeColors.cardColor}>
+              <Box style={{ paddingHorizontal: 20 }}>
+                <Heading mt={3} size={"sm"} marginBottom={4}>
+                  Thông tin tài xế
+                </Heading>
+                <HStack alignItems="center">
+                  <TruckOutlineIcon size={17} color="black" />
+                  <Text ml="2">
+                    Phương tiện{" "}
+                    <Text bold>{`${vehicleTypeText} ${vehiclePlate}`}</Text>
+                  </Text>
+                </HStack>
+                <HStack alignItems="center" mt="3">
+                  {/* <FormControl>
+                    <FormControl.Label>
+                      Số chuyến đi đã hoàn thành
+                    </FormControl.Label>
+                    <Input
+                        placeholder="Đã hoành thành"
+                        value={completedTrips > 0 ? `${completedTrips} chuyến` : `Chưa có thông tin`}
+                        isReadOnly
+                        // variant={"filled"}
+                        // style={{ backgroundColor: "white" }}
+                        style={styles.input}
+                      />
+                    <Text bold>
+                      {completedTrips > 0
+                        ? `${completedTrips} chuyến`
+                        : `Chưa có thông tin`}
+                    </Text>
+                  </FormControl> */}
+                  <FireOutlineIcon size={17} color="black" />
+                  <Text ml="2">
+                    Số chuyến đi đã hoàn thành{" "}
+                    <Text bold>
+                      {completedTrips > 0
+                        ? `${completedTrips} chuyến`
+                        : `Chưa có thông tin`}
+                    </Text>
+                  </Text>
+                </HStack>
+
+                <HStack marginTop={3} alignItems="center">
+                  {/* <FormControl>
+                    <FormControl.Label>Tỉ lệ hủy chuyến</FormControl.Label>
+
+                    <Text color={getCancelRateTextColor(canceledTripRate)}>
+                      {toPercent(canceledTripRate)}
+                    </Text>
+                  </FormControl> */}
+                  <XCircleOutlineIcon size={17} color="black" />
+                  <Text ml="2" pt="0">
+                    Tỉ lệ hủy chuyến{" "}
+                    <Text bold color={getCancelRateTextColor(canceledTripRate)}>
+                      {toPercent(canceledTripRate)}
+                    </Text>
+                  </Text>
+                </HStack>
+                {/* <Box>
+                  <FormControl>
+                    <FormControl.Label>Loại phương tiện</FormControl.Label>
+                    <Input
+                      placeholder="Loại phương tiện"
+                      value={vehicleTypeText}
+                      isReadOnly
+                      // variant={"filled"}
+                      // style={{ backgroundColor: "white" }}
+                      style={styles.input}
+                    />
                   </FormControl>
                 </Box>
+                <Box marginTop={3}>
+                  <FormControl>
+                    <FormControl.Label>Biển số xe</FormControl.Label>
+                    <Input
+                      placeholder="72A-852.312"
+                      value={vehiclePlate}
+                      keyboardType="default"
+                      // onChangeText={setVehiclePlate}
+                      // isReadOnly={isSubmitted}
+                      isReadOnly
+                      // variant={"filled"}
+                      // style={{ backgroundColor: "white" }}
+                      style={styles.input}
+                    />
+                  </FormControl>
+                </Box> */}
               </Box>
             </VStack>
 
-            <VStack pt={4} pb="2">
-              <Heading size={"md"} marginBottom={2}>
-                Phương tiện
-              </Heading>
-              <Box>
-                <FormControl>
-                  <FormControl.Label>Loại phương tiện</FormControl.Label>
-                  <Input
-                    placeholder="Loại phương tiện"
-                    value={vehicleTypeText}
-                    isReadOnly
-                    // variant={"filled"}
-                    // style={{ backgroundColor: "white" }}
-                    style={styles.input}
-                  />
-                </FormControl>
-              </Box>
-              <Box marginTop={3}>
-                <FormControl>
-                  <FormControl.Label>Biển số xe</FormControl.Label>
-                  <Input
-                    placeholder="72A-852.312"
-                    value={vehiclePlate}
-                    keyboardType="default"
-                    // onChangeText={setVehiclePlate}
-                    // isReadOnly={isSubmitted}
-                    isReadOnly
-                    // variant={"filled"}
-                    // style={{ backgroundColor: "white" }}
-                    style={styles.input}
-                  />
-                </FormControl>
-              </Box>
-            </VStack>
-
-            <HStack mt="4">
+            <HStack mt="4" style={{ paddingHorizontal: 20 }}>
               <TouchableOpacity
                 style={[
                   vigoStyles.buttonWhite,

@@ -6,6 +6,7 @@ import { PhoneArrowUpRightIcon } from "react-native-heroicons/outline";
 import { themeColors } from "../../../assets/theme";
 import call from "react-native-phone-call";
 import { handleError } from "../../utils/alertUtils";
+import { getCancelRateTextColor } from "../../utils/userUtils";
 interface CustomerInformationCardProps {
   customer: any;
   displayCustomerText?: boolean | undefined;
@@ -17,16 +18,6 @@ const CustomerInformationCard = ({
   displayCustomerText = true,
   displayCall = false,
 }: CustomerInformationCardProps) => {
-  const getCancelRateTextColor = (rate: number): ColorType => {
-    if (rate <= 0.25) {
-      return "green.500";
-    } else if (rate <= 0.5) {
-      return "orange.500";
-    } else {
-      return "red.500";
-    }
-  };
-
   const handleCall = (phoneNumber: string) => {
     const args = {
       number: phoneNumber,
