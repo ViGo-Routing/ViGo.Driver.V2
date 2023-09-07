@@ -74,6 +74,11 @@ export const getCurrentUser = async () => {
   return response.data;
 };
 
+export const getUserAnalysis = async (userId) => {
+  const response = await apiManager.get(`api/User/Analysis/${userId}`);
+  return response.data;
+};
+
 export const logUserOut = async (setUser, navigation) => {
   await removeItem("token");
   await auth().signOut();
