@@ -105,7 +105,7 @@ const PickBookingDetailConfirmAlert = ({
 };
 
 const CancelBookingDetailConfirmAlert = ({
-  item,
+  // item,
   // items,
   cancelFee,
   handleOkPress,
@@ -114,56 +114,33 @@ const CancelBookingDetailConfirmAlert = ({
   // key,
 }) => {
   const description = () => {
-    if (item || (items && items.length == 1)) {
-      return (
-        <VStack>
-          <Text>
-            Với việc nhận chuyến xe, bạn sẽ phải trả trước một khoản phí nhận
-            chuyến.
-          </Text>
-          <Text>
-            Sau khi hoàn thành chuyến đi, bạn sẽ được trả toàn bộ số tiền của
-            chuyến đi.
-          </Text>
-          <Text marginTop="2">
-            Phí nhận chuyến: <Text bold>{vndFormat(pickingFee)}</Text>
-          </Text>
-        </VStack>
-      );
-    } else if (items && items.length > 1) {
-      return (
-        <VStack>
-          <Text>
-            Với việc nhận {items.length} chuyến xe này, bạn sẽ phải trả trước
-            một khoản phí nhận chuyến.
-          </Text>
-          <Text>
-            Sau khi hoàn thành mỗi chuyến đi, bạn sẽ được trả toàn bộ số tiền
-            của chuyến đi đó.
-          </Text>
-          <Text marginTop="2">
-            Phí nhận chuyến: <Text bold>{vndFormat(pickingFee)}</Text> cho mỗi
-            chuyến đi nhận thành công.
-          </Text>
-          <Text marginTop="2">
-            Ước tính: <Text bold>{vndFormat(pickingFee * items.length)}</Text>
-          </Text>
-        </VStack>
-      );
-    }
-    return <></>;
+    return (
+      <VStack>
+        <Text>
+          Với việc hủy chuyến xe, bạn sẽ phải chịu một khoản phí hủy chuyến (nếu
+          có) tùy vào thời gian và chuyến xe mà bạn hủy.
+        </Text>
+        <Text>
+          Phí nhận chuyến đi (sau khi đã trừ phí hủy chuyến) sẽ được hoàn về ví
+          của bạn sau khi hủy chuyến thành công.
+        </Text>
+        <Text marginTop="2">
+          Phí hủy chuyến tạm tính: <Text bold>{vndFormat(cancelFee)}</Text>
+        </Text>
+      </VStack>
+    );
   };
 
   return (
     <ConfirmAlert
-      title="Nhận chuyến xe"
+      title="Huỷ chuyến xe"
       description={description()}
       okButtonText="Xác nhận"
       cancelButtonText="Hủy"
       onOkPress={() => handleOkPress()}
       isOpen={confirmOpen}
       setIsOpen={setConfirmOpen}
-      key={`confirm-booking-detail-alert`}
+      key={`confirm-cancel-booking-detail-alert`}
     />
   );
 };
@@ -177,6 +154,7 @@ const BookingDetailPanel = ({
   duration,
   distance,
   displayButtons = true,
+  onCancelClick = undefined,
 }) => {
   // const { user } = useContext(UserContext);
   // console.log(item.status);
@@ -230,7 +208,11 @@ const BookingDetailPanel = ({
                   },
                 ]}
               >
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    onCancelClick();
+                  }}
+                >
                   <HStack alignItems="center">
                     <XCircleIcon size={20} color={"red"} />
                     <Text marginLeft={2} color="red.500" bold>
@@ -364,5 +346,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export { BookingDetailSmallPanel, PickBookingDetailConfirmAlert };
+export {
+  BookingDetailSmallPanel,
+  PickBookingDetailConfirmAlert,
+  CancelBookingDetailConfirmAlert,
+};
 export default BookingDetailPanel;
