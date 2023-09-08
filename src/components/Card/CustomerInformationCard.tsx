@@ -7,6 +7,7 @@ import { themeColors } from "../../../assets/theme";
 import call from "react-native-phone-call";
 import { handleError } from "../../utils/alertUtils";
 import { getCancelRateTextColor } from "../../utils/userUtils";
+import { useNavigation } from "@react-navigation/native";
 interface CustomerInformationCardProps {
   customer: any;
   displayCustomerText?: boolean | undefined;
@@ -18,6 +19,8 @@ const CustomerInformationCard = ({
   displayCustomerText = true,
   displayCall = false,
 }: CustomerInformationCardProps) => {
+  const navigation = useNavigation();
+
   const handleCall = (phoneNumber: string) => {
     const args = {
       number: phoneNumber,
@@ -26,7 +29,7 @@ const CustomerInformationCard = ({
     try {
       call(args);
     } catch (error) {
-      handleError("Có lỗi xảy ra", error);
+      handleError("Có lỗi xảy ra", error, navigation);
     }
   };
 
@@ -34,7 +37,7 @@ const CustomerInformationCard = ({
     <>
       {customer && (
         <>
-          <HStack>
+          <HStack alignItems="center">
             <Image
               source={
                 customer.avatarUrl

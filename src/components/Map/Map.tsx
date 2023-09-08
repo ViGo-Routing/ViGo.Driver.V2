@@ -320,7 +320,7 @@ const Map = ({
         setIsPanelActive(true);
       }
     } catch (error) {
-      handleError("Có lỗi xảy ra", error);
+      handleError("Có lỗi xảy ra", error, navigation);
     } finally {
       setIsLoading(false);
     }

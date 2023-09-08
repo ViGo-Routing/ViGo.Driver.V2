@@ -49,7 +49,7 @@ import {
   useToast,
   Pressable,
 } from "native-base";
-import { issuedAtTime } from "@firebase/util";
+// import { issuedAtTime } from "@firebase/util";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { getMaximumDob } from "../../utils/datetimeUtils";
 import { CheckIcon } from "react-native-heroicons/solid";
@@ -157,7 +157,7 @@ const NewDriverUpdateProfileScreen = () => {
 
     if (result.errorMessage) {
       // Alert.alert("Có lỗi xảy ra", "Chi tiết: " + result.errorMessage);
-      handleError("Có lỗi xảy ra", result.errorMessage);
+      handleError("Có lỗi xảy ra", result.errorMessage, navigation);
     } else {
       if (result.assets) {
         setIsLoading(true);
@@ -189,7 +189,7 @@ const NewDriverUpdateProfileScreen = () => {
           });
         } catch (error) {
           // Alert.alert("Có lỗi xảy ra", "Chi tiết: " + error.message);
-          handleError("Có lỗi xảy ra", error);
+          handleError("Có lỗi xảy ra", error, navigation);
           setIsLoading(false);
         } finally {
           // setIsLoading(false);
@@ -275,7 +275,7 @@ const NewDriverUpdateProfileScreen = () => {
       //   "Hồ sơ tài xế của bạn đã được gửi tới hệ thống ViGo thành công!"
       // );
     } catch (err) {
-      handleError("Có lỗi xảy ra", err);
+      handleError("Có lỗi xảy ra", err, navigation);
       // console.error(err);
       // if (err.response) {
       //   Alert.alert("Có lỗi xảy ra", "Chi tiết: " + err.response.data);
@@ -494,7 +494,7 @@ const NewDriverUpdateProfileScreen = () => {
       // }
     } catch (err) {
       // Alert.alert("Có lỗi xảy ra", "Chi tiết: " + err.message);
-      handleError("Có lỗi xảy ra", err);
+      handleError("Có lỗi xảy ra", err, navigation);
       setIsLoading(false);
     } finally {
     }

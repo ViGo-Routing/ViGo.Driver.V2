@@ -229,7 +229,7 @@ const BookingDetailScreen = () => {
       setPickingFee(pickingFee);
       setIsConfirmOpen(true);
     } catch (error) {
-      handleError("Có lỗi xảy ra", error);
+      handleError("Có lỗi xảy ra", error, navigation);
     } finally {
       setIsLoading(false);
     }
@@ -264,7 +264,7 @@ const BookingDetailScreen = () => {
         });
       }
     } catch (error) {
-      handleError("Có lỗi xảy ra", error);
+      handleError("Có lỗi xảy ra", error, navigation);
     } finally {
       setIsLoading(false);
     }
