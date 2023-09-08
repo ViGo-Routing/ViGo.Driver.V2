@@ -21,6 +21,7 @@ import {
   requestPermission,
   initialize,
 } from "react-native-floating-bubble";
+import { FlagIcon } from "react-native-heroicons/outline";
 
 const googleMapOpenUrl = ({ latitude, longitude, address }: any) => {
   const latLng = `${latitude},${longitude}`;
@@ -32,7 +33,8 @@ const googleMapOpenUrl = ({ latitude, longitude, address }: any) => {
 const renderActionButton = (
   item: any,
   handleActionButtonClick?: () => void,
-  destination?: any
+  destination?: any,
+  handleReportButtonClick?: () => void
 ) => {
   // console.log("Render Action");
   // console.log(destination);
@@ -82,41 +84,94 @@ const renderActionButton = (
   };
 
   return (
-    <HStack
-      justifyContent={destination ? "space-between" : "flex-end"}
-      alignItems="center"
-      paddingTop="2"
-    >
-      {destination && (
-        <TouchableOpacity
-          onPress={() => {
-            handleGoogleMapsRoutingClick();
-          }}
-        >
-          <HStack alignItems="center">
-            <ArrowPathRoundedSquareIcon size={20} color={themeColors.primary} />
-            <Text marginLeft={2} style={vigoStyles.buttonWhiteText}>
-              Mở Google Maps
-            </Text>
-          </HStack>
-        </TouchableOpacity>
-      )}
-
-      <TouchableOpacity
-        style={{ ...vigoStyles.buttonPrimary }}
-        onPress={() => {
-          // openConfirmPicking();
-          handleActionButtonClick && handleActionButtonClick();
-        }}
+    <VStack pb="3">
+      <HStack
+        justifyContent={"space-between"}
+        alignItems="center"
+        paddingTop="2"
       >
-        <HStack alignItems="center">
-          <PaperAirplaneIcon size={20} color={"white"} />
-          <Text marginLeft={2} style={{ ...vigoStyles.buttonPrimaryText }}>
-            {actionButtonText()}
-          </Text>
+        {destination && (
+          <TouchableOpacity
+            onPress={() => {
+              handleGoogleMapsRoutingClick();
+            }}
+          >
+            <HStack alignItems="center">
+              <ArrowPathRoundedSquareIcon
+                size={20}
+                color={themeColors.primary}
+              />
+              <Text marginLeft={2} style={vigoStyles.buttonWhiteText}>
+                Mở Google Maps
+              </Text>
+            </HStack>
+          </TouchableOpacity>
+        )}
+
+        {!destination && handleReportButtonClick && (
+          <HStack pb="3" mt="2">
+            <View
+              // flex={1}
+              style={[vigoStyles.buttonWhite, { borderColor: "red" }]}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  handleReportButtonClick && handleReportButtonClick();
+                }}
+              >
+                <HStack justifyContent="center" alignItems="center">
+                  <FlagIcon size={20} color={"red"} />
+                  <Text marginLeft={2} color="red.500" bold>
+                    Báo cáo
+                  </Text>
+                </HStack>
+              </TouchableOpacity>
+            </View>
+          </HStack>
+        )}
+
+        {handleActionButtonClick && (
+          <TouchableOpacity
+            style={[
+              vigoStyles.buttonPrimary,
+              { paddingLeft: 10, paddingRight: 10 },
+            ]}
+            onPress={() => {
+              // openConfirmPicking();
+              handleActionButtonClick && handleActionButtonClick();
+            }}
+          >
+            <HStack alignItems="center">
+              <PaperAirplaneIcon size={20} color={"white"} />
+              <Text marginLeft={2} style={{ ...vigoStyles.buttonPrimaryText }}>
+                {actionButtonText()}
+              </Text>
+            </HStack>
+          </TouchableOpacity>
+        )}
+      </HStack>
+      {destination && handleReportButtonClick && (
+        <HStack pb="3" mt="2">
+          <View
+            flex={1}
+            style={[vigoStyles.buttonWhite, { borderColor: "red" }]}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                handleReportButtonClick && handleReportButtonClick();
+              }}
+            >
+              <HStack justifyContent="center" alignItems="center">
+                <FlagIcon size={20} color={"red"} />
+                <Text marginLeft={2} color="red.500" bold>
+                  Báo cáo
+                </Text>
+              </HStack>
+            </TouchableOpacity>
+          </View>
         </HStack>
-      </TouchableOpacity>
-    </HStack>
+      )}
+    </VStack>
   );
 };
 
@@ -127,6 +182,7 @@ interface StartingTripBasicInformationProps {
   currentStep: number;
   isInFull?: boolean;
   handleActionButtonClick?: () => void;
+  handleReportButtonClick: () => void;
 }
 
 const StartingTripBasicInformation = ({
@@ -136,6 +192,7 @@ const StartingTripBasicInformation = ({
   currentStep,
   isInFull,
   handleActionButtonClick,
+  handleReportButtonClick,
 }: StartingTripBasicInformationProps) => {
   const renderInformation = () => {
     let estimatedArriveTime;
@@ -192,11 +249,16 @@ const StartingTripBasicInformation = ({
               </VStack>
             </HStack>
             {!isInFull &&
-              renderActionButton(trip, handleActionButtonClick, {
-                latitude: trip.startStation.latitude,
-                longitude: trip.startStation.longitude,
-                address: trip.startStation.address,
-              })}
+              renderActionButton(
+                trip,
+                handleActionButtonClick,
+                {
+                  latitude: trip.startStation.latitude,
+                  longitude: trip.startStation.longitude,
+                  address: trip.startStation.address,
+                },
+                handleReportButtonClick
+              )}
           </>
         );
       case "ARRIVE_AT_PICKUP":
@@ -243,7 +305,13 @@ const StartingTripBasicInformation = ({
                 </Text>
               </VStack>
             </HStack>
-            {!isInFull && renderActionButton(trip, handleActionButtonClick)}
+            {!isInFull &&
+              renderActionButton(
+                trip,
+                handleActionButtonClick,
+                undefined,
+                handleReportButtonClick
+              )}
           </>
         );
       case "GOING_TO_DROPOFF":
@@ -295,14 +363,18 @@ const StartingTripBasicInformation = ({
               </VStack>
             </HStack>
             {!isInFull &&
-              renderActionButton(trip, handleActionButtonClick, {
-                latitude: trip.endStation.latitude,
-                longitude: trip.endStation.longitude,
-                address: trip.endStation.address,
-              })}
+              renderActionButton(
+                trip,
+                handleActionButtonClick,
+                {
+                  latitude: trip.endStation.latitude,
+                  longitude: trip.endStation.longitude,
+                  address: trip.endStation.address,
+                },
+                handleReportButtonClick
+              )}
           </>
         );
-        return <></>;
       case "ARRIVE_AT_DROPOFF":
         return <></>;
       default:
@@ -320,6 +392,7 @@ interface StartingTripFullInformationProps {
   customer: any;
   currentStep: number;
   handleActionButtonClick: () => void;
+  handleReportButtonClick: () => void;
 }
 
 const StartingTripFullInformation = ({
@@ -329,26 +402,41 @@ const StartingTripFullInformation = ({
   customer,
   currentStep,
   handleActionButtonClick,
+  handleReportButtonClick,
 }: StartingTripFullInformationProps) => {
   const renderButtons = () => {
     switch (trip.status) {
       case "ASSIGNED":
         return <></>;
       case "GOING_TO_PICKUP":
-        return renderActionButton(trip, handleActionButtonClick, {
-          latitude: trip.startStation.latitude,
-          longitude: trip.startStation.longitude,
-          address: trip.startStation.address,
-        });
+        return renderActionButton(
+          trip,
+          handleActionButtonClick,
+          {
+            latitude: trip.startStation.latitude,
+            longitude: trip.startStation.longitude,
+            address: trip.startStation.address,
+          },
+          handleReportButtonClick
+        );
       case "ARRIVE_AT_PICKUP":
-        return renderActionButton(trip, handleActionButtonClick);
+        return renderActionButton(
+          trip,
+          handleActionButtonClick,
+          undefined,
+          handleReportButtonClick
+        );
       case "GOING_TO_DROPOFF":
-        return renderActionButton(trip, handleActionButtonClick, {
-          latitude: trip.endStation.latitude,
-          longitude: trip.endStation.longitude,
-          address: trip.endStation.address,
-        });
-        return <></>;
+        return renderActionButton(
+          trip,
+          handleActionButtonClick,
+          {
+            latitude: trip.endStation.latitude,
+            longitude: trip.endStation.longitude,
+            address: trip.endStation.address,
+          },
+          handleReportButtonClick
+        );
       case "ARRIVE_AT_DROPOFF":
         return <></>;
       default:

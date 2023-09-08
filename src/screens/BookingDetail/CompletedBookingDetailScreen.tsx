@@ -429,7 +429,9 @@ const CompletedBookingDetailScreen =
                               Đón khách lúc
                             </Text>
                             <Text fontSize="md">
-                              {toVnDateTimeString(bookingDetail.pickupTime)}
+                              {bookingDetail.pickupTime
+                                ? toVnDateTimeString(bookingDetail.pickupTime)
+                                : "Không có dữ liệu"}
                             </Text>
                           </VStack>
                         </HStack>
@@ -466,12 +468,14 @@ const CompletedBookingDetailScreen =
                               Thời gian di chuyến
                             </Text>
                             <Text fontSize="md">
-                              {getDifference(
-                                bookingDetail.pickupTime,
+                              {bookingDetail.pickupTime &&
+                              bookingDetail.dropoffTime
+                                ? `${getDifference(
+                                    bookingDetail.pickupTime,
 
-                                bookingDetail.dropoffTime
-                              ).diffMinutes.toFixed(0)}{" "}
-                              phút
+                                    bookingDetail.dropoffTime
+                                  ).diffMinutes.toFixed(0)} phút`
+                                : "Không có dữ liệu"}
                             </Text>
                           </VStack>
                         </HStack>

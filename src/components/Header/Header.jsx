@@ -3,7 +3,11 @@ import { View, StyleSheet } from "react-native";
 import { themeColors } from "../../../assets/theme";
 // import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from "@react-navigation/native";
-import { ArrowLeftIcon, ChevronDownIcon } from "react-native-heroicons/solid";
+import {
+  ArrowLeftIcon,
+  ChevronDownIcon,
+  ChevronLeftIcon,
+} from "react-native-heroicons/solid";
 import { Box, HStack, Text, VStack } from "native-base";
 import { TouchableOpacity } from "react-native";
 
@@ -28,7 +32,7 @@ const Header = ({
         return <ChevronDownIcon size={25} color="white" />;
       case "left":
       default:
-        return <ArrowLeftIcon size={25} color="white" />;
+        return <ChevronLeftIcon size={25} color="white" />;
     }
   };
 

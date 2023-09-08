@@ -210,12 +210,13 @@ const StartRouteScreen = () => {
             // placement: "top",
             primaryButtonText: "Đã hiểu",
             isDialog: true,
+            onOkPress: () => {
+              navigation.navigate("CurrentStartingTrip", {
+                bookingDetailId: item.id,
+              });
+            },
           });
           // navigation.navigate("PickCus", { response });
-          navigation.navigate("CurrentStartingTrip", {
-            bookingDetailId: item.id,
-          });
-
           // Alert.alert(
           //   "Xác nhận nhận chuyến đi",
           //   `Bạn hãy đi đón khách đúng giờ nhé!`,
@@ -331,7 +332,7 @@ const StartRouteScreen = () => {
     );
   };
 
-  console.log(bookingDetail?.id);
+  // console.log(bookingDetail?.id);
 
   return (
     <View style={styles.container}>

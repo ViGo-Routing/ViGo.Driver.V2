@@ -7,6 +7,8 @@ import { getUserIdViaToken, isValidToken } from "../utils/tokenUtils";
 import { getProfile } from "../services/userService";
 import { determineDefaultScreen } from "../utils/navigationUtils";
 // import { setUserData } from "../utils/storageUtils";
+import SignalR from "../utils/signalRUtils";
+import { getString } from "../utils/storageUtils";
 
 export const useOnNotificationClickHook = (setIsLoading) => {
   const navigation = useNavigation();
@@ -20,9 +22,9 @@ export const useOnNotificationClickHook = (setIsLoading) => {
     try {
       const isValid = await isValidToken();
       // const user = await getUserData();
-      console.log(isValid);
+      // console.log(isValid);
       if (isValid) {
-        console.log(user);
+        // console.log(user);
         let userData = user;
         if (!userData) {
           const loginUserId = await getUserIdViaToken();
@@ -36,6 +38,7 @@ export const useOnNotificationClickHook = (setIsLoading) => {
             }
           }
         }
+        SignalR.updateToken(await getString("token"));
         // console.log(user);
         // console.log(await getUserIdViaToken());
         // console.log(determineDefaultScreen(userData));

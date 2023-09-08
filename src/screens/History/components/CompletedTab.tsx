@@ -34,7 +34,7 @@ const CompletedTab = ({}: CompletedTabProps) => {
       status,
       pageSize,
       1,
-      "date desc, customerDesiredPickupTime desc"
+      "dropoffTime desc, date desc, customerDesiredPickupTime desc"
     );
     const items = detailsResponse.data.data;
     setList(items);
@@ -69,7 +69,7 @@ const CompletedTab = ({}: CompletedTabProps) => {
         status,
         pageSize,
         nextPageNumber,
-        "date desc, customerDesiredPickupTime desc"
+        "dropoffTime desc, date desc, customerDesiredPickupTime desc"
       );
 
       const moreTrips = [...list, ...trips.data.data];

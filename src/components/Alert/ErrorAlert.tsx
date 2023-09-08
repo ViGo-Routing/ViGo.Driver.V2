@@ -51,7 +51,9 @@ const ErrorAlert = ({
                   size="md"
                   variant="subtle"
                   colorScheme="error"
-                  onPress={() => navigation.navigate("Home")}
+                  onPress={() =>
+                    navigation.navigate("HomeTab", { screen: "Home" })
+                  }
                   leftIcon={<HomeIcon size={24} color={"#801E1E"} />}
                 >
                   Quay về trang chủ

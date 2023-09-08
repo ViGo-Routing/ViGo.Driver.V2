@@ -14,6 +14,7 @@ import {
   getCurrentTrip,
   getUpcomingTrip,
 } from "../../services/bookingDetailService";
+import ErrorAlert from "../../components/Alert/ErrorAlert";
 
 const HomeComponent = ({}) => {
   const navigation = useNavigation();
@@ -127,44 +128,39 @@ const HomeComponent = ({}) => {
         />
       </View>
       <View style={vigoStyles.body}>
-        <Heading fontSize="2xl" marginTop="0" marginLeft="0">
-          Các hành trình còn trống
-        </Heading>
-        {/* <ErrorAlert isError={isError} errorMessage={errorMessage}>
-          <Box marginTop="4"> */}
-
-        {/* {isLoading && <BookingCardSkeleton />} */}
-        {/* {!isLoading && ( */}
-        <FlatList
-          // style={vigoStyles.list}
-          marginTop="3"
-          // paddingBottom="5"
-          // px="3"
-          data={bookingsAvailable}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => {
-            return <>{renderListItem(item, index)}</>;
-          }}
-          ListEmptyComponent={
-            <InfoAlert message="Không có hành trình nào còn trống" />
-          }
-          refreshing={isLoading}
-          onRefresh={() => fetchRouteData()}
-          onEndReached={loadMoreData}
-          onScroll={() => {
-            setOnScroll(true);
-          }}
-          onEndReachedThreshold={0.5}
-          contentContainerStyle={{
-            // paddingHorizontal: 20,
-            paddingVertical: 10,
-            paddingBottom: currentTrip || upcomingTrip ? 60 : 10,
-          }}
-        />
-        {/* )} */}
+        <ErrorAlert isError={isError} errorMessage={errorMessage}>
+          <Heading fontSize="2xl" marginTop="0" marginLeft="0">
+            Các hành trình còn trống
+          </Heading>
+          <FlatList
+            // style={vigoStyles.list}
+            marginTop="3"
+            // paddingBottom="5"
+            // px="3"
+            data={bookingsAvailable}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => {
+              return <>{renderListItem(item, index)}</>;
+            }}
+            ListEmptyComponent={
+              <InfoAlert message="Không có hành trình nào còn trống" />
+            }
+            refreshing={isLoading}
+            onRefresh={() => fetchRouteData()}
+            onEndReached={loadMoreData}
+            onScroll={() => {
+              setOnScroll(true);
+            }}
+            onEndReachedThreshold={0.5}
+            contentContainerStyle={{
+              // paddingHorizontal: 20,
+              paddingVertical: 10,
+              paddingBottom: currentTrip || upcomingTrip ? 60 : 10,
+            }}
+          />
+          {/* )} */}
+        </ErrorAlert>
       </View>
-      {/* </Box>
-        </ErrorAlert> */}
       <HomeTripInformationCard
         currentTrip={currentTrip}
         upcomingTrip={upcomingTrip}

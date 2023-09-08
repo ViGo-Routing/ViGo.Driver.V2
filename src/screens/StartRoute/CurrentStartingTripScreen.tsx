@@ -5,14 +5,23 @@ import {
   updateStatusBookingDetail,
 } from "../../services/bookingDetailService";
 import { getBookingDetailCustomer } from "../../services/userService";
-import { getErrorMessage, handleError } from "../../utils/alertUtils";
+import {
+  eventNames,
+  getErrorMessage,
+  handleError,
+} from "../../utils/alertUtils";
 import { generateMapPoint } from "../../utils/mapUtils";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Box, Button, Image, Text, View } from "native-base";
 import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
 import ErrorAlert from "../../components/Alert/ErrorAlert";
 import Map from "../../components/Map/Map";
-import { StyleSheet, BackHandler, DeviceEventEmitter } from "react-native";
+import {
+  StyleSheet,
+  BackHandler,
+  DeviceEventEmitter,
+  NativeEventEmitter,
+} from "react-native";
 import { SwipeablePanel } from "../../components/SwipeablePanel";
 import {
   StartingTripBasicInformation,
@@ -27,6 +36,7 @@ import moment from "moment";
 import { hideFloatingBubble } from "react-native-floating-bubble";
 import invokeApp from "react-native-invoke-app";
 import CreateReportModal from "./components/CreateReportModal";
+import { createReport } from "../../services/reportService";
 
 interface CurrentStartingTripScreenProps {
   bookingDetailId: string;
@@ -56,6 +66,8 @@ const CurrentStartingTripScreen = () => {
   const [secondPositionIcon, setSecondPositionIcon] = useState(<></>);
 
   const navigation = useNavigation();
+
+  const eventEmitter = new NativeEventEmitter();
 
   const [driverLocation, setDriverLocation] = useState({
     latitude: 0,
@@ -292,11 +304,11 @@ const CurrentStartingTripScreen = () => {
   const getPanelFullHeight = () => {
     switch (bookingDetail.status) {
       case "GOING_TO_PICKUP":
-        return 615;
+        return 630;
       case "ARRIVE_AT_PICKUP":
-        return 615;
+        return 630;
       case "GOING_TO_DROPOFF":
-        return 615;
+        return 630;
       default:
         return 600;
     }
@@ -407,11 +419,60 @@ const CurrentStartingTripScreen = () => {
     }
   };
 
-  const handleReportModalConfirm = (
-    reportType: string,
+  const handleOpenReportModal = () => {
+    setCreateReportModalVisible(true);
+  };
+
+  const handleReportModalConfirm = async (
+    reportType: "BOOKER_NOT_COMING" | "OTHER",
     title: string,
     description: string
-  ) => {};
+  ) => {
+    if (!title || title.length < 5) {
+      handleError(
+        "Thiếu thông tin",
+        "Tiêu đề báo cáo phải có ít nhất 5 kí tự!",
+        navigation
+      );
+    } else {
+      try {
+        setIsLoading(true);
+        const report = await createReport(
+          reportType,
+          title,
+          description,
+          bookingDetail.id
+        );
+
+        if (report) {
+          eventEmitter.emit(eventNames.SHOW_TOAST, {
+            title: "Tạo báo cáo thành công",
+            description: (
+              <Text>
+                Báo cáo của bạn đã được gửi đi thành công! Hãy đợi các QTV xem
+                xét nhé.
+              </Text>
+            ),
+            status: "success",
+            // placement: "top",
+            primaryButtonText: "Đã hiểu",
+            isDialog: true,
+            onOkPress: () => {
+              setCreateReportModalVisible(false);
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Home" }],
+              });
+            },
+          });
+        }
+      } catch (error) {
+        handleError("Có lỗi xảy ra", error, navigation);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -457,12 +518,13 @@ const CurrentStartingTripScreen = () => {
                         currentStep={activeStep}
                         handleActionButtonClick={handleActionButtonClick}
                         // handlePickBooking={openConfirmPickBooking}
+                        handleReportButtonClick={handleOpenReportModal}
                       />
                     </Box>
                   </>
                 }
-                smallPanelHeight={380}
-                largePanelHeight={getPanelFullHeight()}
+                // smallPanelHeight={380}
+                // largePanelHeight={getPanelFullHeight()}
                 scrollViewProps={{
                   scrollEnabled: true,
                 }}
@@ -484,6 +546,7 @@ const CurrentStartingTripScreen = () => {
                       currentStep={activeStep}
                       customer={customer}
                       handleActionButtonClick={handleActionButtonClick}
+                      handleReportButtonClick={handleOpenReportModal}
                     />
                   </Box>
                 </>
@@ -493,6 +556,7 @@ const CurrentStartingTripScreen = () => {
                 setModalVisible={setCreateReportModalVisible}
                 onModalRequestClose={() => {}}
                 onModalConfirm={handleReportModalConfirm}
+                startStationName={bookingDetail?.startStation.name}
               />
             </>
           )}
