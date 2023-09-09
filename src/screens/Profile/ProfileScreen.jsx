@@ -15,6 +15,7 @@ import {
   BellAlertIcon,
   ClipboardDocumentListIcon,
   DocumentCheckIcon,
+  FlagIcon,
   PencilSquareIcon,
   QuestionMarkCircleIcon,
   ShieldCheckIcon,
@@ -125,8 +126,12 @@ const ProfileSreen = () => {
         // setIsSubmitted(false);
       }
     } catch (err) {
-      setErrorMessage(getErrorMessage(err));
-      setIsError(true);
+      if (err.response && err.response.status == 401) {
+        await logUserOut(setUser, navigation);
+      } else {
+        setErrorMessage(getErrorMessage(err));
+        setIsError(true);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -275,6 +280,22 @@ const ProfileSreen = () => {
                 <HStack>
                   <BellAlertIcon size={24} color={themeColors.primary} />
                   <Text style={{ marginLeft: 10 }}>Thông báo của tôi</Text>
+                </HStack>
+              </TouchableOpacity>
+            </HStack>
+            <HStack
+              mt="4"
+              justifyContent="space-between"
+              style={{ paddingHorizontal: 20 }}
+            >
+              <TouchableOpacity
+                key={"my-report"}
+                // style={styles.list}
+                onPress={() => navigation.navigate("MyReport")}
+              >
+                <HStack>
+                  <FlagIcon size={24} color={themeColors.primary} />
+                  <Text style={{ marginLeft: 10 }}>Báo cáo của tôi</Text>
                 </HStack>
               </TouchableOpacity>
             </HStack>

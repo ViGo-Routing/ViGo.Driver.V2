@@ -187,7 +187,8 @@ const ViGoAlertProvider = (/*{
 
       if (isDialog) {
         setIsDialogOpen(true);
-        setOkButtonPress(onOkPress);
+        console.log(onOkPress);
+        setOkButtonPress(() => onOkPress);
       } else if (isSlide) {
         // console.log("Slide open");
         setIsSlideOpen(true);
@@ -248,7 +249,7 @@ const ViGoAlertProvider = (/*{
                   colorScheme={status}
                   onPress={() => {
                     setIsDialogOpen(false);
-                    // onOkPress
+                    okButtonPress();
                   }}
                   // ref={okButtonRef}
                 >

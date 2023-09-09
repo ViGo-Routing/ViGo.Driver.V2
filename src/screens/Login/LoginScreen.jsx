@@ -288,9 +288,13 @@ export default function LoginScreen() {
     } catch (err) {
       setIsLoading(false);
       if (err.code == "auth/invalid-verification-code") {
-        handleError("Mã OTP không chính xác", "Vui lòng kiểm tra lại mã OTP!");
+        handleError(
+          "Mã OTP không chính xác",
+          "Vui lòng kiểm tra lại mã OTP!",
+          navigation
+        );
       } else {
-        handleError("Có lỗi xảy ra", err);
+        handleError("Có lỗi xảy ra", err, navigation);
       }
     } finally {
       setIsLoading(false);

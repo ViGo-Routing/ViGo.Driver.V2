@@ -176,7 +176,7 @@ const DetailBookingScreen = () => {
           );
         }
       } catch (error) {
-        handleError("Có lỗi xảy ra", error);
+        handleError("Có lỗi xảy ra", error, navigation);
       } finally {
         setIsLoading(false);
       }
@@ -259,7 +259,7 @@ const DetailBookingScreen = () => {
       setPickingFee(pickingFee);
       setIsConfirmOpen(true);
     } catch (error) {
-      handleError("Có lỗi xảy ra", error);
+      handleError("Có lỗi xảy ra", error, navigation);
     } finally {
       setIsSpinner(false);
     }
@@ -321,7 +321,7 @@ const DetailBookingScreen = () => {
         });
       }
     } catch (error) {
-      handleError("Có lỗi xảy ra", error);
+      handleError("Có lỗi xảy ra", error, navigation);
     } finally {
       setIsSpinner(false);
     }

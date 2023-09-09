@@ -374,7 +374,7 @@ const DriverUpdateProfileScreen = () => {
 
     if (result.errorMessage) {
       // Alert.alert("Có lỗi xảy ra", "Chi tiết: " + result.errorMessage);
-      handleError("Có lỗi xảy ra", result.errorMessage);
+      handleError("Có lỗi xảy ra", result.errorMessage, navigation);
     } else {
       if (result.assets) {
         setIsLoading(true);
@@ -414,7 +414,7 @@ const DriverUpdateProfileScreen = () => {
           });
         } catch (error) {
           // Alert.alert("Có lỗi xảy ra", "Chi tiết: " + error.message);
-          handleError("Có lỗi xảy ra", error);
+          handleError("Có lỗi xảy ra", error, navigation);
           setIsLoading(false);
         } finally {
           // setIsLoading(false);
@@ -443,7 +443,7 @@ const DriverUpdateProfileScreen = () => {
     } catch (error) {
       // console.log("Read From ID Failed: ");
       // console.log(getErrorMessage(error));
-      handleError("Ảnh không hợp lệ", error);
+      handleError("Ảnh không hợp lệ", error, navigation);
     } finally {
       setIsLoading(false);
     }
@@ -470,13 +470,14 @@ const DriverUpdateProfileScreen = () => {
       if (checkName !== name || !checkDob || checkDob != dob) {
         handleError(
           "Thông tin không trùng khớp",
-          "Thông tin họ tên hoặc ngày sinh trên các giấy tờ không trùng khớp! Vui lòng kiểm tra lại thông tin của bạn!"
+          "Thông tin họ tên hoặc ngày sinh trên các giấy tờ không trùng khớp! Vui lòng kiểm tra lại thông tin của bạn!",
+          navigation
         );
       } else {
         callback();
       }
     } catch (error) {
-      handleError("Ảnh không hợp lệ", error);
+      handleError("Ảnh không hợp lệ", error, navigation);
     } finally {
       setIsLoading(false);
     }
@@ -642,7 +643,7 @@ const DriverUpdateProfileScreen = () => {
         },
       });
     } catch (err) {
-      handleError("Có lỗi xảy ra", err);
+      handleError("Có lỗi xảy ra", err, navigation);
       setIsLoading(false);
     }
   };

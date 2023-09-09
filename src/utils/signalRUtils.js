@@ -12,8 +12,9 @@ class SignalRService {
 
     this.connection.start().catch((err) => console.error(err));
   }
+
   updateToken(token) {
-    console.log("token", token);
+    // console.log("token", token);
     this.connection.stop(); // Dừng kết nối hiện tại
     this.connection = new HubConnectionBuilder()
       .withUrl("https://vigo-api.azurewebsites.net/vigoGpsTrackingHub", {
@@ -24,15 +25,21 @@ class SignalRService {
 
     this.connection.start().catch((err) => console.error(err));
   }
+
   onReceiveMessage(callback) {
     this.connection.on("ReceiveMessage", (message) => {
       callback(message);
     });
   }
+
   async sendLocationUpdate(tripId, latitude, longitude) {
-    console.log(tripId, latitude, longitude);
-    const locationInfo = { latitude: latitude, longitude: longitude };
-    this.connection.invoke("SendLocation", tripId, locationInfo);
+    try {
+      console.log(tripId, latitude, longitude);
+      const locationInfo = { latitude: latitude, longitude: longitude };
+      this.connection.invoke("SendLocation", tripId, locationInfo);
+    } catch (error) {
+      console.log(error);
+    }
   }
   sendMessage(message) {
     this.connection.invoke("SendMessage", message);

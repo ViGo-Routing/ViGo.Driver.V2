@@ -5,14 +5,23 @@ import {
   updateStatusBookingDetail,
 } from "../../services/bookingDetailService";
 import { getBookingDetailCustomer } from "../../services/userService";
-import { getErrorMessage, handleError } from "../../utils/alertUtils";
+import {
+  eventNames,
+  getErrorMessage,
+  handleError,
+} from "../../utils/alertUtils";
 import { generateMapPoint } from "../../utils/mapUtils";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Box, Button, Image, Text, View } from "native-base";
 import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
 import ErrorAlert from "../../components/Alert/ErrorAlert";
 import Map from "../../components/Map/Map";
-import { StyleSheet, BackHandler, DeviceEventEmitter } from "react-native";
+import {
+  StyleSheet,
+  BackHandler,
+  DeviceEventEmitter,
+  NativeEventEmitter,
+} from "react-native";
 import { SwipeablePanel } from "../../components/SwipeablePanel";
 import {
   StartingTripBasicInformation,
@@ -26,6 +35,8 @@ import SignalRService from "../../utils/signalRUtils";
 import moment from "moment";
 import { hideFloatingBubble } from "react-native-floating-bubble";
 import invokeApp from "react-native-invoke-app";
+import CreateReportModal from "./components/CreateReportModal";
+import { createReport } from "../../services/reportService";
 
 interface CurrentStartingTripScreenProps {
   bookingDetailId: string;
@@ -56,11 +67,15 @@ const CurrentStartingTripScreen = () => {
 
   const navigation = useNavigation();
 
+  const eventEmitter = new NativeEventEmitter();
+
   const [driverLocation, setDriverLocation] = useState({
     latitude: 0,
     longitude: 0,
   });
 
+  const [createReportModalVisible, setCreateReportModalVisible] =
+    useState(false);
   let driverLocationTimer: NodeJS.Timeout = {} as NodeJS.Timeout;
 
   const getBookingDetailData = async () => {
@@ -95,7 +110,7 @@ const CurrentStartingTripScreen = () => {
         // setIsLoading(false);
       },
       (error) => {
-        handleError("Có lỗi xảy ra", error);
+        handleError("Có lỗi xảy ra", error, navigation);
         setIsLoading(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
@@ -110,66 +125,14 @@ const CurrentStartingTripScreen = () => {
         case "ASSIGNED":
           break;
         case "GOING_TO_PICKUP":
-          // setPickupPosition(
-          //   generateMapPoint(bookingDetailResponse.startStation)
-          // );
-          // setFirstPositionIcon(
-          //   <Image
-          //     size={"xs"}
-          //     resizeMode="contain"
-          //     source={require("../../../assets/icons/vigobike.png")}
-          //     alt={"Điểm đi"}
-          //   />
-          // );
-          // setSecondPositionIcon(
-          //   <Image
-          //     size={"xs"}
-          //     resizeMode="contain"
-          //     source={require("../../../assets/icons/maps-pickup-location-icon-3x.png")}
-          //     alt={"Điểm đến"}
-          //   />
-          // );
           setDestinationPosition(generateMapPoint(bookingDetail.startStation));
           break;
         case "ARRIVE_AT_PICKUP":
-          // setFirstPositionIcon(
-          //   <Image
-          //     size={"xs"}
-          //     resizeMode="contain"
-          //     source={require("../../../assets/icons/maps-pickup-location-icon-3x.png")}
-          //     alt={"Điểm đi"}
-          //   />
-          // );
-          // setSecondPositionIcon(
-          //   <Image
-          //     size={"xs"}
-          //     resizeMode="contain"
-          //     source={require("../../../assets/icons/maps-dropoff-location-icon-3x.png")}
-          //     alt={"Điểm đến"}
-          //   />
-          // );
-
           setFirstPosition(generateMapPoint(bookingDetail.startStation));
           setDestinationPosition(generateMapPoint(bookingDetail.endStation));
           break;
         case "GOING_TO_DROPOFF":
           setDestinationPosition(generateMapPoint(bookingDetail.endStation));
-          // setFirstPositionIcon(
-          //   <Image
-          //     size={"xs"}
-          //     resizeMode="contain"
-          //     source={require("../../../assets/icons/vigobike.png")}
-          //     alt={"Điểm đi"}
-          //   />
-          // );
-          // setSecondPositionIcon(
-          //   <Image
-          //     size={"xs"}
-          //     resizeMode="contain"
-          //     source={require("../../../assets/icons/maps-pickup-location-icon-3x.png")}
-          //     alt={"Điểm đến"}
-          //   />
-          // );
           break;
         case "ARRIVE_AT_DROPOFF":
           break;
@@ -191,14 +154,6 @@ const CurrentStartingTripScreen = () => {
           handleGetDriverLocation();
         }, 5000);
       }
-      // setIsLoading(true);
-      // if (
-      //   bookingDetail &&
-      //   (bookingDetail.status == "GOING_TO_PICKUP" ||
-      //     bookingDetail.status == "GOING_TO_DROPOFF")
-      // ) {
-
-      // }
     }
 
     return () => {
@@ -278,12 +233,6 @@ const CurrentStartingTripScreen = () => {
     }
   }, [driverLocation]);
 
-  // console.log(bookingDetailId);
-
-  // useEffect(() => {
-  //   console.log(duration);
-  // }, [duration]);
-
   const handleActionButtonClick = async () => {
     setIsLoading(true);
     try {
@@ -345,41 +294,8 @@ const CurrentStartingTripScreen = () => {
           await getBookingDetailData();
         }
       }
-
-      // if (s && s.data) {
-      //     if (currentPosition === 0) {
-      //       Alert.alert("Xác nhận đón khách", `Rước khách thành công`, [
-      //         {
-      //           text: "OK",
-      //         },
-      //       ]);
-      //     } else if (currentPosition === 1) {
-      //       Alert.alert(
-      //         "Xác nhận đang di chuyển",
-      //         `Bạn đang đưa khách đến điểm trả`,
-      //         [
-      //           {
-      //             text: "OK",
-      //           },
-      //         ]
-      //       );
-      //     } else if (currentPosition === 2) {
-      //       Alert.alert("Đã đến điểm trả", `Xác nhận trả khách thành công`, [
-      //         {
-      //           text: "OK",
-      //           onPress: () => navigation.navigate("Home"),
-      //         },
-      //       ]);
-      //     }
-      //     setCurrentPosition(currentPosition + 1);
-      //   } else {
-      //     Alert.alert("Xác nhận chuyến", "Lỗi: Không bắt đầu được chuyến!");
-      //   }
-      // }
     } catch (error) {
-      // console.error("Tài xế bắt đầu chuyến đi", error);
-      // Alert.alert("Tài xế bắt đầu", "Bắt đầu không thành công");
-      handleError("Có lỗi xảy ra", getErrorMessage(error));
+      handleError("Có lỗi xảy ra", error, navigation);
     } finally {
       setIsLoading(false);
     }
@@ -388,45 +304,15 @@ const CurrentStartingTripScreen = () => {
   const getPanelFullHeight = () => {
     switch (bookingDetail.status) {
       case "GOING_TO_PICKUP":
-        return 615;
+        return 630;
       case "ARRIVE_AT_PICKUP":
-        return 615;
+        return 630;
       case "GOING_TO_DROPOFF":
-        return 615;
+        return 630;
       default:
         return 600;
     }
   };
-
-  // const renderFirstPositionIcon = () => {
-
-  //   return <></>;
-  // };
-
-  // const renderSecondPositionIcon = () => {
-  //   if (bookingDetail) {
-  //     if (bookingDetail.status == "GOING_TO_PICKUP") {
-  //       return (
-  //         <Image
-  //           size={"xs"}
-  //           resizeMode="contain"
-  //           source={require("../../../assets/icons/maps-pickup-location-icon-3x.png")}
-  //           alt={"Điểm đi"}
-  //         />
-  //       );
-  //     } else {
-  //       return (
-  //         <Image
-  //           size={"xs"}
-  //           resizeMode="contain"
-  //           source={require("../../../assets/icons/maps-dropoff-location-icon-3x.png")}
-  //           alt={"Điểm đến"}
-  //         />
-  //       );
-  //     }
-  //   }
-  //   return <></>;
-  // };
 
   const renderMap = (
     status: string,
@@ -465,7 +351,6 @@ const CurrentStartingTripScreen = () => {
             }
           />
         );
-        break;
       case "ARRIVE_AT_PICKUP":
         return (
           <Map
@@ -495,7 +380,6 @@ const CurrentStartingTripScreen = () => {
             showCurrentLocation
           />
         );
-        break;
       case "GOING_TO_DROPOFF":
         return (
           <Map
@@ -525,7 +409,6 @@ const CurrentStartingTripScreen = () => {
             showCurrentLocation
           />
         );
-        break;
       case "ARRIVE_AT_DROPOFF":
         break;
       default:
@@ -533,6 +416,61 @@ const CurrentStartingTripScreen = () => {
         setErrorMessage("Trạng thái chuyến đi không hợp lệ");
         setIsError(true);
         break;
+    }
+  };
+
+  const handleOpenReportModal = () => {
+    setCreateReportModalVisible(true);
+  };
+
+  const handleReportModalConfirm = async (
+    reportType: "BOOKER_NOT_COMING" | "OTHER",
+    title: string,
+    description: string
+  ) => {
+    if (!title || title.length < 5) {
+      handleError(
+        "Thiếu thông tin",
+        "Tiêu đề báo cáo phải có ít nhất 5 kí tự!",
+        navigation
+      );
+    } else {
+      try {
+        setIsLoading(true);
+        const report = await createReport(
+          reportType,
+          title,
+          description,
+          bookingDetail.id
+        );
+
+        if (report) {
+          eventEmitter.emit(eventNames.SHOW_TOAST, {
+            title: "Tạo báo cáo thành công",
+            description: (
+              <Text>
+                Báo cáo của bạn đã được gửi đi thành công! Hãy đợi các QTV xem
+                xét nhé.
+              </Text>
+            ),
+            status: "success",
+            // placement: "top",
+            primaryButtonText: "Đã hiểu",
+            isDialog: true,
+            onOkPress: () => {
+              setCreateReportModalVisible(false);
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Home" }],
+              });
+            },
+          });
+        }
+      } catch (error) {
+        handleError("Có lỗi xảy ra", error, navigation);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -552,64 +490,75 @@ const CurrentStartingTripScreen = () => {
             )}
 
           {bookingDetail && (
-            <SwipeablePanel
-              isActive={true}
-              fullWidth={true}
-              noBackgroundOpacity
-              // showCloseButton
-              allowTouchOutside
-              smallPanelItem={
+            <>
+              <SwipeablePanel
+                isActive={true}
+                fullWidth={true}
+                noBackgroundOpacity
+                // showCloseButton
+                allowTouchOutside
+                smallPanelItem={
+                  <>
+                    <Box mx="2">
+                      <StepIndicator
+                        customStyles={stepIndicatorCustomStyles}
+                        currentPosition={activeStep}
+                        labels={stepIndicatorData.map((item) => item.label)}
+                        // direction="horizontal"
+                        stepCount={stepIndicatorData.length}
+                      />
+                    </Box>
+                    <Box px="6" mt="2">
+                      <StartingTripBasicInformation
+                        trip={bookingDetail}
+                        // navigation={navigation}
+                        // actionButton={renderActionButton()}
+                        duration={duration}
+                        distance={distance}
+                        currentStep={activeStep}
+                        handleActionButtonClick={handleActionButtonClick}
+                        // handlePickBooking={openConfirmPickBooking}
+                        handleReportButtonClick={handleOpenReportModal}
+                      />
+                    </Box>
+                  </>
+                }
+                // smallPanelHeight={380}
+                // largePanelHeight={getPanelFullHeight()}
+                scrollViewProps={{
+                  scrollEnabled: true,
+                }}
+              >
                 <>
                   <Box mx="2">
                     <StepIndicator
                       customStyles={stepIndicatorCustomStyles}
                       currentPosition={activeStep}
                       labels={stepIndicatorData.map((item) => item.label)}
-                      // direction="horizontal"
                       stepCount={stepIndicatorData.length}
                     />
                   </Box>
                   <Box px="6" mt="2">
-                    <StartingTripBasicInformation
+                    <StartingTripFullInformation
                       trip={bookingDetail}
-                      // navigation={navigation}
-                      // actionButton={renderActionButton()}
                       duration={duration}
                       distance={distance}
                       currentStep={activeStep}
+                      customer={customer}
                       handleActionButtonClick={handleActionButtonClick}
-                      // handlePickBooking={openConfirmPickBooking}
+                      handleReportButtonClick={handleOpenReportModal}
                     />
                   </Box>
                 </>
-              }
-              smallPanelHeight={380}
-              largePanelHeight={getPanelFullHeight()}
-              scrollViewProps={{
-                scrollEnabled: true,
-              }}
-            >
-              <>
-                <Box mx="2">
-                  <StepIndicator
-                    customStyles={stepIndicatorCustomStyles}
-                    currentPosition={activeStep}
-                    labels={stepIndicatorData.map((item) => item.label)}
-                    stepCount={stepIndicatorData.length}
-                  />
-                </Box>
-                <Box px="6" mt="2">
-                  <StartingTripFullInformation
-                    trip={bookingDetail}
-                    duration={duration}
-                    distance={distance}
-                    currentStep={activeStep}
-                    customer={customer}
-                    handleActionButtonClick={handleActionButtonClick}
-                  />
-                </Box>
-              </>
-            </SwipeablePanel>
+              </SwipeablePanel>
+              <CreateReportModal
+                modalVisible={createReportModalVisible}
+                setModalVisible={setCreateReportModalVisible}
+                onModalRequestClose={() => {}}
+                onModalConfirm={handleReportModalConfirm}
+                startStationName={bookingDetail?.startStation.name}
+              />
+            </>
           )}
         </ErrorAlert>
       </View>
@@ -665,48 +614,11 @@ const stepIndicatorCustomStyles = {
 };
 
 const styles = StyleSheet.create({
-  // card: {
-  //   flexGrow: 1,
-  //   backgroundColor: "white",
-  //   borderRadius: 8,
-  //   paddingVertical: 5,
-  //   paddingHorizontal: 15,
-  //   width: "100%",
-  //   marginVertical: 10,
-  //   shadowColor: "#000",
-  //   shadowOffset: {
-  //     width: 0,
-  //     height: 2,
-  //   },
-  //   shadowOpacity: 0.25,
-  //   shadowRadius: 3.84,
-  //   elevation: 5,
-  // },
   container: {
     flexDirection: "column", // inner items will be added vertically
     flexGrow: 1, // all the available vertical space will be occupied by it
     justifyContent: "space-between", // will create the gutter between body and footer
   },
-  // cardInsideDateTime: {
-  //   flexGrow: 1,
-  //   backgroundColor: "white",
-  //   borderRadius: 8,
-
-  //   paddingHorizontal: 15,
-  //   width: "40%",
-  //   marginVertical: 10,
-  //   shadowColor: "#000",
-  //   shadowOffset: {
-  //     width: 0,
-  //     height: 2,
-  //   },
-  //   shadowOpacity: 0.25,
-  //   shadowRadius: 3.84,
-  //   elevation: 5,
-  //   flexDirection: "row",
-  //   flexGrow: 1,
-  //   margin: 5,
-  // },
   cardInsideLocation: {
     flexGrow: 1,
     backgroundColor: "white",
@@ -729,17 +641,6 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
   },
-  // title: {
-  //   color: themeColors.primary,
-  //   fontSize: 16,
-  //   fontWeight: "bold",
-  //   paddingTop: 10,
-  //   // paddingLeft: 10,
-  // },
-  // list: {
-  //   paddingTop: 10,
-  //   fontSize: 20,
-  // },
 });
 
 export default CurrentStartingTripScreen;

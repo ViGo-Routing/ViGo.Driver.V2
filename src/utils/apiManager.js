@@ -73,4 +73,26 @@ apiManager.interceptors.request.use(
   }
 );
 
+// apiManager.interceptors.response.use(
+//   (response) => {
+//     return response;
+//   },
+//   (error) => {
+//     if (error.response && error.response.status == 401) {
+//       eventEmitter.emit(eventNames.SHOW_TOAST, {
+//         title: "Vui lòng đăng nhập lại",
+//         description: "",
+//         status: "error",
+//         placement: "top",
+//         duration: 5000,
+//         isSlide: true,
+//       });
+//       navigation.reset({
+//         index: 0,
+//         routes: [{ name: "Login" }],
+//       });
+//     }
+//   }
+// )
+
 export default apiManager;

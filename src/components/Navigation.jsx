@@ -33,6 +33,8 @@ import CompletedBookingDetailScreen from "../screens/BookingDetail/CompletedBook
 import CanceledBookingDetailScreen from "../screens/BookingDetail/CanceledBookingDetailScreen";
 import DriverUpdateProfileScreen from "../screens/Profile/DriverUpdateProfileScreen";
 import ViGoSpinner from "./Spinner/ViGoSpinner";
+import MyReportScreen from "../screens/Report/MyReportScreen";
+import ReportDetailScreen from "../screens/Report/ReportDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -156,6 +158,18 @@ const Navigation = () => {
           options={{ headerShown: false }}
           component={MyNotifcationScreen}
         />
+
+        <Stack.Screen
+          name="MyReport"
+          options={{ headerShown: false }}
+          component={MyReportScreen}
+        />
+        <Stack.Screen
+          name="ReportDetail"
+          options={{ headerShown: false }}
+          component={ReportDetailScreen}
+        />
+
         <Stack.Screen
           name="ScheduleInDate"
           options={{ headerShown: false }}

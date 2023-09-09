@@ -168,9 +168,13 @@ const RegisterScreen = () => {
     } catch (err) {
       setIsLoading(false);
       if (err.code == "auth/invalid-verification-code") {
-        handleError("Mã OTP không chính xác", "Vui lòng kiểm tra lại mã OTP!");
+        handleError(
+          "Mã OTP không chính xác",
+          "Vui lòng kiểm tra lại mã OTP!",
+          navigation
+        );
       } else {
-        handleError("Có lỗi xảy ra", err);
+        handleError("Có lỗi xảy ra", err, navigation);
       }
     } finally {
       setIsLoading(false);
@@ -275,7 +279,7 @@ const RegisterScreen = () => {
             await updateUserFcmToken(response.user.id, fcmToken);
           }
         } catch (err) {
-          handleError("Có lỗi xảy ra khi đăng ký", err);
+          handleError("Có lỗi xảy ra khi đăng ký", err, navigation);
         }
 
         if (response.user.status == "PENDING") {
@@ -287,7 +291,7 @@ const RegisterScreen = () => {
       // console.log(newUserData);
     } catch (err) {
       // Alert.alert("Có lỗi xảy ra khi đăng ký", "Chi tiết: " + err.message);
-      handleError("Có lỗi xảy ra khi đăng ký", err);
+      handleError("Có lỗi xảy ra khi đăng ký", err, navigation);
     } finally {
       setIsLoading(false);
     }
