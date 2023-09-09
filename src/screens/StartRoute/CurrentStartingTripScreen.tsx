@@ -460,8 +460,16 @@ const CurrentStartingTripScreen = () => {
             onOkPress: () => {
               setCreateReportModalVisible(false);
               navigation.reset({
-                index: 0,
-                routes: [{ name: "Home" }],
+                index: 1,
+                routes: [
+                  { name: "Home" },
+                  {
+                    name: "ReportDetail",
+                    params: {
+                      reportId: report.id,
+                    },
+                  },
+                ],
               });
             },
           });

@@ -501,7 +501,8 @@ const RegisterScreen = () => {
         setModalVisible={setEnterOtpModalVisible}
         onModalRequestClose={() => {}}
         onModalConfirm={() => confirmCode()}
-        phoneNumber={`+84${phoneNumber}`}
+        phoneNumber={`+84${phoneNumber.substring(1, 10)}`}
+        // phoneNumber={`+84${phoneNumber}`}
         setCode={setCode}
       />
     </View>

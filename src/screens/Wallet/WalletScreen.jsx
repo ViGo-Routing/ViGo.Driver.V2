@@ -51,6 +51,7 @@ import { getErrorMessage } from "../../utils/alertUtils";
 import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
 import ErrorAlert from "../../components/Alert/ErrorAlert";
 import RefreshableScrollView from "../../components/List/RefreshableScrollView";
+import InfoAlert from "../../components/Alert/InfoAlert";
 
 const WalletScreen = () => {
   const navigation = useNavigation();
@@ -189,6 +190,9 @@ const WalletScreen = () => {
               }}
               scrollEnabled={true}
             /> */}
+              {walletTransactions.length == 0 && (
+                <InfoAlert message="Chưa có giao dịch nào" />
+              )}
               {walletTransactions.map((item) => (
                 <TouchableOpacity
                   key={item.id}

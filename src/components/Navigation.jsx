@@ -35,6 +35,7 @@ import DriverUpdateProfileScreen from "../screens/Profile/DriverUpdateProfileScr
 import ViGoSpinner from "./Spinner/ViGoSpinner";
 import MyReportScreen from "../screens/Report/MyReportScreen";
 import ReportDetailScreen from "../screens/Report/ReportDetailScreen";
+import MessageScreen from "../screens/Chat/MessageScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -204,6 +205,12 @@ const Navigation = () => {
           name="CanceledBookingDetail"
           options={{ headerShown: false, animation: "slide_from_bottom" }}
           component={CanceledBookingDetailScreen}
+        />
+
+        <Stack.Screen
+          name="Message"
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+          component={MessageScreen}
         />
       </Stack.Navigator>
       {/* //     </NavigationContainer>
