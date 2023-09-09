@@ -188,7 +188,7 @@ const ViGoAlertProvider = (/*{
       if (isDialog) {
         setIsDialogOpen(true);
         console.log(onOkPress);
-        setOkButtonPress(onOkPress);
+        setOkButtonPress(() => onOkPress);
       } else if (isSlide) {
         // console.log("Slide open");
         setIsSlideOpen(true);

@@ -127,9 +127,7 @@ const WalletTransactionDetailScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={vigoStyles.container}>
-      <View>
-        <Header title="Chi tiết giao dịch" />
-      </View>
+      <Header title="Chi tiết giao dịch" />
       <View style={vigoStyles.body}>
         <ViGoSpinner isLoading={isLoading} />
         <ErrorAlert isError={isError} errorMessage={errorMessage}>

@@ -17,7 +17,7 @@ export const isValidToken = async () => {
   if (
     decodedToken &&
     decodedToken.exp &&
-    decodedToken.exp > dateNow.getTime() / 1000
+    decodedToken.exp > dateNow.getTime() / 1000 - 20
   ) {
     isValid = true;
   } else {

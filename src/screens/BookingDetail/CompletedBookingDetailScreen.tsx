@@ -14,7 +14,7 @@ import {
   VStack,
   View,
 } from "native-base";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useErrorHandlingHook } from "../../hooks/useErrorHandlingHook";
 import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
 import ErrorAlert from "../../components/Alert/ErrorAlert";
@@ -136,7 +136,7 @@ const CompletedBookingDetailScreen =
       } as Region;
     };
 
-    const fitMap = () => {
+    const fitMap = useCallback(() => {
       // console.log(results);
       const coords = [
         {
@@ -157,7 +157,7 @@ const CompletedBookingDetailScreen =
           left: 20,
         },
       });
-    };
+    }, [firstPosition, secondPosition]);
 
     const handleDirectionReady = async (result: any) => {
       setDistance(result.distance);
