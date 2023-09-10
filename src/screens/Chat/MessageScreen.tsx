@@ -57,7 +57,24 @@ const MessageScreen = () => {
     }
   };
   useEffect(() => {
-    getMessages();
+    // getMessages();
+
+    const messageUnsubscriber = firestore()
+      .collection("vigo-messages")
+      .doc(bookingDetailId)
+      .collection("messages")
+      .orderBy("createdAt", "desc")
+      .onSnapshot((snapshot) => {
+        const allMessages = snapshot.docs.map((docSnap) => {
+          return {
+            ...docSnap.data(),
+            createdAt: docSnap.data().createdAt?.toDate(),
+          };
+        });
+        setMessages(allMessages);
+      });
+
+    return () => messageUnsubscriber();
   }, []);
 
   const onSendMessage = useCallback(async (messages: any[]) => {
