@@ -2,7 +2,10 @@ import { Box, HStack, Image, Pressable, Text, VStack } from "native-base";
 import { calculateAge } from "../../utils/datetimeUtils";
 import { toPercent } from "../../utils/numberUtils";
 import { ColorType } from "native-base/lib/typescript/components/types";
-import { PhoneArrowUpRightIcon } from "react-native-heroicons/outline";
+import {
+  ChatBubbleLeftRightIcon,
+  PhoneArrowUpRightIcon,
+} from "react-native-heroicons/outline";
 import { themeColors } from "../../../assets/theme";
 import call from "react-native-phone-call";
 import { handleError } from "../../utils/alertUtils";
@@ -12,12 +15,14 @@ interface CustomerInformationCardProps {
   customer: any;
   displayCustomerText?: boolean | undefined;
   displayCall?: boolean;
+  bookingDetailId?: string;
 }
 
 const CustomerInformationCard = ({
   customer,
   displayCustomerText = true,
   displayCall = false,
+  bookingDetailId = undefined,
 }: CustomerInformationCardProps) => {
   const navigation = useNavigation();
 
@@ -84,6 +89,28 @@ const CustomerInformationCard = ({
               >
                 <Pressable onPress={() => handleCall(customer.phone)}>
                   <PhoneArrowUpRightIcon
+                    size={25}
+                    color={themeColors.primary}
+                  />
+                </Pressable>
+              </Box>
+
+              <Box
+                borderWidth={1}
+                rounded="md"
+                p="1"
+                borderColor={themeColors.primary}
+                ml={"5"}
+              >
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("Message", {
+                      bookingDetailId: bookingDetailId,
+                      customer: customer,
+                    })
+                  }
+                >
+                  <ChatBubbleLeftRightIcon
                     size={25}
                     color={themeColors.primary}
                   />

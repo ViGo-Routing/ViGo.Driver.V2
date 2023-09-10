@@ -34,7 +34,8 @@ const renderActionButton = (
   item: any,
   handleActionButtonClick?: () => void,
   destination?: any,
-  handleReportButtonClick?: () => void
+  handleReportButtonClick?: () => void,
+  isFull = false
 ) => {
   // console.log("Render Action");
   // console.log(destination);
@@ -150,7 +151,7 @@ const renderActionButton = (
           </TouchableOpacity>
         )}
       </HStack>
-      {destination && handleReportButtonClick && (
+      {isFull && destination && handleReportButtonClick && (
         <HStack pb="3" mt="2">
           <View
             flex={1}
@@ -417,14 +418,16 @@ const StartingTripFullInformation = ({
             longitude: trip.startStation.longitude,
             address: trip.startStation.address,
           },
-          handleReportButtonClick
+          handleReportButtonClick,
+          true
         );
       case "ARRIVE_AT_PICKUP":
         return renderActionButton(
           trip,
           handleActionButtonClick,
           undefined,
-          handleReportButtonClick
+          handleReportButtonClick,
+          true
         );
       case "GOING_TO_DROPOFF":
         return renderActionButton(
@@ -435,7 +438,8 @@ const StartingTripFullInformation = ({
             longitude: trip.endStation.longitude,
             address: trip.endStation.address,
           },
-          handleReportButtonClick
+          handleReportButtonClick,
+          true
         );
       case "ARRIVE_AT_DROPOFF":
         return <></>;
@@ -452,6 +456,7 @@ const StartingTripFullInformation = ({
         distance={distance}
         currentStep={currentStep}
         isInFull={true}
+        handleReportButtonClick={handleReportButtonClick}
       />
       <HStack mt="3">
         <VStack alignItems="center">
@@ -478,6 +483,7 @@ const StartingTripFullInformation = ({
           customer={customer}
           displayCustomerText
           displayCall
+          bookingDetailId={trip.id}
         />
       </Box>
       {renderButtons()}

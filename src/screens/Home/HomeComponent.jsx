@@ -89,7 +89,7 @@ const HomeComponent = ({}) => {
 
       setBookingsAvailable(moreData);
 
-      if (moreDataResponse.data.hasNextPage == true) {
+      if (moreDataResponse.hasNextPage == true) {
         setNextPageNumber(nextPageNumber + 1);
       } else {
         setNextPageNumber(null);

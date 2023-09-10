@@ -1,0 +1,14 @@
+diff --git a/node_modules/react-native-gifted-chat/lib/Bubble.js b/node_modules/react-native-gifted-chat/lib/Bubble.js
+index 70b74ae..f87ec63 100644
+--- a/node_modules/react-native-gifted-chat/lib/Bubble.js
++++ b/node_modules/react-native-gifted-chat/lib/Bubble.js
+@@ -41,7 +41,8 @@ const styles = {
+         },
+         wrapper: {
+             borderRadius: 15,
+-            backgroundColor: Color.defaultBlue,
++            // backgroundColor: Color.defaultBlue,
++            backgroundColor: "#00A1A1",
+             marginLeft: 60,
+             minHeight: 20,
+             justifyContent: 'flex-end',

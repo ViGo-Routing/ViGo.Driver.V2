@@ -1,4 +1,4 @@
-import { Text, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { vigoStyles } from "../../../../assets/theme";
 import { useState, useRef, useEffect } from "react";
 import { vndFormat } from "../../../utils/numberUtils";
@@ -10,6 +10,7 @@ import {
   InputRightAddon,
   Modal,
   WarningOutlineIcon,
+  Text,
 } from "native-base";
 import { useKeyboard } from "../../../hooks/useKeyboard";
 
