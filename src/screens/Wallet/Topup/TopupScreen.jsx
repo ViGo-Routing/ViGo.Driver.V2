@@ -21,6 +21,7 @@ import { createTopupTransaction } from "../../../services/paymentService";
 import { Text, FlatList, Image, Heading, HStack } from "native-base";
 import WebView from "react-native-webview";
 import { StackActions, useNavigation } from "@react-navigation/native";
+import Divider from "../../../components/Divider/Divider";
 const TopupScreen = () => {
   const { user } = useContext(UserContext);
   const navigation = useNavigation();

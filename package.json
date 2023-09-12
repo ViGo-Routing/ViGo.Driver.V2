@@ -40,6 +40,7 @@
     "react-native-floating-bubble": "^1.0.12",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-gifted-chat": "^2.4.0",
+    "react-native-google-places-autocomplete": "^2.5.1",
     "react-native-heroicons": "^3.2.0",
     "react-native-image-picker": "^5.6.0",
     "react-native-invoke-app": "^1.0.6",

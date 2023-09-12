@@ -70,13 +70,15 @@ const EditProfileScreen = ({ route }) => {
 
   const formatDate = (rawDate) => {
     let date = new Date(rawDate);
+    // console.log(dob);
 
     let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
+    let month = ("0" + (date.getMonth() + 1)).slice(-2);
+    let day = ("0" + date.getDate()).slice(-2);
 
-    return `${year}-${month}-${day}`;
+    return `${day}/${month}/${year}`;
   };
+
   const handleSubmit = (formData) => {
     console.log(formData);
     editProfile(data.id, formData)

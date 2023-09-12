@@ -1,6 +1,6 @@
 import { memo, useCallback, useContext, useEffect, useState } from "react";
 import WelcomeDriverHeader from "../../components/Header/WelcomeDriverHeader";
-import { FlatList, Heading, View } from "native-base";
+import { Box, FlatList, HStack, Heading, Text, View } from "native-base";
 import { vigoStyles } from "../../../assets/theme";
 import HomeTripInformationCard from "../../components/Card/HomeTripInformationCard";
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +15,9 @@ import {
   getUpcomingTrip,
 } from "../../services/bookingDetailService";
 import ErrorAlert from "../../components/Alert/ErrorAlert";
+import { TouchableOpacity } from "react-native";
+import { FunnelIcon } from "react-native-heroicons/outline";
+import FilterBookingModal from "./FilterBookingModal";
 
 const HomeComponent = ({}) => {
   const navigation = useNavigation();
@@ -30,6 +33,18 @@ const HomeComponent = ({}) => {
 
   const { isError, setIsError, errorMessage, setErrorMessage } =
     useErrorHandlingHook();
+
+  // Filter
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
+
+  const [filterStartDate, setFilterStartDate] = useState(null);
+  const [filterEndDate, setFilterEndDate] = useState(null);
+  const [filterStartPickupTime, setFilterStartPickupTime] = useState(null);
+  const [filterEndPickupTime, setFilterEndPickupTime] = useState(null);
+  const [filterStartLocation, setFilterStartLocation] = useState(null);
+  const [filterEndLocation, setFilterEndLocation] = useState(null);
+  const [filterStartLocationRadius, setFilterStartLocationRadius] = useState(5);
+  const [filterEndLocationRadius, setFilterEndLocationRadius] = useState(5);
 
   const pageSize = 10;
 
@@ -132,6 +147,18 @@ const HomeComponent = ({}) => {
           <Heading fontSize="2xl" marginTop="0" marginLeft="0">
             Các hành trình còn trống
           </Heading>
+
+          {bookingsAvailable.length > 0 && (
+            <HStack justifyContent="flex-end">
+              <TouchableOpacity onPress={() => setFilterModalVisible(true)}>
+                <HStack mx={2} marginTop="2" alignItems="center">
+                  <FunnelIcon size={20} color={"black"} />
+
+                  <Text marginLeft="3">Lọc hành trình</Text>
+                </HStack>
+              </TouchableOpacity>
+            </HStack>
+          )}
           <FlatList
             // style={vigoStyles.list}
             marginTop="3"
@@ -154,11 +181,26 @@ const HomeComponent = ({}) => {
             onEndReachedThreshold={0.5}
             contentContainerStyle={{
               // paddingHorizontal: 20,
-              paddingVertical: 10,
+              paddingVertical: 5,
               paddingBottom: currentTrip || upcomingTrip ? 60 : 10,
             }}
           />
-          {/* )} */}
+          <FilterBookingModal
+            modalVisible={filterModalVisible}
+            setModalVisible={setFilterModalVisible}
+            filterStartDate={filterStartDate}
+            filterEndDate={filterEndDate}
+            setFilterStartDate={setFilterStartDate}
+            setFilterEndDate={setFilterEndDate}
+            filterStartPickupTime={filterStartPickupTime}
+            setFilterStartPickupTime={setFilterStartPickupTime}
+            filterEndPickupTime={filterEndPickupTime}
+            setFilterEndPickupTime={setFilterEndPickupTime}
+            filterStartLocation={filterStartLocation}
+            setFilterStartLocation={setFilterStartLocation}
+            setIsLoading={setIsLoading}
+            navigation={navigation}
+          />
         </ErrorAlert>
       </View>
       <HomeTripInformationCard

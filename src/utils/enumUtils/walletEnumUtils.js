@@ -25,7 +25,7 @@ export const renderTransactionTypeOperator = (transactionType) => {
     case "TRIP_PICK":
       return "-";
     case "TRIP_PICK_REFUND":
-      return "-";
+      return "+";
   }
 };
 
