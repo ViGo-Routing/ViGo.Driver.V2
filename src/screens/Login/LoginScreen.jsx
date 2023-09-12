@@ -93,7 +93,7 @@ export default function LoginScreen() {
     // console.log(firebaseToken);
     // auth().settings.appVerificationDisabledForTesting = true;
     auth().settings.forceRecaptchaFlowForTesting = true;
-    // const authUnsubscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    const authUnsubscriber = auth().onAuthStateChanged(onAuthStateChanged);
     // return subscriber;
     // if (user) {
     //   navigation.navigate(determineDefaultScreen(user));
@@ -108,10 +108,10 @@ export default function LoginScreen() {
     //   // }
     // });
 
-    // return () => {
-    //   // authUnsubscriber();
-    //   unsubscribe();
-    // };
+    return () => {
+      authUnsubscriber();
+      // unsubscribe();
+    };
   }, []);
 
   const handleLogin = async () => {
@@ -276,15 +276,15 @@ export default function LoginScreen() {
     setIsLoading(true);
     try {
       const result = await confirm.confirm(code);
-      const credential = auth.PhoneAuthProvider.credential(
-        confirm.verificationId,
-        code
-      );
-      const loginInfo = await auth().signInWithCredential(credential);
+      // const credential = auth.PhoneAuthProvider.credential(
+      //   confirm.verificationId,
+      //   code
+      // );
+      // const loginInfo = await auth().signInWithCredential(credential);
 
-      if (loginInfo.user) {
-        auth().onAuthStateChanged(onAuthStateChanged);
-      }
+      // if (loginInfo.user) {
+      //   auth().onAuthStateChanged(onAuthStateChanged);
+      // }
     } catch (err) {
       setIsLoading(false);
       if (err.code == "auth/invalid-verification-code") {

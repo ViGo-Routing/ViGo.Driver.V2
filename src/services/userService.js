@@ -80,13 +80,18 @@ export const getUserAnalysis = async (userId) => {
 };
 
 export const logUserOut = async (setUser, navigation) => {
-  await removeItem("token");
-  await auth().signOut();
-  // await setUserData(null);
-  setUser(null);
-
-  navigation.reset({
-    index: 0,
-    routes: [{ name: "Login" }],
-  });
+  try {
+    await removeItem("token");
+    // await auth().currentUser?.delete();
+    await auth().signOut();
+    // await setUserData(null);
+    setUser(null);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Login" }],
+    });
+  }
 };
