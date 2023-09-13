@@ -37,6 +37,7 @@ import MyReportScreen from "../screens/Report/MyReportScreen";
 import ReportDetailScreen from "../screens/Report/ReportDetailScreen";
 import MessageScreen from "../screens/Chat/MessageScreen";
 import FilterStationModal from "../screens/Home/FilterStationModal";
+import FilterBookingScreen from "../screens/Home/FilterBookingScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -212,6 +213,12 @@ const Navigation = () => {
           name="Message"
           options={{ headerShown: false, animation: "slide_from_bottom" }}
           component={MessageScreen}
+        />
+
+        <Stack.Screen
+          name="FilterBooking"
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
+          component={FilterBookingScreen}
         />
       </Stack.Navigator>
       {/* //     </NavigationContainer>

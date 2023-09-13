@@ -3,7 +3,7 @@ import WelcomeDriverHeader from "../../components/Header/WelcomeDriverHeader";
 import { Box, FlatList, HStack, Heading, Text, View } from "native-base";
 import { vigoStyles } from "../../../assets/theme";
 import HomeTripInformationCard from "../../components/Card/HomeTripInformationCard";
-import { useNavigation } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../context/UserContext";
 import { useErrorHandlingHook } from "../../hooks/useErrorHandlingHook";
 import { getAvailableBookings } from "../../services/bookingService";
@@ -17,7 +17,7 @@ import {
 import ErrorAlert from "../../components/Alert/ErrorAlert";
 import { TouchableOpacity } from "react-native";
 import { FunnelIcon } from "react-native-heroicons/outline";
-import FilterBookingModal from "./FilterBookingModal";
+import FilterBookingScreen from "./FilterBookingScreen";
 
 const HomeComponent = ({}) => {
   const navigation = useNavigation();
@@ -33,18 +33,6 @@ const HomeComponent = ({}) => {
 
   const { isError, setIsError, errorMessage, setErrorMessage } =
     useErrorHandlingHook();
-
-  // Filter
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
-
-  const [filterStartDate, setFilterStartDate] = useState(null);
-  const [filterEndDate, setFilterEndDate] = useState(null);
-  const [filterStartPickupTime, setFilterStartPickupTime] = useState(null);
-  const [filterEndPickupTime, setFilterEndPickupTime] = useState(null);
-  const [filterStartLocation, setFilterStartLocation] = useState(null);
-  const [filterEndLocation, setFilterEndLocation] = useState(null);
-  const [filterStartLocationRadius, setFilterStartLocationRadius] = useState(5);
-  const [filterEndLocationRadius, setFilterEndLocationRadius] = useState(5);
 
   const pageSize = 10;
 
@@ -133,6 +121,10 @@ const HomeComponent = ({}) => {
     return <BookingCard element={item} handleBookingClick={handleSendData} />;
   };
 
+  const openFilterBookingScreen = useCallback(() => {
+    navigation.dispatch(StackActions.push("FilterBooking"));
+  }, []);
+
   return (
     <>
       <View backgroundColor={"white"}>
@@ -150,7 +142,7 @@ const HomeComponent = ({}) => {
 
           {bookingsAvailable.length > 0 && (
             <HStack justifyContent="flex-end">
-              <TouchableOpacity onPress={() => setFilterModalVisible(true)}>
+              <TouchableOpacity onPress={() => openFilterBookingScreen()}>
                 <HStack mx={2} marginTop="2" alignItems="center">
                   <FunnelIcon size={20} color={"black"} />
 
@@ -167,7 +159,7 @@ const HomeComponent = ({}) => {
             data={bookingsAvailable}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => {
-              return <>{renderListItem(item, index)}</>;
+              return renderListItem(item, index);
             }}
             ListEmptyComponent={
               <InfoAlert message="Không có hành trình nào còn trống" />
@@ -185,7 +177,7 @@ const HomeComponent = ({}) => {
               paddingBottom: currentTrip || upcomingTrip ? 60 : 10,
             }}
           />
-          <FilterBookingModal
+          {/* <FilterBookingScreen
             modalVisible={filterModalVisible}
             setModalVisible={setFilterModalVisible}
             filterStartDate={filterStartDate}
@@ -200,7 +192,7 @@ const HomeComponent = ({}) => {
             setFilterStartLocation={setFilterStartLocation}
             setIsLoading={setIsLoading}
             navigation={navigation}
-          />
+          /> */}
         </ErrorAlert>
       </View>
       <HomeTripInformationCard

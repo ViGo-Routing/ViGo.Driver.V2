@@ -2184,11 +2184,6 @@
   resolved "https://registry.npmjs.org/@react-native-community/geolocation/-/geolocation-3.0.6.tgz"
   integrity sha512-+iidKFgw1HxCJSHVnlywAKu6uerdpDAKTXLRnlsUdhgqtgTiIixb496Z267iPVFmIO1bp4lOU6UiwzmvcyXdbg==
 
-"@react-native-firebase/app-check@^18.3.1":
-  version "18.3.1"
-  resolved "https://registry.npmjs.org/@react-native-firebase/app-check/-/app-check-18.3.1.tgz"
-  integrity sha512-u/zNLxq+RMoLjnvVE17ZcxnGdAGmcyiznbFFBi6m1cu8lI0lmKtyI4Us0fAxUH7vGtBhRKPdSdxtAZSoeLvQVQ==
-
 "@react-native-firebase/app@^18.3.0":
   version "18.3.1"
   resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-18.3.1.tgz"

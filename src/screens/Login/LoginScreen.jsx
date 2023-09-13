@@ -23,7 +23,6 @@ import { login } from "../../utils/apiManager";
 import messaging from "@react-native-firebase/messaging";
 import { updateUserFcmToken } from "../../services/userService";
 import auth from "@react-native-firebase/auth";
-import appCheck from "@react-native-firebase/app-check";
 
 import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
 // import { getString, setUserData } from "../../utils/storageUtils";
