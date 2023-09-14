@@ -28,7 +28,7 @@ const ViGoGooglePlacesAutocomplete = ({
         ref={placeInputRef}
         placeholder="Chọn địa điểm..."
         onPress={(data: any, details: any) => {
-          console.log(details);
+          handlePlaceSelection(details);
         }}
         insideScrollView={isInScrollView}
         fetchDetails={true}

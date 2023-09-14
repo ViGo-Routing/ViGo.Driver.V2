@@ -1,7 +1,11 @@
 import EncryptedStorage from "react-native-encrypted-storage";
+import { filterKeys } from "../screens/Home/FilterBookingModal";
 
 export const setData = async (key, value) => {
   try {
+    // if (key == filterKeys.isStartStation) {
+    //   console.log("Set Filter: ", value);
+    // }
     await EncryptedStorage.setItem(key, JSON.stringify(value));
   } catch (error) {
     throw error;

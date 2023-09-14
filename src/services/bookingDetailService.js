@@ -1,5 +1,6 @@
 import { Alert } from "react-native";
 import apiManager from "../utils/apiManager";
+import moment from "moment";
 
 export const getAvailableBookingDetails = async (
   driverId,
@@ -20,12 +21,56 @@ export const getAvailableBookingDetails = async (
 export const getAvailableBookingDetailsByBooking = async (
   driverId,
   bookingId,
+  isDate = false,
+  minDate = null,
+  maxDate = null,
+  isPickupTime = false,
+  minPickupTime = null,
+  maxPickupTime = null,
+  isStartLocation = false,
+  startLocationLat = null,
+  startLocationLong = null,
+  startLocationRadius = null,
+  isEndLocation = false,
+  endLocationLat = null,
+  endLocationLong = null,
+  endLocationRadius = null,
   pageSize = -1,
   pageNumber = 1
 ) => {
-  const response = await apiManager.get(
-    `api/BookingDetail/Driver/Available/${driverId}/${bookingId}?pageSize=${pageSize}&pageNumber=${pageNumber}`
-  );
+  let requestUrl = `api/BookingDetail/Driver/Available/${driverId}/${bookingId}?pageSize=${pageSize}&pageNumber=${pageNumber}`;
+
+  if (isDate && minDate) {
+    requestUrl += `&minDate=${moment(minDate).format("YYYY-MM-DD").toString()}`;
+  }
+  if (isDate && maxDate) {
+    requestUrl += `&maxDate=${moment(maxDate).format("YYYY-MM-DD").toString()}`;
+  }
+  if (isPickupTime && minPickupTime) {
+    requestUrl += `&minPickupTime=${moment(minPickupTime)
+      .format("HH:mm:ss")
+      .toString()}`;
+  }
+  if (isPickupTime && maxPickupTime) {
+    requestUrl += `&maxPickupTime=${moment(maxPickupTime)
+      .format("HH:mm:ss")
+      .toString()}`;
+  }
+  if (
+    isStartLocation &&
+    startLocationLat &&
+    startLocationLong &&
+    startLocationRadius
+  ) {
+    requestUrl += `&startLocationLat=${startLocationLat}&startLocationLng=${startLocationLong}&startLocationRadius=${startLocationRadius}`;
+  }
+  if (isEndLocation && endLocationLat && endLocationLong && endLocationRadius) {
+    requestUrl += `&endLocationLat=${endLocationLat}&endLocationLng=${endLocationLong}&endLocationRadius=${endLocationRadius}`;
+  }
+
+  console.log(requestUrl);
+
+  const response = await apiManager.get(requestUrl);
   return response.data;
 };
 
