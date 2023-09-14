@@ -38,7 +38,11 @@ import BookingDetailPanel, {
   BookingDetailSmallPanel,
   CancelBookingDetailConfirmAlert,
 } from "../BookingDetail/BookingDetailPanel";
-import { eventNames, getErrorMessage } from "../../utils/alertUtils";
+import {
+  eventNames,
+  getErrorMessage,
+  handleError,
+} from "../../utils/alertUtils";
 import { Box, HStack, Text } from "native-base";
 import { getBookingDetailCustomer } from "../../services/userService";
 import { PaperAirplaneIcon } from "react-native-heroicons/solid";

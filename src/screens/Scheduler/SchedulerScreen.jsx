@@ -60,7 +60,7 @@ LocaleConfig.locales["vn"] = {
     "Thứ sáu",
     "Thứ bảy",
   ],
-  dayNamesShort: ["CN", "T2", "T3", "T4", "T5", "T6", "T6"],
+  dayNamesShort: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
   today: "Hôm nay",
 };
 

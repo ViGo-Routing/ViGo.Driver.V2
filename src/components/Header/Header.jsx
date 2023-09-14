@@ -48,33 +48,37 @@ const Header = ({
     //     {title}
     //   </Text>
     // </View>
-    <Box
-      backgroundColor={themeColors.primary}
-      style={{ height: 55 }}
-      justifyContent={"center"}
-    >
-      <HStack
-        alignItems={"center"}
-        paddingLeft={isBackButtonShown ? 3 : 0}
-        justifyContent={isBackButtonShown ? "flex-start" : "center"}
+    <Box backgroundColor="white">
+      <Box
+        backgroundColor={themeColors.primary}
+        style={{ height: 55 }}
+        justifyContent={"center"}
+        borderBottomLeftRadius={"2xl"}
+        borderBottomRightRadius={"2xl"}
       >
-        {isBackButtonShown && (
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={onBackButtonPress}
-          >
-            {renderBackButton()}
-          </TouchableOpacity>
-        )}
-        <Text
-          marginLeft={isBackButtonShown ? 3 : 0}
-          bold
-          fontSize={"2xl"}
-          color={"white"}
+        <HStack
+          alignItems={"center"}
+          paddingLeft={isBackButtonShown ? 3 : 0}
+          justifyContent={isBackButtonShown ? "flex-start" : "center"}
         >
-          {title}
-        </Text>
-      </HStack>
+          {isBackButtonShown && (
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={onBackButtonPress}
+            >
+              {renderBackButton()}
+            </TouchableOpacity>
+          )}
+          <Text
+            marginLeft={isBackButtonShown ? 3 : 0}
+            bold
+            fontSize={"2xl"}
+            color={"white"}
+          >
+            {title}
+          </Text>
+        </HStack>
+      </Box>
     </Box>
   );
 };

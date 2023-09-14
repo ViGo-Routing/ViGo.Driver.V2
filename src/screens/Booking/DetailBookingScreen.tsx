@@ -37,6 +37,7 @@ import RefreshableScrollView from "../../components/List/RefreshableScrollView";
 import CustomerInformationCard from "../../components/Card/CustomerInformationCard";
 import {
   ArrowLongRightIcon,
+  ArrowsRightLeftIcon,
   CalendarDaysIcon,
   CalendarIcon,
   ClockIcon,
@@ -70,7 +71,21 @@ const DetailBookingScreen = () => {
   const { isError, setIsError, errorMessage, setErrorMessage } =
     useErrorHandlingHook();
   const route = useRoute();
-  const { bookingId } = route.params as any;
+  const {
+    bookingId,
+    isDate,
+    filterStartDate,
+    filterEndDate,
+    isPickupTime,
+    filterStartPickupTime,
+    filterEndPickupTime,
+    isStartStation,
+    filterStartLocation,
+    filterStartLocationRadius,
+    isEndStation,
+    filterEndLocation,
+    filterEndLocationRadius,
+  } = route.params as any;
   // console.log(bookingId);
   const { user } = useContext(UserContext);
 
@@ -103,6 +118,18 @@ const DetailBookingScreen = () => {
       const detailsResponse = await getAvailableBookingDetailsByBooking(
         user.id,
         bookingId,
+        isDate,
+        filterStartDate,
+        filterEndDate,
+        isPickupTime,
+        filterStartPickupTime,
+        filterEndPickupTime,
+        isStartStation,
+        filterStartLocation,
+        filterStartLocationRadius,
+        isEndStation,
+        filterEndLocation,
+        filterEndLocationRadius,
         -1,
         1
       );
@@ -210,6 +237,7 @@ const DetailBookingScreen = () => {
         navigation={navigation}
         selectedDetails={selectedDetails}
         handleClickOnTrip={handleClickOnTrip}
+        bookingType={booking.type}
         key={`card-${item.id}`}
       />
     );
@@ -510,15 +538,30 @@ const DetailBookingScreen = () => {
                   >
                     <HStack>
                       <HStack alignItems="center">
-                        <ArrowLongRightIcon size={25} color="black" />
-                        <Text p={1} bold>
-                          Một chiều
-                        </Text>
+                        {booking.type == "ONE_WAY" ? (
+                          <>
+                            <ArrowLongRightIcon size={25} color="black" />
+                            <Text p={1} bold>
+                              Một chiều
+                            </Text>
+                          </>
+                        ) : (
+                          <>
+                            <ArrowsRightLeftIcon size={25} color="black" />
+                            <Text p={1} bold>
+                              Hai chiều
+                            </Text>
+                          </>
+                        )}
                       </HStack>
                       <HStack marginLeft="5" alignItems="center">
                         <CalendarDaysIcon size={25} color="black" />
                         <Text p={1} bold>
-                          Theo tháng
+                          {booking.customerRoute.routineType == "WEEKLY"
+                            ? "Theo tuần"
+                            : booking.customerRoute.routineType == "MONTHLY"
+                            ? "Theo tháng"
+                            : "Ngẫu nhiên"}
                         </Text>
                       </HStack>
                     </HStack>
@@ -546,6 +589,14 @@ const DetailBookingScreen = () => {
                           )}
                         </HStack>
                       </TouchableOpacity>
+                      {(isDate ||
+                        isPickupTime ||
+                        isStartStation ||
+                        isEndStation) && (
+                        <Text fontSize="xs" alignSelf="flex-end">
+                          * Đã áp dụng các bộ lọc trước đó
+                        </Text>
+                      )}
                       <HStack
                         mx={0.5}
                         marginTop="2"
@@ -578,6 +629,7 @@ const DetailBookingScreen = () => {
                             selectedDetails={selectedDetails}
                             handleClickOnTrip={handleClickOnTrip}
                             key={`card-${item.id}`}
+                            bookingType={booking.type}
                           />
                         ))}
                       </VStack>

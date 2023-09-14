@@ -21,6 +21,7 @@ import {
   ArrowLeftOnRectangleIcon,
 } from "react-native-heroicons/solid";
 import { logUserOut } from "../../../services/userService";
+import moment from "moment";
 
 interface DriverReviewInformationTabProps {
   name: string;

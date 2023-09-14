@@ -23,7 +23,6 @@ import { login } from "../../utils/apiManager";
 import messaging from "@react-native-firebase/messaging";
 import { updateUserFcmToken } from "../../services/userService";
 import auth from "@react-native-firebase/auth";
-import appCheck from "@react-native-firebase/app-check";
 
 import ViGoSpinner from "../../components/Spinner/ViGoSpinner";
 // import { getString, setUserData } from "../../utils/storageUtils";
@@ -109,8 +108,8 @@ export default function LoginScreen() {
     // });
 
     // return () => {
-    //   // authUnsubscriber();
-    //   unsubscribe();
+    //   authUnsubscriber();
+    //   // unsubscribe();
     // };
   }, []);
 
@@ -275,16 +274,17 @@ export default function LoginScreen() {
   const confirmCode = async () => {
     setIsLoading(true);
     try {
+      auth().onAuthStateChanged(onAuthStateChanged);
       const result = await confirm.confirm(code);
-      const credential = auth.PhoneAuthProvider.credential(
-        confirm.verificationId,
-        code
-      );
-      const loginInfo = await auth().signInWithCredential(credential);
+      // const credential = auth.PhoneAuthProvider.credential(
+      //   confirm.verificationId,
+      //   code
+      // );
+      // const loginInfo = await auth().signInWithCredential(credential);
 
-      if (loginInfo.user) {
-        auth().onAuthStateChanged(onAuthStateChanged);
-      }
+      // if (loginInfo.user) {
+      //   auth().onAuthStateChanged(onAuthStateChanged);
+      // }
     } catch (err) {
       setIsLoading(false);
       if (err.code == "auth/invalid-verification-code") {

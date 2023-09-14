@@ -39,13 +39,14 @@ const OnGoingTab = ({}: OnGoingTabProps) => {
       1,
       "date asc, customerDesiredPickupTime asc"
     );
-    const items = detailsResponse.data.data.filter((item) => {
+    // console.log(detailsResponse.data);
+    const items = detailsResponse.data.data.filter((item: any) => {
       return (
         moment(item.date).format("YYYY-MM-DD") !== formattedCurrentDate ||
         moment(item.customerDesiredPickupTime, "HH:mm:ss").isAfter(moment())
       );
     });
-    // console.log(detailsResponse.data);
+    // console.log(items.length);
     setList(items);
 
     if (detailsResponse.data.hasNextPage == true) {
@@ -81,7 +82,7 @@ const OnGoingTab = ({}: OnGoingTabProps) => {
         "date asc, customerDesiredPickupTime asc"
       );
 
-      console.log(trips.data.data);
+      // console.log(trips.data);
 
       const moreTrips = [...list, ...trips.data.data];
 

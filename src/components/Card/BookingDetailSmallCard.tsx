@@ -1,5 +1,5 @@
 import CheckBox from "@react-native-community/checkbox";
-import { Box, HStack, VStack, Text } from "native-base";
+import { Box, HStack, VStack, Text, Badge } from "native-base";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import {
   ArchiveBoxArrowDownIcon,
@@ -15,6 +15,7 @@ interface BookingDetailSmallCardProps {
   item: any;
   selectedDetails: Array<string>;
   handleClickOnTrip: (value: boolean, id: string) => void;
+  bookingType: "ONE_WAY" | "ROUND_TRIP";
   navigation: any;
 }
 
@@ -22,6 +23,7 @@ const BookingDetailSmallCard = ({
   item,
   selectedDetails,
   handleClickOnTrip,
+  bookingType,
   navigation,
 }: BookingDetailSmallCardProps) => {
   return (
@@ -66,18 +68,38 @@ const BookingDetailSmallCard = ({
               </Text>
             </VStack>
           </HStack>
-          <HStack justifyContent="flex-end" mb="2">
-            <Box
-              // alignSelf="flex-end"
-              backgroundColor={themeColors.linear}
-              // p="4"
-              px="3"
-              py="2"
-              rounded="xl"
-            >
-              <Text style={styles.titlePrice}>{vndFormat(item.price)}</Text>
-            </Box>
-          </HStack>
+          {(bookingType == "ONE_WAY" ||
+            (bookingType == "ROUND_TRIP" && item.type == "MAIN_ROUTE")) && (
+            <HStack justifyContent="flex-end" mb="2">
+              <Box
+                // alignSelf="flex-end"
+                backgroundColor={themeColors.linear}
+                // p="4"
+                px="3"
+                py="2"
+                rounded="xl"
+              >
+                <Text style={styles.titlePrice}>{vndFormat(item.price)}</Text>
+              </Box>
+            </HStack>
+          )}
+          {bookingType == "ROUND_TRIP" && item.type != "MAIN_ROUTE" && (
+            <HStack justifyContent="space-between" mb="2">
+              <Badge paddingTop={0} paddingBottom={0} colorScheme={"info"}>
+                Chuyến về
+              </Badge>
+              <Box
+                // alignSelf="flex-end"
+                backgroundColor={themeColors.linear}
+                // p="4"
+                px="3"
+                py="2"
+                rounded="xl"
+              >
+                <Text style={styles.titlePrice}>{vndFormat(item.price)}</Text>
+              </Box>
+            </HStack>
+          )}
         </TouchableOpacity>
       </Box>
     </HStack>
