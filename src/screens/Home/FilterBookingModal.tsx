@@ -378,7 +378,7 @@ const FilterBookingModal = ({
       // closeOnOverlayClick={false}
     >
       <Modal.Content>
-        {/* <Modal.CloseButton /> */}
+        <Modal.CloseButton />
         <Modal.Header>Lọc các hành trình</Modal.Header>
         <Modal.Body
           _scrollview={{
