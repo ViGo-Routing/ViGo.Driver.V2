@@ -369,9 +369,9 @@ const FilterBookingModal = ({
   return (
     <Modal
       isOpen={modalVisible}
-      // onClose={() => {
-      //   setModalVisible(false);
-      // }}
+      onClose={() => {
+        setModalVisible(false);
+      }}
       size={"xl"}
       // avoidKeyboard={true}
       pb={isKeyboardVisible ? "50%" : "0"}

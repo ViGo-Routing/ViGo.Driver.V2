@@ -313,16 +313,17 @@ const HomeComponent = ({}) => {
                         <Text marginLeft="3">Đã áp dụng bộ lọc</Text>
                       </>
                     )}
-                  {!isDate &&
+                  {((!isDate &&
                     !isPickupTime &&
                     !isStartStation &&
-                    !isEndStation && (
-                      <>
-                        <FunnelOutlineIcon size={20} color={"black"} />
+                    !isEndStation) ||
+                    !isConfirm) && (
+                    <>
+                      <FunnelOutlineIcon size={20} color={"black"} />
 
-                        <Text marginLeft="3">Lọc hành trình</Text>
-                      </>
-                    )}
+                      <Text marginLeft="3">Lọc hành trình</Text>
+                    </>
+                  )}
                 </HStack>
               </TouchableOpacity>
             </HStack>
