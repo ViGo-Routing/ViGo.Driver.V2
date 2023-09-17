@@ -87,7 +87,9 @@ const SchedulerScreen = () => {
     .toString();
 
   const [displayFab, setDisplayFab] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(formattedCurrentDate);
+  const [selectedDate, setSelectedDate] = useState(
+    date ? moment(date).format("YYYY-MM-DD") : formattedCurrentDate
+  );
 
   const fetchData = async () => {
     setIsError(false);

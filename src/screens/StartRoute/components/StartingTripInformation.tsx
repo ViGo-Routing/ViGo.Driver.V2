@@ -458,7 +458,7 @@ const StartingTripFullInformation = ({
         isInFull={true}
         handleReportButtonClick={handleReportButtonClick}
       />
-      <HStack mt="3">
+      {/* <HStack mt="3">
         <VStack alignItems="center">
           <MapPinIcon size={24} color="#00A1A1" />
         </VStack>
@@ -477,7 +477,7 @@ const StartingTripFullInformation = ({
             {`${trip.endStation.name}, ${trip.endStation.address}`}
           </Text>
         </VStack>
-      </HStack>
+      </HStack> */}
       <Box mt="5">
         <CustomerInformationCard
           customer={customer}
