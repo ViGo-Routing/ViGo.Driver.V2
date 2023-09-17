@@ -258,7 +258,7 @@ export default function LoginScreen() {
         setEnterOtpModalVisible(true);
       } catch (err) {
         setIsLoading(false);
-        // console.log(err);
+        console.log(err);
         eventEmitter.emit(eventNames.SHOW_TOAST, {
           title: "Gửi mã OTP không thành công",
           description: "Vui lòng kiểm tra lại số điện thoại",
@@ -275,7 +275,7 @@ export default function LoginScreen() {
     setIsLoading(true);
     try {
       auth().onAuthStateChanged(onAuthStateChanged);
-      const result = await confirm.confirm(code);
+      await confirm.confirm(code);
       // const credential = auth.PhoneAuthProvider.credential(
       //   confirm.verificationId,
       //   code

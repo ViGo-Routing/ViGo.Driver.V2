@@ -155,16 +155,17 @@ const RegisterScreen = () => {
   const confirmCode = async () => {
     setIsLoading(true);
     try {
+      auth().onAuthStateChanged(onAuthStateChanged);
       const result = await confirm.confirm(code);
-      const credential = auth.PhoneAuthProvider.credential(
-        confirm.verificationId,
-        code
-      );
-      const loginInfo = await auth().signInWithCredential(credential);
+      // const credential = auth.PhoneAuthProvider.credential(
+      //   confirm.verificationId,
+      //   code
+      // );
+      // const loginInfo = await auth().signInWithCredential(credential);
 
-      if (loginInfo.user) {
-        auth().onAuthStateChanged(onAuthStateChanged);
-      }
+      // if (loginInfo.user) {
+      //   auth().onAuthStateChanged(onAuthStateChanged);
+      // }
     } catch (err) {
       setIsLoading(false);
       if (err.code == "auth/invalid-verification-code") {
