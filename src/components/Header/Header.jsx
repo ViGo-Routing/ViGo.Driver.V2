@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { View, StyleSheet } from "react-native";
 import { themeColors } from "../../../assets/theme";
 // import { Ionicons } from '@expo/vector-icons'

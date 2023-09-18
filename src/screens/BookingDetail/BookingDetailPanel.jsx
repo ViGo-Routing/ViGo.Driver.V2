@@ -149,7 +149,7 @@ const CancelBookingDetailConfirmAlert = memo(
   }
 );
 
-const BookingDetailPanel = useMemo(
+const BookingDetailPanel = memo(
   ({
     item,
     actionButton = undefined,
@@ -235,41 +235,39 @@ const BookingDetailPanel = useMemo(
   }
 );
 
-const BookingDetailSmallPanel = useMemo(
-  ({ item, actionButton, navigation }) => {
-    // const { user } = useContext(UserContext);
-    // console.log(item);
-    return (
-      <Box>
-        <TripBasicInformation item={item} />
-        <HStack>
-          <View
-            style={[
-              styles.cardInsideLocation,
-              {
-                backgroundColor: themeColors.primary,
-                height: 40,
-                justifyContent: "center",
-                alignItems: "center",
-              },
-              vigoStyles.buttonWhite,
-            ]}
-          >
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <HStack alignItems="center">
-                <ArrowLeftIcon size={20} color={themeColors.primary} />
-                <Text marginLeft={2} style={vigoStyles.buttonWhiteText}>
-                  Quay lại
-                </Text>
-              </HStack>
-            </TouchableOpacity>
-          </View>
-          {actionButton && actionButton}
-        </HStack>
-      </Box>
-    );
-  }
-);
+const BookingDetailSmallPanel = memo(({ item, actionButton, navigation }) => {
+  // const { user } = useContext(UserContext);
+  // console.log(item);
+  return (
+    <Box>
+      <TripBasicInformation item={item} />
+      <HStack>
+        <View
+          style={[
+            styles.cardInsideLocation,
+            {
+              backgroundColor: themeColors.primary,
+              height: 40,
+              justifyContent: "center",
+              alignItems: "center",
+            },
+            vigoStyles.buttonWhite,
+          ]}
+        >
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <HStack alignItems="center">
+              <ArrowLeftIcon size={20} color={themeColors.primary} />
+              <Text marginLeft={2} style={vigoStyles.buttonWhiteText}>
+                Quay lại
+              </Text>
+            </HStack>
+          </TouchableOpacity>
+        </View>
+        {actionButton && actionButton}
+      </HStack>
+    </Box>
+  );
+});
 
 const styles = StyleSheet.create({
   card: {
