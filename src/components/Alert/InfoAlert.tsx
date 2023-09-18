@@ -1,4 +1,5 @@
 import { Alert, Center, Text, VStack } from "native-base";
+import { memo } from "react";
 
 interface InfoAlertProps {
   message: string;
@@ -19,4 +20,4 @@ const InfoAlert = ({ message }: InfoAlertProps) => {
   );
 };
 
-export default InfoAlert;
+export default memo(InfoAlert);

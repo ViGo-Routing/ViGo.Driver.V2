@@ -1,0 +1,112 @@
+diff --git a/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.d.ts b/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.d.ts
+index 15d5a8a..8ff1125 100644
+--- a/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.d.ts
++++ b/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.d.ts
+@@ -428,6 +428,7 @@ interface GooglePlacesAutocompleteProps {
+   /** text input props */
+   textInputProps?: TextInputProps | Object;
+   timeout?: number;
++  insideScrollView?: boolean;
+ }
+ 
+ export type GooglePlacesAutocompleteRef = {
+diff --git a/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.js b/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.js
+index de3099a..b354373 100644
+--- a/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.js
++++ b/node_modules/react-native-google-places-autocomplete/GooglePlacesAutocomplete.js
+@@ -234,6 +234,9 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+   };
+ 
+   const _onPress = (rowData) => {
++
++    // console.log("Pressed");
++
+     if (rowData.isPredefinedPlace !== true && props.fetchDetails === true) {
+       if (rowData.isLoading === true) {
+         // already requesting
+@@ -756,30 +759,45 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
+         props.currentLocation === true) &&
+       listViewDisplayed === true
+     ) {
+-      return (
+-        <FlatList
+-          nativeID='result-list-id'
+-          scrollEnabled={!props.disableScroll}
+-          style={[
+-            props.suppressDefaultStyles ? {} : defaultStyles.listView,
+-            props.styles.listView,
+-          ]}
+-          data={dataSource}
+-          keyExtractor={keyGenerator}
+-          extraData={[dataSource, props]}
+-          ItemSeparatorComponent={_renderSeparator}
+-          renderItem={({ item, index }) => _renderRow(item, index)}
+-          ListEmptyComponent={
+-            stateText.length > props.minLength && props.listEmptyComponent
+-          }
+-          ListHeaderComponent={
+-            props.renderHeaderComponent &&
+-            props.renderHeaderComponent(stateText)
+-          }
+-          ListFooterComponent={_renderPoweredLogo}
+-          {...props}
+-        />
+-      );
++      if (props.insideScrollView === false) {
++        return (
++          <FlatList
++            nativeID='result-list-id'
++            scrollEnabled={!props.disableScroll}
++            style={[
++              props.suppressDefaultStyles ? {} : defaultStyles.listView,
++              props.styles.listView,
++            ]}
++            data={dataSource}
++            keyExtractor={keyGenerator}
++            extraData={[dataSource, props]}
++            ItemSeparatorComponent={_renderSeparator}
++            renderItem={({ item, index }) => _renderRow(item, index)}
++            ListEmptyComponent={
++              stateText.length > props.minLength && props.listEmptyComponent
++            }
++            ListHeaderComponent={
++              props.renderHeaderComponent &&
++              props.renderHeaderComponent(stateText)
++            }
++            ListFooterComponent={_renderPoweredLogo}
++            {...props}
++          />
++        );
++      }
++      else {
++        return <View style={[
++          props.suppressDefaultStyles ? {} : defaultStyles.listView,
++          props.styles.listView,
++        ]} nativeID='result-list-id'>
++        {dataSource.length == 0 && stateText.length > props.minLength && props.listEmptyComponent }
++          {dataSource.length > 0 && dataSource.map((data, index) => 
++          <View key={keyGenerator()}>
++          {_renderRow(data, index)}
++          {_renderSeparator("result-list", index)}
++          </View>)}
++        </View>
++      }
+     }
+ 
+     return null;
+@@ -899,6 +917,7 @@ GooglePlacesAutocomplete.propTypes = {
+   textInputHide: PropTypes.bool,
+   textInputProps: PropTypes.object,
+   timeout: PropTypes.number,
++  insideScrollView: PropTypes.bool
+ };
+ 
+ GooglePlacesAutocomplete.defaultProps = {
+@@ -942,6 +961,7 @@ GooglePlacesAutocomplete.defaultProps = {
+   textInputHide: false,
+   textInputProps: {},
+   timeout: 20000,
++  insideScrollView: false
+ };
+ 
+ export default { GooglePlacesAutocomplete };

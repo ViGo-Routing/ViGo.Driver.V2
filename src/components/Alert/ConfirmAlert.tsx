@@ -1,5 +1,5 @@
 import { AlertDialog, Box, Button } from "native-base";
-import { useRef, ReactNode } from "react";
+import { useRef, ReactNode, memo } from "react";
 import { themeColors } from "../../../assets/theme";
 
 interface ConfirmAlertProps {
@@ -76,4 +76,4 @@ const ConfirmAlert = ({
   );
 };
 
-export default ConfirmAlert;
+export default memo(ConfirmAlert);

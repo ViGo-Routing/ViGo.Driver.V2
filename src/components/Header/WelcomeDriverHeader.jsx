@@ -1,5 +1,5 @@
 // import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { memo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { themeColors, vigoStyles } from "../../../assets/theme/index";
 
@@ -51,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WelcomeDriverHeader;
+export default memo(WelcomeDriverHeader);

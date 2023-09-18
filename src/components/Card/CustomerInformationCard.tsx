@@ -11,6 +11,7 @@ import call from "react-native-phone-call";
 import { handleError } from "../../utils/alertUtils";
 import { getCancelRateTextColor } from "../../utils/userUtils";
 import { useNavigation } from "@react-navigation/native";
+import { memo } from "react";
 interface CustomerInformationCardProps {
   customer: any;
   displayCustomerText?: boolean | undefined;
@@ -124,4 +125,4 @@ const CustomerInformationCard = ({
   );
 };
 
-export default CustomerInformationCard;
+export default memo(CustomerInformationCard);

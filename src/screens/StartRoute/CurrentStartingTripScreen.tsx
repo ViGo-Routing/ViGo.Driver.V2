@@ -531,7 +531,7 @@ const CurrentStartingTripScreen = () => {
                     </Box>
                   </>
                 }
-                // smallPanelHeight={380}
+                smallPanelHeight={430}
                 // largePanelHeight={getPanelFullHeight()}
                 scrollViewProps={{
                   scrollEnabled: true,
