@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Alert, Box, Button, Center, Text, VStack } from "native-base";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, memo } from "react";
 import { HomeIcon } from "react-native-heroicons/outline";
 
 interface ErrorAlertProps {
@@ -68,4 +68,4 @@ const ErrorAlert = ({
   );
 };
 
-export default ErrorAlert;
+export default memo(ErrorAlert);

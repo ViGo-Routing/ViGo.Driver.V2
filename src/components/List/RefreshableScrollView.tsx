@@ -1,5 +1,5 @@
 import { ScrollView } from "native-base";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, memo } from "react";
 import { RefreshControl } from "react-native";
 
 interface RefreshableScrollViewProps {
@@ -23,4 +23,4 @@ const RefreshableScrollView = ({
   );
 };
 
-export default RefreshableScrollView;
+export default memo(RefreshableScrollView);

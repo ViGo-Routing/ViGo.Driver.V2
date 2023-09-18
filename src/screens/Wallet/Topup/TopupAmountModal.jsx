@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { vigoStyles } from "../../../../assets/theme";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { vndFormat } from "../../../utils/numberUtils";
 import {
   Box,
@@ -132,7 +132,7 @@ const TopupAmountModal = ({
   );
 };
 
-export default TopupAmountModal;
+export default memo(TopupAmountModal);
 
 const styles = StyleSheet.create({
   amountInput: {

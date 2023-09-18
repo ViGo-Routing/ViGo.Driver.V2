@@ -152,7 +152,10 @@ const ProfileSreen = () => {
   // };
 
   useEffect(() => {
-    loadInitialData();
+    const unsubscribe = navigation.addListener("focus", () => {
+      loadInitialData();
+    });
+    return unsubscribe;
   }, []);
 
   // handleSendData = (item, responseData) => {

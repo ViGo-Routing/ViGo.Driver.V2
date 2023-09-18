@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 // import { Ionicons } from '@expo/vector-icons'
@@ -261,4 +261,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BottomNavigationBar;
+export default memo(BottomNavigationBar);

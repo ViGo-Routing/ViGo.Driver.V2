@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { memo, useContext, useMemo, useState } from "react";
 import {
   Badge,
   Box,
@@ -40,228 +40,236 @@ import {
   TripFullInformation,
 } from "../../components/TripInformation/TripInformation";
 
-const PickBookingDetailConfirmAlert = ({
-  item,
-  items,
-  pickingFee,
-  handleOkPress,
-  confirmOpen,
-  setConfirmOpen,
-  // key,
-}) => {
-  const description = () => {
-    if (item || (items && items.length == 1)) {
-      return (
-        <VStack>
-          <Text>
-            Với việc nhận chuyến xe, bạn sẽ phải trả trước một khoản phí nhận
-            chuyến.
-          </Text>
-          <Text>
-            Sau khi hoàn thành chuyến đi, bạn sẽ được trả toàn bộ số tiền của
-            chuyến đi.
-          </Text>
-          <Text marginTop="2">
-            Phí nhận chuyến: <Text bold>{vndFormat(pickingFee)}</Text>
-          </Text>
-        </VStack>
-      );
-    } else if (items && items.length > 1) {
-      return (
-        <VStack>
-          <Text>
-            Với việc nhận {items.length} chuyến xe này, bạn sẽ phải trả trước
-            một khoản phí nhận chuyến.
-          </Text>
-          <Text>
-            Sau khi hoàn thành mỗi chuyến đi, bạn sẽ được trả toàn bộ số tiền
-            của chuyến đi đó.
-          </Text>
-          <Text marginTop="2">
-            Phí nhận chuyến: <Text bold>{vndFormat(pickingFee)}</Text> cho mỗi
-            chuyến đi nhận thành công.
-          </Text>
-          <Text marginTop="2">
-            Ước tính: <Text bold>{vndFormat(pickingFee * items.length)}</Text>
-          </Text>
-        </VStack>
-      );
-    }
-    return <></>;
-  };
+const PickBookingDetailConfirmAlert = memo(
+  ({
+    item,
+    items,
+    pickingFee,
+    handleOkPress,
+    confirmOpen,
+    setConfirmOpen,
+    // key,
+  }) => {
+    const description = () => {
+      if (item || (items && items.length == 1)) {
+        return (
+          <VStack>
+            <Text>
+              Với việc nhận chuyến xe, bạn sẽ phải trả trước một khoản phí nhận
+              chuyến.
+            </Text>
+            <Text>
+              Sau khi hoàn thành chuyến đi, bạn sẽ được trả toàn bộ số tiền của
+              chuyến đi.
+            </Text>
+            <Text marginTop="2">
+              Phí nhận chuyến: <Text bold>{vndFormat(pickingFee)}</Text>
+            </Text>
+          </VStack>
+        );
+      } else if (items && items.length > 1) {
+        return (
+          <VStack>
+            <Text>
+              Với việc nhận {items.length} chuyến xe này, bạn sẽ phải trả trước
+              một khoản phí nhận chuyến.
+            </Text>
+            <Text>
+              Sau khi hoàn thành mỗi chuyến đi, bạn sẽ được trả toàn bộ số tiền
+              của chuyến đi đó.
+            </Text>
+            <Text marginTop="2">
+              Phí nhận chuyến: <Text bold>{vndFormat(pickingFee)}</Text> cho mỗi
+              chuyến đi nhận thành công.
+            </Text>
+            <Text marginTop="2">
+              Ước tính: <Text bold>{vndFormat(pickingFee * items.length)}</Text>
+            </Text>
+          </VStack>
+        );
+      }
+      return <></>;
+    };
 
-  return (
-    <ConfirmAlert
-      title="Nhận chuyến xe"
-      description={description()}
-      okButtonText="Xác nhận"
-      cancelButtonText="Hủy"
-      onOkPress={() => handleOkPress()}
-      isOpen={confirmOpen}
-      setIsOpen={setConfirmOpen}
-      key={`confirm-booking-detail-alert`}
-    />
-  );
-};
-
-const CancelBookingDetailConfirmAlert = ({
-  // item,
-  // items,
-  cancelFee,
-  handleOkPress,
-  confirmOpen,
-  setConfirmOpen,
-  // key,
-}) => {
-  const description = () => {
     return (
-      <VStack>
-        <Text>
-          Với việc hủy chuyến xe, bạn sẽ phải chịu một khoản phí hủy chuyến (nếu
-          có) tùy vào thời gian và chuyến xe mà bạn hủy.
-        </Text>
-        <Text>
-          Phí nhận chuyến đi (sau khi đã trừ phí hủy chuyến) sẽ được hoàn về ví
-          của bạn sau khi hủy chuyến thành công.
-        </Text>
-        <Text marginTop="2">
-          Phí hủy chuyến tạm tính: <Text bold>{vndFormat(cancelFee)}</Text>
-        </Text>
-      </VStack>
-    );
-  };
-
-  return (
-    <ConfirmAlert
-      title="Huỷ chuyến xe"
-      description={description()}
-      okButtonText="Xác nhận"
-      cancelButtonText="Hủy"
-      onOkPress={() => handleOkPress()}
-      isOpen={confirmOpen}
-      setIsOpen={setConfirmOpen}
-      key={`confirm-cancel-booking-detail-alert`}
-    />
-  );
-};
-
-const BookingDetailPanel = ({
-  item,
-  actionButton = undefined,
-  customer,
-  navigation,
-  // toggleBottomSheet,
-  duration,
-  distance,
-  displayButtons = true,
-  onCancelClick = undefined,
-}) => {
-  // const { user } = useContext(UserContext);
-  // console.log(item.status);
-  return (
-    <Box>
-      <TripFullInformation
-        item={item}
-        distance={distance}
-        duration={duration}
-        customer={customer}
+      <ConfirmAlert
+        title="Nhận chuyến xe"
+        description={description()}
+        okButtonText="Xác nhận"
+        cancelButtonText="Hủy"
+        onOkPress={() => handleOkPress()}
+        isOpen={confirmOpen}
+        setIsOpen={setConfirmOpen}
+        key={`confirm-booking-detail-alert`}
       />
-      {displayButtons && (
+    );
+  }
+);
+
+const CancelBookingDetailConfirmAlert = memo(
+  ({
+    // item,
+    // items,
+    cancelFee,
+    handleOkPress,
+    confirmOpen,
+    setConfirmOpen,
+    // key,
+  }) => {
+    const description = () => {
+      return (
         <VStack>
-          <HStack>
-            <View
-              style={[
-                styles.cardInsideLocation,
-                {
-                  backgroundColor: themeColors.primary,
-                  height: 40,
-                  justifyContent: "center",
-                  alignItems: "center",
-                },
-                vigoStyles.buttonWhite,
-              ]}
-            >
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <HStack alignItems="center">
-                  <ArrowLeftIcon size={20} color={themeColors.primary} />
-                  <Text marginLeft={2} style={vigoStyles.buttonWhiteText}>
-                    Quay lại
-                  </Text>
-                </HStack>
-              </TouchableOpacity>
-            </View>
-            {actionButton && actionButton}
-          </HStack>
-          {item.status == "ASSIGNED" && (
+          <Text>
+            Với việc hủy chuyến xe, bạn sẽ phải chịu một khoản phí hủy chuyến
+            (nếu có) tùy vào thời gian và chuyến xe mà bạn hủy.
+          </Text>
+          <Text>
+            Phí nhận chuyến đi (sau khi đã trừ phí hủy chuyến) sẽ được hoàn về
+            ví của bạn sau khi hủy chuyến thành công.
+          </Text>
+          <Text marginTop="2">
+            Phí hủy chuyến tạm tính: <Text bold>{vndFormat(cancelFee)}</Text>
+          </Text>
+        </VStack>
+      );
+    };
+
+    return (
+      <ConfirmAlert
+        title="Huỷ chuyến xe"
+        description={description()}
+        okButtonText="Xác nhận"
+        cancelButtonText="Hủy"
+        onOkPress={() => handleOkPress()}
+        isOpen={confirmOpen}
+        setIsOpen={setConfirmOpen}
+        key={`confirm-cancel-booking-detail-alert`}
+      />
+    );
+  }
+);
+
+const BookingDetailPanel = useMemo(
+  ({
+    item,
+    actionButton = undefined,
+    customer,
+    navigation,
+    // toggleBottomSheet,
+    duration,
+    distance,
+    displayButtons = true,
+    onCancelClick = undefined,
+  }) => {
+    // const { user } = useContext(UserContext);
+    // console.log(item.status);
+    return (
+      <Box>
+        <TripFullInformation
+          item={item}
+          distance={distance}
+          duration={duration}
+          customer={customer}
+        />
+        {displayButtons && (
+          <VStack>
             <HStack>
               <View
-                flex={1}
                 style={[
                   styles.cardInsideLocation,
-                  vigoStyles.buttonWhite,
                   {
-                    // backgroundColor: "red",
+                    backgroundColor: themeColors.primary,
                     height: 40,
                     justifyContent: "center",
                     alignItems: "center",
-                    borderColor: "red",
                   },
+                  vigoStyles.buttonWhite,
                 ]}
               >
-                <TouchableOpacity
-                  onPress={() => {
-                    onCancelClick();
-                  }}
-                >
+                <TouchableOpacity onPress={() => navigation.goBack()}>
                   <HStack alignItems="center">
-                    <XCircleIcon size={20} color={"red"} />
-                    <Text marginLeft={2} color="red.500" bold>
-                      Hủy nhận chuyến
+                    <ArrowLeftIcon size={20} color={themeColors.primary} />
+                    <Text marginLeft={2} style={vigoStyles.buttonWhiteText}>
+                      Quay lại
                     </Text>
                   </HStack>
                 </TouchableOpacity>
               </View>
+              {actionButton && actionButton}
             </HStack>
-          )}
-        </VStack>
-      )}
-    </Box>
-  );
-};
+            {item.status == "ASSIGNED" && (
+              <HStack>
+                <View
+                  flex={1}
+                  style={[
+                    styles.cardInsideLocation,
+                    vigoStyles.buttonWhite,
+                    {
+                      // backgroundColor: "red",
+                      height: 40,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderColor: "red",
+                    },
+                  ]}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      onCancelClick();
+                    }}
+                  >
+                    <HStack alignItems="center">
+                      <XCircleIcon size={20} color={"red"} />
+                      <Text marginLeft={2} color="red.500" bold>
+                        Hủy nhận chuyến
+                      </Text>
+                    </HStack>
+                  </TouchableOpacity>
+                </View>
+              </HStack>
+            )}
+          </VStack>
+        )}
+      </Box>
+    );
+  }
+);
 
-const BookingDetailSmallPanel = ({ item, actionButton, navigation }) => {
-  // const { user } = useContext(UserContext);
-  // console.log(item);
-  return (
-    <Box>
-      <TripBasicInformation item={item} />
-      <HStack>
-        <View
-          style={[
-            styles.cardInsideLocation,
-            {
-              backgroundColor: themeColors.primary,
-              height: 40,
-              justifyContent: "center",
-              alignItems: "center",
-            },
-            vigoStyles.buttonWhite,
-          ]}
-        >
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <HStack alignItems="center">
-              <ArrowLeftIcon size={20} color={themeColors.primary} />
-              <Text marginLeft={2} style={vigoStyles.buttonWhiteText}>
-                Quay lại
-              </Text>
-            </HStack>
-          </TouchableOpacity>
-        </View>
-        {actionButton && actionButton}
-      </HStack>
-    </Box>
-  );
-};
+const BookingDetailSmallPanel = useMemo(
+  ({ item, actionButton, navigation }) => {
+    // const { user } = useContext(UserContext);
+    // console.log(item);
+    return (
+      <Box>
+        <TripBasicInformation item={item} />
+        <HStack>
+          <View
+            style={[
+              styles.cardInsideLocation,
+              {
+                backgroundColor: themeColors.primary,
+                height: 40,
+                justifyContent: "center",
+                alignItems: "center",
+              },
+              vigoStyles.buttonWhite,
+            ]}
+          >
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <HStack alignItems="center">
+                <ArrowLeftIcon size={20} color={themeColors.primary} />
+                <Text marginLeft={2} style={vigoStyles.buttonWhiteText}>
+                  Quay lại
+                </Text>
+              </HStack>
+            </TouchableOpacity>
+          </View>
+          {actionButton && actionButton}
+        </HStack>
+      </Box>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   card: {

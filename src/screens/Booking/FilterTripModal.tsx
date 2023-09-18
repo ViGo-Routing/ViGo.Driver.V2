@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { distinct } from "../../utils/arrayUtils";
 import { Box, HStack, Modal, Text } from "native-base";
 import CheckBox from "@react-native-community/checkbox";
@@ -116,4 +116,4 @@ const FilterTripModal = ({
   );
 };
 
-export default FilterTripModal;
+export default memo(FilterTripModal);

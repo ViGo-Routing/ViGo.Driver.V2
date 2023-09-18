@@ -10,7 +10,7 @@ import {
   Modal,
 } from "react-native";
 import { themeColors, vigoStyles } from "../../../assets/theme";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { XMarkIcon } from "react-native-heroicons/solid";
 
 const EnterOtpCodeModal = ({
@@ -82,7 +82,7 @@ const EnterOtpCodeModal = ({
   );
 };
 
-export default EnterOtpCodeModal;
+export default memo(EnterOtpCodeModal);
 
 const styles = StyleSheet.create({
   input: {

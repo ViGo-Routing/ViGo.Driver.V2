@@ -1,6 +1,7 @@
 import Spinner from "react-native-loading-spinner-overlay";
 import { themeColors } from "../../../assets/theme";
 import { Image } from "native-base";
+import { memo } from "react";
 
 const ViGoSpinner = ({ isLoading }) => {
   return (
@@ -14,4 +15,4 @@ const ViGoSpinner = ({ isLoading }) => {
   );
 };
 
-export default ViGoSpinner;
+export default memo(ViGoSpinner);

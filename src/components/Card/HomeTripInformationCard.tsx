@@ -7,6 +7,7 @@ import {
   getBookingDetailStatusString,
 } from "../../utils/enumUtils/bookingEnumUtils";
 import { NavigationProp } from "@react-navigation/native";
+import { memo } from "react";
 
 interface HomeTripInformationCardInterface {
   currentTrip: any;
@@ -109,4 +110,4 @@ const HomeTripInformationCard = ({
   );
 };
 
-export default HomeTripInformationCard;
+export default memo(HomeTripInformationCard);
