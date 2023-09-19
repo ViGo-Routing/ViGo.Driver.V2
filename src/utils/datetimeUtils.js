@@ -7,7 +7,7 @@ export const toVnDateTimeString = (datetime) => {
 };
 
 export const getMaximumDob = () => {
-  return moment().subtract(5, "years").toDate();
+  return moment().subtract(12, "years").toDate();
 };
 
 export const toVnDateString = (datetime) => {
