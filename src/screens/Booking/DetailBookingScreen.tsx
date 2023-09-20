@@ -198,8 +198,8 @@ const DetailBookingScreen = () => {
         if (selected == true) {
           setSelectedDetails((prev) => [...prev, bookingDetailId]);
         } else {
-          setSelectedDetails(
-            selectedDetails.filter((id) => id !== bookingDetailId)
+          setSelectedDetails((prev) =>
+            prev.filter((id) => id !== bookingDetailId)
           );
         }
       } catch (error) {
