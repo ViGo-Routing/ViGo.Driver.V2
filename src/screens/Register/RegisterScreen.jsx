@@ -100,7 +100,7 @@ const RegisterScreen = () => {
         // setPhoneNumber(user.phoneNumber);
         setFirebaseToken(token);
         setFirebaseUid(user.uid);
-        // console.log(user.firebaseUid);
+        // console.log(user.phoneNumber);
         // console.log(user);
         // console.log(token);
         setEnterOtpModalVisible(false);
@@ -137,6 +137,7 @@ const RegisterScreen = () => {
         );
         setConfirm(confirmation);
         setEnterOtpModalVisible(true);
+        auth().onAuthStateChanged(onAuthStateChanged);
       } catch (err) {
         setIsLoading(false);
         // console.log(err);
@@ -155,7 +156,7 @@ const RegisterScreen = () => {
   const confirmCode = async () => {
     setIsLoading(true);
     try {
-      auth().onAuthStateChanged(onAuthStateChanged);
+      // auth().onAuthStateChanged(onAuthStateChanged);
       const result = await confirm.confirm(code);
       // const credential = auth.PhoneAuthProvider.credential(
       //   confirm.verificationId,
@@ -246,48 +247,49 @@ const RegisterScreen = () => {
           status: "success",
           // placement: "top-right",
           isDialog: true,
-        });
+          onOkPress: async () => {
+            const response = await login(
+              `+84${phoneNumber.substring(1, 10)}`,
+              firebaseToken
+            );
 
-        const response = await login(
-          `+84${phoneNumber.substring(1, 10)}`,
-          firebaseToken
-        );
+            setUser(response.user);
+            // await setUserData(response.user);
 
-        setUser(response.user);
-        // await setUserData(response.user);
+            try {
+              const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+                {
+                  title: "Cho phép ViGo gửi thông báo đến bạn",
+                  message: `Nhận thông báo về trạng thái giao dịch, nhắc nhở chuyến đi
+                        trong ngày và hơn thế nữa`,
+                  buttonNeutral: "Hỏi lại sau",
+                  buttonNegative: "Từ chối",
+                  buttonPositive: "Đồng ý",
+                }
+              );
 
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-            {
-              title: "Cho phép ViGo gửi thông báo đến bạn",
-              message: `Nhận thông báo về trạng thái giao dịch, nhắc nhở chuyến đi
-                    trong ngày và hơn thế nữa`,
-              buttonNeutral: "Hỏi lại sau",
-              buttonNegative: "Từ chối",
-              buttonPositive: "Đồng ý",
+              // console.log(granted);
+
+              if (
+                Platform.constants["Version"] < 33 ||
+                granted === PermissionsAndroid.RESULTS.GRANTED
+              ) {
+                await messaging().registerDeviceForRemoteMessages();
+                const fcmToken = await messaging().getToken();
+                await updateUserFcmToken(response.user.id, fcmToken);
+              }
+            } catch (err) {
+              handleError("Có lỗi xảy ra khi đăng ký", err, navigation);
             }
-          );
 
-          // console.log(granted);
-
-          if (
-            Platform.constants["Version"] < 33 ||
-            granted === PermissionsAndroid.RESULTS.GRANTED
-          ) {
-            await messaging().registerDeviceForRemoteMessages();
-            const fcmToken = await messaging().getToken();
-            await updateUserFcmToken(response.user.id, fcmToken);
-          }
-        } catch (err) {
-          handleError("Có lỗi xảy ra khi đăng ký", err, navigation);
-        }
-
-        if (response.user.status == "PENDING") {
-          navigation.navigate("DriverUpdateProfile");
-        } else {
-          navigation.navigate("Home");
-        }
+            if (response.user.status == "PENDING") {
+              navigation.navigate("DriverUpdateProfile");
+            } else {
+              navigation.navigate("Home");
+            }
+          },
+        });
       }
       // console.log(newUserData);
     } catch (err) {
