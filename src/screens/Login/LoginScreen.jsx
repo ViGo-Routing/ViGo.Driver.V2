@@ -87,7 +87,7 @@ export default function LoginScreen() {
   };
 
   useEffect(() => {
-    console.log("Login");
+    // console.log("Login");
     // getString("token").then((result) => console.log(result));
     // console.log(firebaseToken);
     // auth().settings.appVerificationDisabledForTesting = true;
@@ -256,6 +256,7 @@ export default function LoginScreen() {
         );
         setConfirm(confirmation);
         setEnterOtpModalVisible(true);
+        auth().onAuthStateChanged(onAuthStateChanged);
       } catch (err) {
         setIsLoading(false);
         console.log(err);
@@ -274,7 +275,7 @@ export default function LoginScreen() {
   const confirmCode = async () => {
     setIsLoading(true);
     try {
-      auth().onAuthStateChanged(onAuthStateChanged);
+      // auth().onAuthStateChanged(onAuthStateChanged);
       await confirm.confirm(code);
       // const credential = auth.PhoneAuthProvider.credential(
       //   confirm.verificationId,
