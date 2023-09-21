@@ -93,12 +93,12 @@ const HomeComponent = ({}) => {
       );
 
       const bookings = availableBookings.data;
-      // console.log(availableBookings.data);
+      console.log(availableBookings.totalPages);
 
       setBookingsAvailable(bookings);
       // console.log(details.length);
 
-      if (availableBookings.data.hasNextPage == true) {
+      if (availableBookings.hasNextPage == true) {
         setNextPageNumber(2);
       } else {
         setNextPageNumber(null);
@@ -134,11 +134,13 @@ const HomeComponent = ({}) => {
   ]);
 
   const loadMoreData = useCallback(async () => {
+    // console.log(nextPageNumber);
     if (!onScroll) {
       return;
     }
 
     if (nextPageNumber > 1) {
+      // console.log("Load more");
       let moreDataResponse = await getAvailableBookings(
         user.id,
         isDate,
