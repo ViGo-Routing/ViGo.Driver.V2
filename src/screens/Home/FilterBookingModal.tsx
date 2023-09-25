@@ -730,8 +730,8 @@ const FilterBookingModal = ({
                     setFilterStartLocation({
                       address: details.formatted_address,
                       name: details.name,
-                      latitude: details.geometry.latitude,
-                      longitude: details.geometry.longitude,
+                      latitude: details.geometry.location.lat,
+                      longitude: details.geometry.location.lng,
                       type: "OTHER",
                       value: "other",
                     });
