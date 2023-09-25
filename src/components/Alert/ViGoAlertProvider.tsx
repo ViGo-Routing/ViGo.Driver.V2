@@ -18,6 +18,7 @@ import EventEmitter from "react-native/Libraries/vendor/emitter/EventEmitter";
 import { eventNames } from "../../utils/alertUtils";
 import { NativeEventEmitter, NativeModules } from "react-native";
 import { ThemeComponentSizeType } from "native-base/lib/typescript/components/types";
+import { useNavigation } from "@react-navigation/native";
 
 interface ViGoAlertProps {
   title: ReactNode;
@@ -229,6 +230,7 @@ const ViGoAlertProvider = (/*{
       }
     };
   }, []);
+  const navigation = useNavigation();
 
   return (
     <>
@@ -245,6 +247,17 @@ const ViGoAlertProvider = (/*{
             {description}
             <Box alignItems={"flex-end"} marginTop={2}>
               <Button.Group space={2}>
+                {description && description.includes("Số dư ví") && (
+                  <Button
+                    colorScheme={"info"}
+                    onPress={() => {
+                      setIsDialogOpen(false);
+                      navigation.navigate("Topup");
+                    }}
+                  >
+                    Nạp tiền vào ví
+                  </Button>
+                )}
                 <Button
                   colorScheme={status}
                   onPress={() => {

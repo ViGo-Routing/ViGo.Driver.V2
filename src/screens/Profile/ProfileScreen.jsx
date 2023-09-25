@@ -30,6 +30,7 @@ import {
   FireIcon as FireOutlineIcon,
   XCircleIcon as XCircleOutlineIcon,
   TruckIcon as TruckOutlineIcon,
+  CurrencyDollarIcon as CurrencyDollarOutlineIcon,
 } from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
 import { removeItem } from "../../utils/storageUtils";
@@ -55,6 +56,7 @@ import { getMaximumDob } from "../../utils/datetimeUtils";
 import moment from "moment";
 import { toPercent } from "../../utils/numberUtils";
 import { getCancelRateTextColor } from "../../utils/userUtils";
+import { getSettings, settingKeys } from "../../services/settingService";
 
 const ProfileSreen = () => {
   const navigation = useNavigation();
@@ -85,6 +87,8 @@ const ProfileSreen = () => {
   const [vehicleType, setVehicleType] = useState("");
   const [vehicleTypeText, setVehicleTypeText] = useState("");
   const [vehiclePlate, setVehiclePlate] = useState("");
+
+  const [pickingFee, setPickingFee] = useState(0);
 
   const formatDate = (rawDate) => {
     let date = new Date(rawDate);
@@ -125,6 +129,14 @@ const ProfileSreen = () => {
         // console.log("False Vehicle");
         // setIsSubmitted(false);
       }
+
+      const settings = await getSettings();
+      setPickingFee(
+        1 -
+          settings.find(
+            (setting) => setting.key === settingKeys.DriverWagePercent
+          ).value
+      );
     } catch (err) {
       if (err.response && err.response.status == 401) {
         await logUserOut(setUser, navigation);
@@ -433,6 +445,13 @@ const ProfileSreen = () => {
                     <Text bold color={getCancelRateTextColor(canceledTripRate)}>
                       {toPercent(canceledTripRate)}
                     </Text>
+                  </Text>
+                </HStack>
+
+                <HStack marginTop={3} alignItems="center">
+                  <CurrencyDollarOutlineIcon size={17} color="black" />
+                  <Text ml="2" pt="0">
+                    Phí nhận chuyến <Text bold>{toPercent(pickingFee)}</Text>
                   </Text>
                 </HStack>
                 {/* <Box>

@@ -14,6 +14,7 @@
       android:icon="@mipmap/vigo_driver_logo"
       android:roundIcon="@mipmap/vigo_driver_logo_circle"
       android:allowBackup="false"
+      android:usesCleartextTraffic="true"
       android:theme="@style/AppTheme">
       <activity
         android:name=".MainActivity"
