@@ -21,6 +21,7 @@ const ScheduleInDateScreen = () => {
   // console.log(date);
   const [tripsInDate, setTripsInDate] = useState(null);
   const formattedDate = moment(date).format("YYYY-MM-DD").toString();
+  const formattedCurrentDate = moment().format("YYYY-MM-DD").toString();
   const { user } = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -41,15 +42,24 @@ const ScheduleInDateScreen = () => {
       );
 
       setTripsInDate(
-        tripsResponse.data.data.map((trip) => {
-          return {
-            firstPosition: generateMapPoint(trip.startStation),
-            secondPosition: generateMapPoint(trip.endStation),
-            // strokeColor: "#00A1A1",
-            // strokeWidth: 3,
-            bookingDetailId: trip.id,
-          };
-        })
+        tripsResponse.data.data
+          .filter((trip) => {
+            if (formattedDate == formattedCurrentDate) {
+              return moment(trip.customerDesiredPickupTime, "HH:mm:ss").isAfter(
+                moment()
+              );
+            }
+            return true;
+          })
+          .map((trip) => {
+            return {
+              firstPosition: generateMapPoint(trip.startStation),
+              secondPosition: generateMapPoint(trip.endStation),
+              // strokeColor: "#00A1A1",
+              // strokeWidth: 3,
+              bookingDetailId: trip.id,
+            };
+          })
       );
 
       // driverSchedules.push({

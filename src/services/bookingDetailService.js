@@ -9,8 +9,7 @@ export const getAvailableBookingDetails = async (
 ) => {
   // try {
   const response = await apiManager.get(
-    `/api/BookingDetail/Driver/Available/${driverId}?
-      pageSize=${pageSize}&pageNumber=${pageNumber}`
+    `/api/BookingDetail/Driver/Available/${driverId}?pageSize=${pageSize}&pageNumber=${pageNumber}`
   );
   return response;
   // } catch (error) {

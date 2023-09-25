@@ -93,7 +93,7 @@ const HomeComponent = ({}) => {
       );
 
       const bookings = availableBookings.data;
-      console.log(availableBookings.totalPages);
+      // console.log(availableBookings.totalPages);
 
       setBookingsAvailable(bookings);
       // console.log(details.length);
