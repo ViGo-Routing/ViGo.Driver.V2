@@ -247,17 +247,19 @@ const ViGoAlertProvider = (/*{
             {description}
             <Box alignItems={"flex-end"} marginTop={2}>
               <Button.Group space={2}>
-                {description && description.includes("Số dư ví") && (
-                  <Button
-                    colorScheme={"info"}
-                    onPress={() => {
-                      setIsDialogOpen(false);
-                      navigation.navigate("Topup");
-                    }}
-                  >
-                    Nạp tiền vào ví
-                  </Button>
-                )}
+                {description &&
+                  description.includes != undefined &&
+                  description.includes("Số dư ví") && (
+                    <Button
+                      colorScheme={"info"}
+                      onPress={() => {
+                        setIsDialogOpen(false);
+                        navigation.navigate("Topup");
+                      }}
+                    >
+                      Nạp tiền vào ví
+                    </Button>
+                  )}
                 <Button
                   colorScheme={status}
                   onPress={() => {
