@@ -47,6 +47,7 @@ import { Box, HStack, Text } from "native-base";
 import { getBookingDetailCustomer } from "../../services/userService";
 import { PaperAirplaneIcon } from "react-native-heroicons/solid";
 import StartRouteConfirmAlert from "./StartRouteAlerts";
+import moment from "moment";
 
 const StartRouteScreen = () => {
   const navigation = useNavigation();
@@ -192,13 +193,15 @@ const StartRouteScreen = () => {
   const handleStartRoute = async () => {
     setIsLoading(true);
     try {
-      const time = new Date();
+      const time = moment().format("YYYY-MM-DDTHH:mm:ss");
 
       const requestData = {
         bookingDetailId: item.id,
         status: "GOING_TO_PICKUP",
-        time: time.toISOString(),
+        time: time.toString(),
       };
+      console.log(requestData);
+
       await updateStatusBookingDetail(item.id, requestData).then((response) => {
         if (response && response.data) {
           eventEmitter.emit(eventNames.SHOW_TOAST, {
@@ -239,8 +242,9 @@ const StartRouteScreen = () => {
     } catch (error) {
       // console.error("Tài xế bắt đầu chuyến đi", error);
       // Alert.alert("Tài xế bắt đầu", "Bắt đầu không thành công");
-      setErrorMessage(getErrorMessage(error));
-      setIsError(true);
+      // setErrorMessage(getErrorMessage(error));
+      // setIsError(true);
+      handleError("Có lỗi xảy ra", error);
     } finally {
       setIsLoading(false);
     }
